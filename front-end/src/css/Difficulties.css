@@ -1,0 +1,20 @@
+/* Important necessary to override Bootstrap's default style */
+.card {
+    border-radius: 10px!important;
+    border-top-width: 10px !important;
+}
+
+.card-title {
+    text-transform: capitalize !important;
+}
+
+.easy {
+    border-top-color: #28A745 !important;
+}
+.medium {
+    border-top-color: #FFC107 !important;
+}
+.hard {
+    border-top-color: #DC3545 !important;
+}
+
