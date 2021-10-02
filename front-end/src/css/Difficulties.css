@@ -1,20 +1,22 @@
 /* Important necessary to override Bootstrap's default style */
-.card {
+.difficulty-card {
     border-radius: 10px!important;
     border-top-width: 10px !important;
 }
 
-.card-title {
+.difficulty-card .card-title {
     text-transform: capitalize !important;
 }
 
-.easy {
+.difficulty-card.easy {
     border-top-color: #28A745 !important;
 }
-.medium {
+
+.difficulty-card.medium {
     border-top-color: #FFC107 !important;
 }
-.hard {
+
+.difficulty-card.hard {
     border-top-color: #DC3545 !important;
 }
 

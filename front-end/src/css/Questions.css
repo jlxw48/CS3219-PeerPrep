@@ -1,0 +1,14 @@
+.home-question-card {
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
+
+.home-questions-wrapper {
+    height: 800px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.home-questions-wrapper .row {
+    margin: auto !important;
+}
