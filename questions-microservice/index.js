@@ -1,8 +1,11 @@
 const express = require('express');
+const mongoose = require("mongoose");
 
 const qnController = require("./db/question_controller");
+const configs = require("./configs/configs");
 
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 const setErrorMessage = (errMessage, code) => (req, res) => {
@@ -33,6 +36,32 @@ app.route("/api/questions/delete_question")
     .delete(qnController.deleteQuestion)
     .all(setErrorMessage("Invalid HTTP Method!", 405));
 
-app.listen(port, () => {
+const dbUri = configs[process.env.NODE_ENV.trim()]["DB_URI"];
+
+if (dbUri == null || dbUri === "") {
+    console.error("Error retrieving dbUri", dbUri);
+    return;
+}
+
+// if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
+//     console.log("Already connected!");
+//     return;
+// }
+
+// mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+// const db = mongoose.connection;
+// if (!db) {
+//     console.error("Error connecting to database");
+//     return;
+// } 
+// db.on("error", console.error.bind(console, 'connection error:'));
+// db.once('open', function() {
+//     console.log("Successfully connected to database");
+// });
+
+app.listen(port, async () => {
+    await mongoose.connect(dbUri);
+    console.log("connected to db");
+
     console.log(`Questions microservice listening at http://localhost:${port}`);
 });

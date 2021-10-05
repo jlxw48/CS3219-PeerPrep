@@ -1,8 +1,9 @@
-const helpers = require("../common/helper_functions/request_body_helpers");
+const helpers = require("../common/helper_functions/request_helpers");
 const clientErr = require("../common/error_msgs/client_errors");
 const dbErr = require("../common/error_msgs/db_errors");
 const responseStatus = require("../common/status");
 const httpMethods = require("../common/http_methods");
+const functionality = require("../common/helper_functions/functionality");
 
 Question = require("./question_model");
 
@@ -11,9 +12,15 @@ exports.getAllQuestions = (req, res) => {
         return;
     }
 
-    Question.find()
-        .skip(0)
-        .limit(10)
+    var offset = helpers.parsePositiveInt(req.query.offset);
+    var limit = helpers.parsePositiveInt(req.query.limit, 10);
+    var difficulty = req.query.difficulty;
+    
+    const query = difficulty ? Question.where({ difficulty: difficulty }) : Question;
+    query
+        .find()
+        .skip(offset)
+        .limit(limit)
         .exec((err, questions) => {
             if (err) {
                 res.statusCode = 500;
@@ -37,11 +44,10 @@ exports.getRandomQuestion = (req, res) => {
         return;
     }
 
-    var random = Math.random();
-    Question
-        .findOne()
-        .skip(random)
-        .exec((err, questions) => {
+    var difficulty = req.query.difficulty;
+    const countQuery = difficulty ? Question.where({ difficulty: difficulty }) : Question;
+    countQuery
+        .count((err, count) => {
             if (err) {
                 res.statusCode = 500;
                 res.json({
@@ -51,12 +57,29 @@ exports.getRandomQuestion = (req, res) => {
                 return;
             }
             
-            res.statusCode = 200;
-            res.json({
-                status: responseStatus.SUCCESS,
-                data: questions
-            });
-        });
+            const questionQuery = difficulty ? Question.where({ difficulty: difficulty }) : Question;
+            var random = functionality.randomNumBetween(1, count) - 1;
+            questionQuery
+                .findOne()
+                .skip(random)
+                .exec((err, questions) => {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.json({
+                            status: responseStatus.ERROR,
+                            error_message: dbErr.mongoReadErr(err)
+                        });
+                        return;
+                    }
+                    
+                    res.statusCode = 200;
+                    res.json({
+                        status: responseStatus.SUCCESS,
+                        data: questions
+                    });
+                });
+        })
+    
 }
 
 exports.createQuestion = (req, res) => {
@@ -101,7 +124,6 @@ exports.createQuestion = (req, res) => {
             return;
         }
 
-        question.id = count + 1; // because MongoDB does not support autoincrement
         question.save((errNested) => {
             if (errNested) {
                 res.statusCode = 500;

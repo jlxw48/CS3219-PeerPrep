@@ -6,19 +6,19 @@ exports.isReqBodyNonEmpty = (req) => {
     return true;
 }
 
-exports.isInvalidTitle = (req) => {
-    return req.body.title == null || req.body.title == undefined || req.body.title.length() == 0;
+const isInvalidTitle = (req) => {
+    return req.body.title == null || req.body.title == undefined || req.body.title.length == 0;
 }
 
-exports.isInvalidDescription = (req) => {
-    return req.body.description == null || req.body.description == undefined || req.body.description.length() == 0;
+const isInvalidDescription = (req) => {
+    return req.body.description == null || req.body.description == undefined || req.body.description.length == 0;
 }
 
-exports.isInvalidDifficulty = (req) => {
-    return req.body.difficulty == null || req.body.difficulty == undefined || req.body.difficulty.length() == 0;
+const isInvalidDifficulty = (req) => {
+    return req.body.difficulty == null || req.body.difficulty == undefined || req.body.difficulty.length == 0;
 }
 
-exports.isInvalidId = (req) => {
+const isInvalidId = (req) => {
     return req.body.id == null || req.body.id == undefined || req.body.id <= 0;
 }
 
@@ -46,4 +46,12 @@ exports.isValidPutReq = (req) => {
 
 exports.isValidDeleteReq = (req) => {
     return !isInvalidId(req);
+}
+
+exports.parsePositiveInt = (input, defaultInt) => {
+    if (!input || isNaN(parseInt(input))) {
+        return defaultInt || 0;
+    }
+
+    return parseInt(input);
 }
