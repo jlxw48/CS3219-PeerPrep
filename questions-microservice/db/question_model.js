@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require( "mongoose" );
 
-const quesetionSchema = mongoose.Schema({
+const quesetionSchema = mongoose.Schema( {
     title: {
         type: String,
         required: true
@@ -13,7 +13,7 @@ const quesetionSchema = mongoose.Schema({
         type: String, // change ot enum
         required: true
     }
-});
+} );
 
-const collectionName ="questions";
-module.exports = mongoose.model("question", quesetionSchema, collectionName);
+const collectionName = "questions";
+module.exports = mongoose.model( "question", quesetionSchema, collectionName );
