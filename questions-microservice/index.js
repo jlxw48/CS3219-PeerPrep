@@ -5,24 +5,31 @@ const qnController = require("./db/question_controller");
 const app = express();
 const port = 3000;
 
-app.route("/get_all_questions")
+const setErrorMessage = (errMessage, code) => (req, res) => {
+    res.statusCode = code;
+    res.setHeader('content-type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json({error_message: errMessage});
+ }
+
+app.route("/api/questions/get_all_questions")
     .get(qnController.getAllQuestions)
     .all(setErrorMessage("Invalid HTTP Method!", 405));
 
 // for matching
-app.route("/get_random_question")
+app.route("/api/questions/get_random_question")
     .get(qnController.getRandomQuestion)
     .all(setErrorMessage("Invalid HTTP Method!", 405));
 
-app.route("/create_question")
+app.route("/api/questions/create_question")
     .post(qnController.createQuestion)
     .all(setErrorMessage("Invalid HTTP Method!", 405));
 
-app.route("/update_question")
+app.route("/api/questions/update_question")
     .put(qnController.updateQuestion)
     .all(setErrorMessage("Invalid HTTP Method!", 405));
 
-app.route("/delete_question")
+app.route("/api/questions/delete_question")
     .delete(qnController.deleteQuestion)
     .all(setErrorMessage("Invalid HTTP Method!", 405));
 
