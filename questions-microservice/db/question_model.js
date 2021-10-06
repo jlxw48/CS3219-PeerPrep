@@ -10,7 +10,8 @@ const quesetionSchema = mongoose.Schema( {
         required: true
     },
     difficulty: {
-        type: String, // change ot enum
+        type: String, 
+        enum: ["easy", "medium", "hard"],
         required: true
     }
 } );

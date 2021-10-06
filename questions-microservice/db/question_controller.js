@@ -113,6 +113,17 @@ exports.createQuestion = ( req, res ) => {
         return;
     }
 
+    if (req.body.difficulty && !helpers.checkEnumDifficulty(req.body.difficulty)) {
+        res.statusCode = 400;
+        res.json( {
+            status: responseStatus.FAILED,
+            data: {
+                error_message: clientErr.INVALID_DIFFICULTY
+            }
+        } );
+        return;
+    }
+
     var question = new Question();
     question.title = req.body.title;
     question.description = req.body.description;
@@ -173,11 +184,17 @@ exports.updateQuestion = ( req, res ) => {
         } );
         return;
     }
-
-    var question = new Question();
-    question.title = req.body.title;
-    question.description = req.body.description;
-    question.difficulty = req.body.difficulty;
+    
+    if (req.body.difficulty && !helpers.checkEnumDifficulty(req.body.difficulty)) {
+        res.statusCode = 400;
+        res.json( {
+            status: responseStatus.FAILED,
+            data: {
+                error_message: clientErr.INVALID_DIFFICULTY
+            }
+        } );
+        return;
+    }
 
     Question.findById( req.body.id, ( err, question ) => {
         if ( err || req.body.id.length != 24 ) {
@@ -211,7 +228,6 @@ exports.updateQuestion = ( req, res ) => {
             return;
         }
 
-        // todo: check the correctness of this
         question.title = req.body.title ? req.body.title : question.title;
         question.description = req.body.description ? req.body.description : question.description;
         question.difficulty = req.body.difficulty ? req.body.difficulty : question.difficulty;

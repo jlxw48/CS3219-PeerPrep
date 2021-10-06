@@ -55,3 +55,7 @@ exports.parsePositiveInt = ( input, defaultInt ) => {
 
     return parseInt( input );
 }
+
+exports.checkEnumDifficulty = (difficulty) => {
+    return difficulty === "easy" || difficulty === "medium" || difficulty === "hard";
+}
