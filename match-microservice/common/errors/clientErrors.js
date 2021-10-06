@@ -5,7 +5,7 @@ const TIMEOUT_30_SECONDS = "failed to find a match after 30s";
 const NO_PARTNER = "failed to retrieve partner details";
 const INCONSISTENT_PARTNERS = "Inconsistent partners detected"
 const INVALID_INTERVIEW_ID = "interview id does not exist";
-const MISSING_SECOND_USER_FOR_INTERVIEW_ID = "interviewId does not exist for second user";
+const MISSING_SECOND_USER_FOR_INTERVIEW_ID = "interview id does not exist for second user";
 
 module.exports = {
     MISSING_REQUEST_BODY,

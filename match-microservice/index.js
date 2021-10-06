@@ -8,7 +8,7 @@ require("dotenv").config();
 const matchApiRoutes = require('./routes/matchApiRoutes');
 
 // Connect to mongodb
-const dbURI = process.env.MONGODB_URI;
+var dbURI = process.env.MONGODB_URI;
 if (process.env.NODE_ENV === "test") {
     dbURI = process.env.TEST_MONGODB_URI;
 }
@@ -35,3 +35,6 @@ app.use((req, res) => {
         }
     });
 });
+
+// Export app for testing purposes
+module.exports = app;

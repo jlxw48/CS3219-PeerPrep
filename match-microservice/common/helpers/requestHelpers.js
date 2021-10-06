@@ -1,7 +1,7 @@
 const { difficulties }  = require('../constants/constants');
 
 const hasMissingFieldsForFindMatch = req => {
-    return req.body.username == undefined || req.body.difficulty == undefined;
+    return req.body.email == undefined || req.body.difficulty == undefined;
 }
 
 const isValidDifficulty = difficulty => {

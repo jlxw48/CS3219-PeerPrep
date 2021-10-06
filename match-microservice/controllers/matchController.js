@@ -58,7 +58,7 @@ const findMatch = (req, res) => {
         });
         return;
     }
-    const username = req.body.username;
+    const email = req.body.email;
     const difficulty = req.body.difficulty;
     if (!requestHelpers.isValidDifficulty(difficulty)) {
         res.status(400).json({
@@ -71,7 +71,7 @@ const findMatch = (req, res) => {
     }
 
     const match = new Match({
-        username: username,
+        email: email,
         difficulty: difficulty,
         createdAt: Date()
     });
@@ -84,7 +84,7 @@ const findMatch = (req, res) => {
             if (count >= 6) {
                 clearInterval(intervalId);
                 Match.findOneAndDelete({
-                    username: username
+                    email: email
                 })
                 .then(result => {
                     res.status(404).json({  // check what status code this should be
@@ -105,16 +105,16 @@ const findMatch = (req, res) => {
             }
             // Try to see if a partner has already updated the match details of this user
             Match.findOne({
-                username: username
+                email: email
             })
             .then(userResult => {
                 // if user is already matched with a partner (the partner has already updated the current user's document)
-                if (userResult.partnerUsername) {
+                if (userResult.partnerEmail) {
                     clearInterval(intervalId);
                     res.json({
                         status: responseStatus.SUCCESS,
                         data: {
-                            partnerUsername: userResult.partnerUsername,
+                            partnerEmail: userResult.partnerEmail,
                             interviewId: userResult.interviewId
                         }
                     });
@@ -123,11 +123,11 @@ const findMatch = (req, res) => {
                 
                 // if user is not matched with a partner yet, try to find a partner and update info for partner 
                 Match.findOneAndUpdate({
-                    username: { $ne: username},  // exclude the current user
-                    partnerUsername: { $exists : false },  // make sure the other user has no partner yet
+                    email: { $ne: email},  // exclude the current user
+                    partnerEmail: { $exists : false },  // make sure the other user has no partner yet
                     difficulty: difficulty
                 }, {
-                    partnerUsername: username,
+                    partnerEmail: email,
                     interviewId: mongoose.Types.ObjectId()  // Generate a random inverviewId
                 }, {
                     sort: { "createdAt": 1},  // find the earliest queueing user
@@ -139,7 +139,7 @@ const findMatch = (req, res) => {
                         if (count === 6) {
                             clearInterval(intervalId);
                             Match.findOneAndDelete({
-                                username: username
+                                email: email
                             })
                             .then(result => {
                                 res.status(404).json({
@@ -164,16 +164,16 @@ const findMatch = (req, res) => {
                     clearInterval(intervalId);
                     // Update partner info for current user
                     Match.findOneAndUpdate({
-                        username: username,
-                        partnerUsername: { $exists : false }    // make sure the current user has no partner yet (to mitigate race conditions?)
+                        email: email,
+                        partnerEmail: { $exists : false }    // make sure the current user has no partner yet (to mitigate race conditions?)
                     }, { 
-                        partnerUsername: partnerResult.username,
+                        partnerEmail: partnerResult.email,
                         interviewId: partnerResult.interviewId
                     }, { new : true })
                     .then(finalResult => {
                         if (!finalResult) {
                             // maybe clean up the match records here
-                            res.json({
+                            res.status(404).json({
                                 status: responseStatus.FAILED,
                                 data: {
                                     message: clientErrMessages.INCONSISTENT_PARTNERS
@@ -184,7 +184,7 @@ const findMatch = (req, res) => {
                         res.json({
                             status: responseStatus.SUCCESS,
                             data: {
-                                partnerUsername: partnerResult.username,
+                                partnerEmail: partnerResult.email,
                                 interviewId: partnerResult.interviewId
                             }
                         });
@@ -228,24 +228,24 @@ const findMatch = (req, res) => {
 
 // Get the current partner of the user
 const getPartner = (req, res) => {
-    const username = req.query.username;
+    const email = req.query.email;
     Match.findOne({
-        username: username
+        email: email
     })
     .then(result => {
         if (result) {
-            const partnerUsername = result.partnerUsername;
-            if (partnerUsername) {
+            const partnerEmail = result.partnerEmail;
+            if (partnerEmail) {
                 res.json({
                     status: responseStatus.SUCCESS,
                     data: {
-                        partnerUsername: partnerUsername
+                        partnerEmail: partnerEmail
                     }
                 });
                 return;
             }
         }
-        res.json({
+        res.status(404).json({
             status: responseStatus.FAILED,
             data: {
                 message: clientErrMessages.NO_PARTNER
@@ -269,7 +269,7 @@ const endInterview = (req, res) => {
     })
     .then(firstResult => {
         if (!firstResult) {
-            res.json({
+            res.status(404).json({
                 status: responseStatus.FAILED,
                 data: {
                     message: clientErrMessages.INVALID_INTERVIEW_ID
@@ -282,7 +282,7 @@ const endInterview = (req, res) => {
         })
         .then(secondResult => {
             if (!secondResult) {
-                res.json({
+                res.status(404).json({
                     status: responseStatus.FAILED,
                     data: {
                         message: clientErrMessages.MISSING_SECOND_USER_FOR_INTERVIEW_ID
