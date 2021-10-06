@@ -4,7 +4,7 @@ const hasMissingFieldsForFindMatch = req => {
     return req.body.username == undefined || req.body.difficulty == undefined;
 }
 
-const isValidDifficulty = (difficulty) => {
+const isValidDifficulty = difficulty => {
     return difficulties.includes(difficulty)
 }
 

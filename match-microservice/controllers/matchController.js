@@ -31,7 +31,7 @@ const interviewsCount = (req, res) => {
         });
     })
     .catch(err => {
-        res.status(404).json({
+        res.status(500).json({
             status: responseStatus.ERROR,
             error_message: dbErrMessages.readError(err) // failed to get number of interviews
         });
@@ -50,7 +50,7 @@ const findMatch = (req, res) => {
         return;
     }
     if (totalInterviews >= 5) {
-        res.json({  // check what the status code should be
+        res.status(404).json({
             status: responseStatus.FAILED,
             data: {
                 message: clientErrMessages.MAX_INTERVIEW_REACHED
@@ -73,8 +73,7 @@ const findMatch = (req, res) => {
     const match = new Match({
         username: username,
         difficulty: difficulty,
-        createdAt: Date(),
-        isAvailable: true
+        createdAt: Date()
     });
 
     match.save()
@@ -97,7 +96,7 @@ const findMatch = (req, res) => {
                     return;
                 })
                 .catch(err => {
-                    res.status(404).json({
+                    res.status(500).json({
                         status: responseStatus.ERROR,
                         error_message: dbErrMessages.deleteError(err) // failed to delete match details after 30s timeout
                     });
@@ -143,7 +142,7 @@ const findMatch = (req, res) => {
                                 username: username
                             })
                             .then(result => {
-                                res.status(404).json({  // check what status code this should be
+                                res.status(404).json({
                                     status: responseStatus.FAILED,
                                     data: {
                                         message: clientErrMessages.TIMEOUT_30_SECONDS
@@ -152,7 +151,7 @@ const findMatch = (req, res) => {
                                 return;
                             })
                             .catch(err => {
-                                res.status(404).json({
+                                res.status(500).json({
                                     status: responseStatus.ERROR,
                                     error_message: dbErrMessages.deleteError(err) // failed to delete match details after 30s timeout
                                 });
@@ -192,7 +191,7 @@ const findMatch = (req, res) => {
                         return;
                     })
                     .catch(finalResultErr => {
-                        res.json({
+                        res.status(500).json({
                             status: responseStatus.ERROR,
                             error_message: dbErrMessages.writeError(finalResultErr)  // failed to update match details of current user after finding a match
                         });
@@ -201,7 +200,7 @@ const findMatch = (req, res) => {
                 })
                 .catch(partnerResultErr => {
                     clearInterval(intervalId);
-                    res.json({
+                    res.status(500).json({
                         status: responseStatus.ERROR,
                         error_message: dbErrMessages.writeError(partnerResultErr) // failed to update match details of partner user after finding a match
                     });
@@ -210,8 +209,7 @@ const findMatch = (req, res) => {
             })
             .catch(userResultErr => {
                 clearInterval(intervalId);
-                console.log(userResultErr)
-                res.json({
+                res.status(500).json({
                     status: responseStatus.ERROR,
                     error_message: dbErrMessages.readError(userResultErr) // this should not happen but failed to find match details of current user
                 });
@@ -221,7 +219,7 @@ const findMatch = (req, res) => {
         }, 5000);  // Try to find a match every 5s, until 30s is up
     })
     .catch((err) => {
-        res.status(404).json({
+        res.status(500).json({
             status: responseStatus.ERROR,
             error_message: dbErrMessages.writeError(err) // failed to store find match details
         });
@@ -256,7 +254,7 @@ const getPartner = (req, res) => {
         return;
     })
     .catch(err => {
-        res.status(404).json({
+        res.status(500).json({
             status: responseStatus.ERROR,
             error_message: dbErrMessages.readError(err)
         });
@@ -301,7 +299,7 @@ const endInterview = (req, res) => {
             return;
         })
         .catch(secondResultErr => {
-            res.json({
+            res.status(500).json({
                 status: responseStatus.ERROR,
                 error_message: db.deleteError(secondResultErr) // failed to delete interview for second user
             });
@@ -309,7 +307,7 @@ const endInterview = (req, res) => {
         })
     })
     .catch(firstResultErr => {
-        res.json({
+        res.status(500).json({
             status: responseStatus.ERROR,
             error_message: db.deleteError(firstResultErr) // failed to delete interview for first user
         })
