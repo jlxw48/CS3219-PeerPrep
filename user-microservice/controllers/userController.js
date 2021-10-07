@@ -63,40 +63,40 @@ exports.create_account = (req, res) => {
 
 	if (hasMissingAuthFields(req)) {
 		res.status(400).send({
-				status: responseStatus.FAILURE,
-				data: {
-					message: clientErrorMessages.MISSING_NAME_EMAIL_PASSWORD
-				}
-			});
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_NAME_EMAIL_PASSWORD
+			}
+		});
 		return;
 	}
 
 	if (hasMissingNameField(req)) {
 		res.status(400).send({
-				status: responseStatus.FAILURE,
-				data: {
-					message: clientErrorMessages.MISSING_NAME
-				}
-			});
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_NAME
+			}
+		});
 		return;
 
 	}
 	if (hasMissingEmailField(req)) {
 		res.status(400).send({
-				status: responseStatus.FAILURE,
-				data: {
-					message: clientErrorMessages.MISSING_EMAIL
-				}
-			});
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_EMAIL
+			}
+		});
 		return;
 	}
 	if (hasMissingPasswordField(req)) {
 		res.status(400).send({
-				status: responseStatus.FAILURE,
-				data: {
-					message: clientErrorMessages.MISSING_PASSWORD
-				}
-			});
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_PASSWORD
+			}
+		});
 		return;
 	}
 	const email = req.body.email;
@@ -150,21 +150,21 @@ exports.user_login = (req, res) => {
 
 	if (hasMissingEmailField(req)) {
 		res.status(400).send({
-				status: responseStatus.FAILURE,
-				data: {
-					message: clientErrorMessages.MISSING_EMAIL
-				}
-			});
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_EMAIL
+			}
+		});
 		return;
 	}
 
 	if (hasMissingPasswordField(req)) {
 		res.status(400).send({
-				status: responseStatus.FAILURE,
-				data: {
-					message: clientErrorMessages.MISSING_PASSWORD
-				}
-			});
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_PASSWORD
+			}
+		});
 		return;
 	}
 
