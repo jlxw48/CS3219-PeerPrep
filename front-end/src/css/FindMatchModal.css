@@ -1,0 +1,16 @@
+.find-match-modal .modal-content {
+    border-radius: 10px !important;
+    border: 1px solid black;
+    background: 
+}
+
+.find-match-modal-header {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: x-large;
+}
+
+.find-match-modal .match-icon {
+    color: #495057;
+}

@@ -7,7 +7,7 @@ function DifficultyCard(props) {
         <Card className={"difficulty-card " + props.difficulty}>
             <Card.Body>
                 <Card.Title>{props.difficulty}</Card.Title><br/>
-                <Card.Text>{cardTextMap[props.difficulty]}</Card.Text>
+                <Card.Subtitle className="text-muted">{cardTextMap[props.difficulty]}</Card.Subtitle>
             </Card.Body>
         </Card>
     )

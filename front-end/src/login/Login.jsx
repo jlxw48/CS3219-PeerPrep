@@ -37,7 +37,7 @@ function Login() {
                                     </Row>
                                     <Row>
                                         <Col md="10">
-                                            <Button variant="primary" type="submit" className="float-end bg-dark">
+                                            <Button variant="dark" type="submit" className="float-end">
                                                 Login
                                             </Button>
                                         </Col>
