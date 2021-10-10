@@ -15,26 +15,33 @@ const setErrorMessage = ( errMessage, code ) => ( req, res ) => {
     res.json( { error_message: errMessage } );
 }
 
-app.route( "/api/questions/get_all_questions" )
-    .get( qnController.getAllQuestions )
-    .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
-
 // for matching
 app.route( "/api/questions/get_random_question" )
     .get( qnController.getRandomQuestion )
     .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
 
-app.route( "/api/questions/create_question" )
+app.route( "/api/questions/:id" )
+    .put( qnController.updateQuestion )
+    .delete( qnController.deleteQuestion )
+    .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
+
+app.route( "/api/questions/" )
+    .get( qnController.getAllQuestions )
     .post( qnController.createQuestion )
     .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
 
-app.route( "/api/questions/update_question" )
-    .put( qnController.updateQuestion )
-    .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
+// app.route( "/api/questions/" )
+//     .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
 
-app.route( "/api/questions/delete_question" )
-    .delete( qnController.deleteQuestion )
-    .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
+// app.route( "/api/questions/create_question" )
+//     .post( qnController.createQuestion )
+//     .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
+
+
+
+// app.route( "/api/questions/delete_question" )
+//     .delete( qnController.deleteQuestion )
+//     .all( setErrorMessage( "Invalid HTTP Method!", 405 ) );
 
 const dbUri = configs[ process.env.NODE_ENV.trim() ][ "DB_URI" ];
 

@@ -78,7 +78,7 @@ exports.getRandomQuestion = ( req, res ) => {
                     res.json( {
                         status: responseStatus.SUCCESS,
                         data: {
-                            questions: questions
+                            questions: [questions]
                         }
                     } );
                 } );
@@ -113,7 +113,7 @@ exports.createQuestion = ( req, res ) => {
         return;
     }
 
-    if (req.body.difficulty && !helpers.checkEnumDifficulty(req.body.difficulty)) {
+    if ( req.body.difficulty && !helpers.checkEnumDifficulty( req.body.difficulty ) ) {
         res.statusCode = 400;
         res.json( {
             status: responseStatus.FAILED,
@@ -184,8 +184,8 @@ exports.updateQuestion = ( req, res ) => {
         } );
         return;
     }
-    
-    if (req.body.difficulty && !helpers.checkEnumDifficulty(req.body.difficulty)) {
+
+    if ( req.body.difficulty && !helpers.checkEnumDifficulty( req.body.difficulty ) ) {
         res.statusCode = 400;
         res.json( {
             status: responseStatus.FAILED,
@@ -196,9 +196,9 @@ exports.updateQuestion = ( req, res ) => {
         return;
     }
 
-    Question.findById( req.body.id, ( err, question ) => {
-        if ( err || req.body.id.length != 24 ) {
-            if ( ( err !== null && typeof err === "object" && err.name === "CastError" ) || req.body.id.length != 24 ) {
+    Question.findById( req.params.id, ( err, question ) => {
+        if ( err || req.params.id.length != 24 ) {
+            if ( ( err !== null && typeof err === "object" && err.name === "CastError" ) || req.params.id.length != 24 ) {
                 res.statusCode = 400;
                 res.json( {
                     status: responseStatus.FAILED,
@@ -278,9 +278,9 @@ exports.deleteQuestion = ( req, res ) => {
         return;
     }
 
-    Question.findById( req.body.id, ( err, question ) => {
-        if ( err || req.body.id.length != 24 ) {
-            if ( ( err !== null && typeof err === "object" && err.name === "CastError" ) || req.body.id.length != 24 ) {
+    Question.findById( req.params.id, ( err, question ) => {
+        if ( err || req.params.id.length != 24 ) {
+            if ( ( err !== null && typeof err === "object" && err.name === "CastError" ) || req.params.id.length != 24 ) {
                 res.statusCode = 400;
                 res.json( {
                     status: responseStatus.FAILED,
@@ -312,7 +312,7 @@ exports.deleteQuestion = ( req, res ) => {
 
         Question.deleteOne(
             {
-                _id: req.body.id
+                _id: req.params.id
             },
             ( deleteErr, question ) => {
                 if ( deleteErr ) {

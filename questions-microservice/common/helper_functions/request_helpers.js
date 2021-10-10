@@ -19,7 +19,7 @@ const isInvalidDifficulty = ( req ) => {
 }
 
 const isInvalidId = ( req ) => {
-    return req.body.id == null || req.body.id == undefined || req.body.id <= 0;
+    return req.params.id == null || req.params.id == undefined || req.params.id.length == 0;
 }
 
 exports.isValidPostReq = ( req ) => {

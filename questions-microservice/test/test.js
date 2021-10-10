@@ -18,10 +18,10 @@ describe( "add 2 questions", () => {
         } );
     } );
 
-    describe( "POST /api/questions/create_question", () => {
+    describe( "POST /api/questions/", () => {
         it( "should post 1 question", ( done ) => {
             chai.request( app )
-                .post( "/api/questions/create_question" )
+                .post( "/api/questions/" )
                 .send( testData[ "post" ][ "validQuestion1" ] )
                 .end( ( err, res ) => {
                     res.should.have.status( 200 );
@@ -32,7 +32,7 @@ describe( "add 2 questions", () => {
 
         it( "should post another question", ( done ) => {
             chai.request( app )
-                .post( "/api/questions/create_question" )
+                .post( "/api/questions/" )
                 .send( testData[ "post" ][ "validQuestion2" ] )
                 .end( ( err, res ) => {
                     res.should.have.status( 200 );
@@ -44,10 +44,10 @@ describe( "add 2 questions", () => {
 } );
 
 describe( "get all questions", () => {
-    describe( "GET /api/questions/get_all_questions", () => {
+    describe( "GET /api/questions/", () => {
         it( "should get all questions", ( done ) => {
             chai.request( app )
-                .get( "/api/questions/get_all_questions" )
+                .get( "/api/questions/" )
                 .end( ( err, res ) => {
                     res.should.have.status( 200 );
                     expect( res.body.status ).to.equal( "success" );
@@ -61,10 +61,10 @@ describe( "get all questions", () => {
     } );
 
 
-    describe( "GET /api/questions/get_all_questions", () => {
+    describe( "GET /api/questions/", () => {
         it( "should get all questions with specified difficulty", ( done ) => {
             chai.request( app )
-                .get( "/api/questions/get_all_questions?difficulty=easy" )
+                .get( "/api/questions?difficulty=easy" )
                 .end( ( err, res ) => {
                     res.should.have.status( 200 );
                     expect( res.body.status ).to.equal( "success" );
@@ -77,7 +77,7 @@ describe( "get all questions", () => {
 
         it( "should get all questions with specified offset", ( done ) => {
             chai.request( app )
-                .get( "/api/questions/get_all_questions?offset=1" )
+                .get( "/api/questions?offset=1" )
                 .end( ( err, res ) => {
                     res.should.have.status( 200 );
                     expect( res.body.status ).to.equal( "success" );
@@ -89,7 +89,7 @@ describe( "get all questions", () => {
 
         it( "should get all questions with specified limit", ( done ) => {
             chai.request( app )
-                .get( "/api/questions/get_all_questions?limit=1" )
+                .get( "/api/questions?limit=1" )
                 .end( ( err, res ) => {
                     res.should.have.status( 200 );
                     expect( res.body.status ).to.equal( "success" );
@@ -102,16 +102,16 @@ describe( "get all questions", () => {
 } );
 
 describe( "update question", () => {
-    describe( "PUT /api/questions/update_question", () => {
+    describe( "PUT /api/questions/:id", () => {
         it( "should update question 5Sum difficulty from easy to hard", ( done ) => {
             chai.request( app )
-                .get( "/api/questions/get_all_questions?difficulty=easy" )
+                .get( "/api/questions?difficulty=easy" )
                 .end( ( err, res ) => {
                     const updateQuestionDifficulty = testData[ "put" ][ "updateQuestionDifficulty" ];
                     updateQuestionDifficulty.id = res.body.data.questions[ 0 ]._id;
 
                     chai.request( app )
-                        .put( "/api/questions/update_question" )
+                        .put( "/api/questions/" + res.body.data.questions[ 0 ]._id )
                         .send( updateQuestionDifficulty )
                         .end( ( err, response ) => {
                             response.should.have.status( 200 );
@@ -123,7 +123,7 @@ describe( "update question", () => {
 
         it( "should not return any easy questions", ( done ) => {
             chai.request( app )
-                .get( "/api/questions/get_all_questions?difficulty=easy" )
+                .get( "/api/questions?difficulty=easy" )
                 .end( ( err, res ) => {
                     res.should.have.status( 200 );
                     expect( res.body.status ).to.equal( "success" );
@@ -135,7 +135,7 @@ describe( "update question", () => {
 
         it( "should return 1 hard question", ( done ) => {
             chai.request( app )
-                .get( "/api/questions/get_all_questions?difficulty=hard" )
+                .get( "/api/questions?difficulty=hard" )
                 .end( ( err, res ) => {
                     res.should.have.status( 200 );
                     expect( res.body.status ).to.equal( "success" );
@@ -150,7 +150,7 @@ describe( "update question", () => {
 describe( "get random question for matchmaking", () => {
     it( "should return 1 random question", ( done ) => {
         chai.request( app )
-            .get( "/api/questions/get_all_questions?difficulty=hard" )
+            .get( "/api/questions/get_random_question" )
             .end( ( err, res ) => {
                 res.should.have.status( 200 );
                 expect( res.body.status ).to.equal( "success" );
@@ -164,11 +164,11 @@ describe( "get random question for matchmaking", () => {
 describe( "delete all questions", () => {
     it( "should delete 1 question", ( done ) => {
         chai.request( app )
-            .get( "/api/questions/get_all_questions" )
+            .get( "/api/questions/" )
             .then( ( res ) => {
                 const questionId = res.body.data.questions[ 0 ]._id;
                 chai.request( app )
-                    .delete( "/api/questions/delete_question" )
+                    .delete( "/api/questions/" + questionId )
                     .send( {
                         id: questionId
                     } )
@@ -182,11 +182,11 @@ describe( "delete all questions", () => {
 
     it( "should delete another question", ( done ) => {
         chai.request( app )
-            .get( "/api/questions/get_all_questions" )
+            .get( "/api/questions/" )
             .then( ( res ) => {
                 const questionId = res.body.data.questions[ 0 ]._id;
                 chai.request( app )
-                    .delete( "/api/questions/delete_question" )
+                    .delete( "/api/questions/" + questionId )
                     .send( {
                         id: questionId
                     } )
@@ -200,7 +200,7 @@ describe( "delete all questions", () => {
 
     it( "should return 0 questions left", ( done ) => {
         chai.request( app )
-            .get( "/api/questions/get_all_questions" )
+            .get( "/api/questions/" )
             .end( ( err, res ) => {
                 res.should.have.status( 200 );
                 expect( res.body.status ).to.equal( "success" );
