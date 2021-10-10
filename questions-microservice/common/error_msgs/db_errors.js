@@ -9,3 +9,6 @@ exports.mongoWriteErr = ( err ) => {
 exports.mongoDeleteErr = ( err ) => {
     return "error deleting data from MongoDB: " + err;
 }
+
+exports.CANNOT_RETRIEVE_DB_URI = "error retrieving dbUri";
+exports.CONNECTED = "connected to mongodb";
