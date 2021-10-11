@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card'
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col'
-import '../css/Login.css'
+import '../../css/Login.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import Form from 'react-bootstrap/Form'

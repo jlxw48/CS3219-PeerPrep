@@ -1,6 +1,6 @@
 import React from "react";
 import Card from 'react-bootstrap/Card';
-import DifficultyBadge from "../../DifficultyBadge";
+import DifficultyBadge from "../../../DifficultyBadge";
 
 // Props: {qn_num, title, difficulty, question}
 function QuestionCard(props) {

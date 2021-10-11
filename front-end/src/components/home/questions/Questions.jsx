@@ -1,7 +1,7 @@
 import React from "react";
 import Row from 'react-bootstrap/Row'
 import QuestionCard from "./QuestionCard";
-import '../../css/Questions.css'
+import '../../../css/Questions.css'
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 
