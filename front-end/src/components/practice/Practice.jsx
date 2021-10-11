@@ -42,11 +42,15 @@ function Practice() {
                             }} />
                     </div>
                 </Col>
-                <Col md={3}>
+                <Col md={3} className="chat-col">
                     <br/>
+                    <div className="chat-entry-container">
                     {seeds.chats.map(chat => {
                         return <><ChatEntry {...chat} /><br/></>
                     })}
+                    </div>
+                    <br/>
+                     <textarea className="chat-input"/>
                 </Col>
             </Row>
         </Container>

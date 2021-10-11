@@ -1,25 +1,33 @@
 .practice-question-container {
     background: #EFEFEF;
     padding-left: 20px;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .practice-question-body {
-    height: 300px;
+    max-height: 300px;
+    padding-bottom: 20px;
     overflow-y: auto;
 }
 
 .ace_editor {
-    width: 100% !important;
+    width: 99% !important;
+    margin-left: 1% !important;
     height: 500px;
     overflow-y: auto;
     border-radius: 5px;
-    border: 3px solid grey;
+    border: 2px solid grey;
     resize: none;
 }
 
 .container-fluid.practice-container {
     padding-left: 0;
+}
+
+.chat-entry-container {
+    max-height: 795px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .chat-entry .chat-time {
@@ -46,4 +54,15 @@
 .chat-entry.friend .chat-bubble {
     background: #343A40;
     color: #FFFFFF
+}
+
+.chat-col {
+    /* width: 100%; */
+}
+
+.chat-input {
+    border-radius: 5px;
+    border: 1px solid #626262;
+    width: 100%;
+    resize: none;
 }
