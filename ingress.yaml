@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: system-manager
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api/questions
+        pathType: Prefix
+        backend:
+          service:
+            name: questions
+            port: 
+              number: 15151

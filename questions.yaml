@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: questions
+  labels:
+    app: questions
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: questions
+  template:
+    metadata:
+      labels:
+        app: questions
+    spec:
+      containers:
+      - name: questions
+        image: k8s.gcr.io/hpa-example 
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: questions
+spec:
+  selector:
+    app: questions
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 15151
+      targetPort: 80
+      nodePort: 323232
+  sessionAffinity: ClientIP
