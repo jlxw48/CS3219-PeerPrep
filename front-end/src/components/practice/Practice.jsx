@@ -1,36 +1,39 @@
 import React from "react";
+import { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import "../../css/Practice.css"
 import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/ext-language_tools"
 import Seeds from '../../Seeds';
 import ChatEntry from "./ChatEntry";
+import { FormSelect } from "react-bootstrap";
+import { findRepos } from "jest-changed-files";
+import ace from "react-ace";
 
 function Practice() {
     const seeds = Seeds();
     return (
-        <Container fluid className="practice-container">
-            <Row>
-                <Col md={9}>
+        <Container className="practice-container">
+            <Row className="practice-container-row">
+                <Col md={9} className="question-editor-col">
                     <div className="practice-question-container">
-                        <br />
-                        <h2>{seeds.practiceQuestion.title}</h2><br />
                         <div className="practice-question-body">
+                            <h2>{seeds.practiceQuestion.title}</h2><br />
                             {seeds.practiceQuestion.question}
                         </div>
-                    </div><br />
-                    <div id="editor-container">
+                    </div>
+                    <div className="editor-section-container">
                         <AceEditor
                             placeholder=""
                             mode="javascript"
                             theme="github"
-                            name="editor-container"
+                            name="editor"
                             fontSize={14}
                             showPrintMargin={false}
                             showGutter={true}
+                            height="100%"
                             highlightActiveLine={false}
                             value={``}
                             setOptions={{
@@ -41,16 +44,19 @@ function Practice() {
                                 tabSize: 4,
                             }} />
                     </div>
+
                 </Col>
                 <Col md={3} className="chat-col">
-                    <br/>
                     <div className="chat-entry-container">
-                    {seeds.chats.map(chat => {
-                        return <><ChatEntry {...chat} /><br/></>
-                    })}
+                        <br />
+                        {seeds.chats.map(chat => {
+                            return <><ChatEntry {...chat} /><br /></>
+                        })}
                     </div>
-                    <br/>
-                     <textarea className="chat-input"/>
+                    <div className="chat-input-container">
+                        <textarea className="chat-input" placeholder="Enter a message..." />
+                    </div>
+
                 </Col>
             </Row>
         </Container>

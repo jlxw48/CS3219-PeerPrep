@@ -20,7 +20,7 @@ function App() {
             <Route path ="/practice" component={Practice} />
           </Switch>
         </Router>
-        <APIErrorNotification />
+        {/* <APIErrorNotification /> */}
       </APIErrorProvider>
 
     </>
