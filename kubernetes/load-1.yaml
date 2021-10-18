@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-1
+  labels:
+    app: load-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-1
+  template:
+    metadata:
+      labels:
+        app: load-1
+    spec:
+      containers:
+      - name: load-1
+        image: jlxw48/load-1
+        imagePullPolicy: Never # setting local image
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: load-1
+spec:
+  selector:
+    app: load-1
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  sessionAffinity: ClientIP
