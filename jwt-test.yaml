@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: questions
+  name: jwt-test
   labels:
-    app: questions
+    app: jwt-test
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: questions
+      app: jwt-test
   template:
     metadata:
       labels:
-        app: questions
+        app: jwt-test
     spec:
       containers:
-      - name: questions
-        image: jlxw48/questions
+      - name: jwt-test
+        image: jlxw48/jwt-test
         imagePullPolicy: Never # setting local image
         resources:
           limits:
@@ -28,10 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: questions
+  name: jwt-test
 spec:
   selector:
-    app: questions
+    app: jwt-test
   ports:
     - protocol: TCP
       port: 3000
