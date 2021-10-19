@@ -6,8 +6,9 @@ const LOGIN_URL = USERS_URL + "login";
 const REGISTER_URL = USERS_URL + "register";
 const LOGOUT_URL = REACT_APP_BACKEND_URL + "logout"
 
-const FIND_MATCH_URL = REACT_APP_BACKEND_URL + "find_match";
-const END_MATCH_URL = REACT_APP_BACKEND_URL + "end_match";
+const MATCH_URL = REACT_APP_BACKEND_URL + "match/"
+const FIND_MATCH_URL = MATCH_URL + "start_find";
+const END_MATCH_URL = MATCH_URL + "end_interview";
 const MATCH_QUESTION_URL = REACT_APP_BACKEND_URL + "fetch_match_question";
 const TEXT_EDITOR_URL = REACT_APP_BACKEND_URL + "te_socket";
 const MESSENGER_URL = REACT_APP_BACKEND_URL + "im_socket";

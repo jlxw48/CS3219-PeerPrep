@@ -37,14 +37,14 @@ function isAuthenticated({ email, password }) {
 
 server.use(middlewares);
 server.use(jsonServer.bodyParser)
-server.use(cors({origin: true, credentials: true}));
+server.use(cors({ origin: true, credentials: true }));
 
 /*
  * User mocks
 */
 
-const userdb = JSON.parse(fs.readFileSync(path.resolve(__dirname,'./users.json'), 'UTF-8'))
-const db = JSON.parse(fs.readFileSync(path.resolve(__dirname,'./db.json'), 'UTF-8'))
+const userdb = JSON.parse(fs.readFileSync(path.resolve(__dirname, './users.json'), 'UTF-8'))
+const db = JSON.parse(fs.readFileSync(path.resolve(__dirname, './db.json'), 'UTF-8'))
 
 server.get('/ha', (req, res) => {
     res.status(200);
@@ -60,44 +60,57 @@ server.post('/users/register', (req, res) => {
         res.json({
             "status": "success"
         })
-        
+
     }
 });
 
 server.post('/users/login', (req, res) => {
-    const {email, password} = req.body
-    if (isAuthenticated({email, password}) === false) {
-      const status = 401
-      const message = 'Incorrect email or password'
-      res.status(status).json({status, message})
-      return
+    const { email, password } = req.body
+    if (isAuthenticated({ email, password }) === false) {
+        const status = 401
+        const message = 'Incorrect email or password'
+        res.status(status).json({ status, message })
+        return
     }
-    const access_token = createToken({email, password})
-    res.status(200).json({access_token, status: "success"})
+    const access_token = createToken({ email, password })
+    res.status(200).json({ access_token, status: "success" })
 })
 
 server.get('/fetch_match_question', (req, res) => {
     res.status = 200
-    res.json({question: db['questions'][0]})
+    res.json({ question: db['questions'][0] })
 })
 
-server.use(/^(?!\/users).*$/,  (req, res, next) => {
+server.get('/match/start_find', (req, res) => {
+    setTimeout(() => {
+        res.status = 200
+        res.json({
+            status: "success",
+            data: {
+                partnerUsername: "Bobby",
+                interviewId: "1234567890"
+            }
+        })
+    }, 40000)
+})
+
+server.use(/^(?!\/users).*$/, (req, res, next) => {
     console.log(req.headers);
     if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
-      const status = 401
-      const message = 'Bad authorization header'
-      res.status(status).json({status, message})
-      return
+        const status = 401
+        const message = 'Bad authorization header'
+        res.status(status).json({ status, message })
+        return
     }
     try {
-       verifyToken(req.headers.authorization.split(' ')[1])
-       next()
+        verifyToken(req.headers.authorization.split(' ')[1])
+        next()
     } catch (err) {
-      const status = 401
-      const message = 'Error: access_token is not valid'
-      res.status(status).json({status, message})
+        const status = 401
+        const message = 'Error: access_token is not valid'
+        res.status(status).json({ status, message })
     }
-  })
+})
 
 server.use(router);
 server.listen(port);

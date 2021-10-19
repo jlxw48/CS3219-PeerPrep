@@ -11,19 +11,36 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Spinner } from "react-bootstrap";
 import { FIND_MATCH_URL } from "../../../Api";
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
+import { toast } from 'react-toastify'
+import authHeader from "../../../auth-header";
 
 function FindMatchModal(props) {
     const [finding, setFinding] = useState(false);
+    const THIRTY_SECONDS = 30  * 1000;
+    const history = useHistory();
 
     const handleFindMatch = () => {
         setFinding(true);
-        axios.get(FIND_MATCH_URL).then(response => {
-            if (response.ok) {
-                
+        axios({
+            method: "get",
+            url: FIND_MATCH_URL,
+            timeout: THIRTY_SECONDS,
+            headers: authHeader(),
+            data: {
+                difficulty: props.difficulty
+            }
+        }).then(response => {
+            if (response.status === 200 && response.data.status == "success") {
+                toast.success("Match found, practice session starting now");
+                history.push({ pathname: '/practice' });
             } else {
+                toast.error("Failed to find a match, please try again.");
+                handleCancel();
             }
         }).catch((error) => {
-            console.log('[error]', error.response);
+            toast.error("Failed to find a match, please try again.");
+            handleCancel();
         })
     }
 
