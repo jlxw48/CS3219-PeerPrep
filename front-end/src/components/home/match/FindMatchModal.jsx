@@ -10,11 +10,9 @@ import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Spinner } from "react-bootstrap";
 import { FIND_MATCH_URL } from "../../../Api";
-import useAPIError from '../../../common/hooks/useApiError'
 import axios from 'axios';
 
 function FindMatchModal(props) {
-    const { addError } = useAPIError();
     const [finding, setFinding] = useState(false);
 
     const handleFindMatch = () => {
@@ -23,11 +21,9 @@ function FindMatchModal(props) {
             if (response.ok) {
                 
             } else {
-                addError("Failed to find a match. Please try again later.", response.status);
             }
         }).catch((error) => {
             console.log('[error]', error.response);
-            addError("Failed to find a match. Please try again later.", "404");
         })
     }
 

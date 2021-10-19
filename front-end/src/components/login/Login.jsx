@@ -8,17 +8,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { ErrorContext } from "../../App";
+import { toast } from 'react-toastify'
 
 function Login(props) {
-    const { errors, addError } = useContext(ErrorContext);
 
     const handleRegister = (event) => {
         event.preventDefault();
         const email = event.target.email.value;
         const password = event.target.password.value;
         const name = event.target.name.value;
-        addError("nabei");
+        toast.error("Wow sad");
     }
 
     const handleLogin = (event) => {
