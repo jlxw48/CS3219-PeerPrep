@@ -6,6 +6,7 @@ export const APIErrorContext = React.createContext({
   removeError: () => {}
 });
 
+
 export default function APIErrorProvider({ children }) {
   const [error, setError] = useState(null);
 

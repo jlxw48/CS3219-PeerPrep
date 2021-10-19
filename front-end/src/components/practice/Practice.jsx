@@ -8,9 +8,6 @@ import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/ext-language_tools"
 import Seeds from '../../Seeds';
 import ChatEntry from "./ChatEntry";
-import { FormSelect } from "react-bootstrap";
-import { findRepos } from "jest-changed-files";
-import ace from "react-ace";
 
 function Practice() {
     const seeds = Seeds();

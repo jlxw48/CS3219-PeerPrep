@@ -2,7 +2,7 @@ import React from 'react'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import Container from 'react-bootstrap/Container'
-import './css/PeerPrepNav.css'
+import '../css/PeerPrepNav.css'
 import { NavLink } from 'react-router-dom'
 
 function PeerPrepNav() {
@@ -13,6 +13,7 @@ function PeerPrepNav() {
                 <Nav className="me-auto">
                     <NavLink to="/" exact className="nav-link">Home</NavLink>
                     <NavLink to="/login" exact className="nav-link">Login</NavLink>
+                    <NavLink to="/register" exact className="nav-link">Register</NavLink>
                 </Nav>
             </Container>
         </Navbar>
