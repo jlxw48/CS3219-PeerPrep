@@ -14,41 +14,56 @@ import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { toast } from 'react-toastify'
 import authHeader from "../../../auth-header";
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 function FindMatchModal(props) {
     const [finding, setFinding] = useState(false);
-    const THIRTY_SECONDS = 30  * 1000;
+    const THIRTY_SECONDS = 30 * 1000;
     const history = useHistory();
+    const [findProgress, setFindProgress] = useState(100)
+    const cancelTokenSource = axios.CancelToken.source();
+    
 
     const handleFindMatch = () => {
         setFinding(true);
+        const findMatchTimeout = setTimeout(() => {
+            handleTimeout();
+        }, THIRTY_SECONDS)
         axios({
             method: "get",
             url: FIND_MATCH_URL,
-            timeout: THIRTY_SECONDS,
             headers: authHeader(),
+            cancelToken: cancelTokenSource.token,
             data: {
                 difficulty: props.difficulty
             }
         }).then(response => {
             if (response.status === 200 && response.data.status == "success") {
                 toast.success("Match found, practice session starting now");
+                clearTimeout(findMatchTimeout);
                 history.push({ pathname: '/practice' });
             } else {
-                toast.error("Failed to find a match, please try again.");
+                toast.error("Failed to find a match, please try againbbbs.");
                 handleCancel();
             }
         }).catch((error) => {
-            toast.error("Failed to find a match, please try again.");
-            handleCancel();
+            if (!axios.isCancel(error)) {
+                toast.error("Network error when finding match.")
+            }
         })
+    }
+
+    const handleTimeout = () => {
+        handleCancel();
+        toast.error("Failed to find a match within 30s, please try again.");
     }
 
     const handleCancel = () => {
         setFinding(false);
+        cancelTokenSource.cancel();
         props.setShowMatchModal(false);
     }
-    
+
     return (
         <Modal show={props.show} difficulty={props.difficulty} onHide={() => handleCancel()} className="find-match-modal" centered>
             <Modal.Body>
@@ -60,7 +75,7 @@ function FindMatchModal(props) {
                 </Row><br />
                 <Row className="justify-content-center">
                     {finding || <FontAwesomeIcon icon={faUserFriends} size="4x" className="match-icon" />}
-                    {finding && <Spinner animation="border" />}
+                    {finding && <Spinner animation="border"/>}
                 </Row><br />
                 <div className="text-center">
                     {props.enableFindMatch && (finding || <Button variant="dark" onClick={() => handleFindMatch()}>Find Match</Button>)}

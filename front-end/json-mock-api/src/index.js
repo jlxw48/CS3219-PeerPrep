@@ -91,7 +91,7 @@ server.get('/match/start_find', (req, res) => {
                 interviewId: "1234567890"
             }
         })
-    }, 40000)
+    }, 20000)
 })
 
 server.use(/^(?!\/users).*$/, (req, res, next) => {
