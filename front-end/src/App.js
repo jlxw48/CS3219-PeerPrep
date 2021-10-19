@@ -29,7 +29,7 @@ function App() {
       <Router>
         <AppContext.Provider value={context}>
           <PeerPrepNav />
-          <ToastContainer />
+          <ToastContainer pauseOnFocusLoss={false}/>
           <Switch>
             <Route exact path='/' render={props => <Home/>} />
             <Route path='/login' render={props => <Login />} />

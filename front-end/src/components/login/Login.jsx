@@ -13,17 +13,20 @@ import { REGISTER_URL, LOGIN_URL } from "../../Api.js"
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AppContext } from "../../App.js"
+import Spinner from 'react-bootstrap/Spinner'
 
 
 function Login(props) {
     const history = useHistory();
     const { setUser } = useContext(AppContext);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleRegister = async (event) => {
+    const handleRegister = (event) => {
         event.preventDefault();
         const email = event.target.email.value;
         const password = event.target.password.value;
         const name = event.target.name.value;
+        setIsLoading(true);
         axios.post(REGISTER_URL, {
             email: email,
             name: name,
@@ -31,7 +34,7 @@ function Login(props) {
         }).then(res => {
             if (res.status === 200 && res.data.status === "success") {
                 toast.success("Registration is successful, please login");
-                history.push({pathname: '/'});
+                history.push({ pathname: '/' });
             } else {
                 toast.error(`Registration has failed, ${res.data.status}`)
             }
@@ -44,6 +47,7 @@ function Login(props) {
         event.preventDefault();
         const email = event.target.email.value;
         const password = event.target.password.value;
+        setIsLoading(true);
         axios.post(LOGIN_URL, {
             email: email,
             password: password
@@ -52,7 +56,7 @@ function Login(props) {
                 toast.success("Login successful");
                 localStorage.setItem("user", JSON.stringify(res.data));
                 setUser(res.data);
-                history.push({pathname: '/'});
+                history.push({ pathname: '/' });
             } else {
                 toast.error(`Login has failed, ${res.data.status}`)
             }
@@ -93,13 +97,17 @@ function Login(props) {
                                             </Form.Group>
                                         </Col>
                                     </Row>
-                                    <Row>
-                                        <Col md="10">
-                                            <Button variant="dark" type="submit" className="float-end">
-                                                {props.isRegister ? "Register" : "Login"}
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    {
+                                        isLoading
+                                            ? <Row className="justify-content-md-center"><Spinner animation="border" /></Row>
+                                            : <Row>
+                                                <Col md="10">
+                                                    <Button variant="dark" type="submit" className="float-end">
+                                                        {props.isRegister ? "Register" : "Login"}
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                    }
                                 </Form>
                             </Card.Body>
                         </Card>
