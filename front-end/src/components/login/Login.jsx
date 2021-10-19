@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import Card from 'react-bootstrap/Card'
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
@@ -9,20 +9,57 @@ import { faLock } from "@fortawesome/free-solid-svg-icons";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { toast } from 'react-toastify'
+import { REGISTER_URL, LOGIN_URL } from "../../Api.js"
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+import { AppContext } from "../../App.js"
+
 
 function Login(props) {
+    const history = useHistory();
+    const { setUser } = useContext(AppContext);
 
-    const handleRegister = (event) => {
+    const handleRegister = async (event) => {
         event.preventDefault();
         const email = event.target.email.value;
         const password = event.target.password.value;
         const name = event.target.name.value;
-        toast.error("Wow sad");
+        axios.post(REGISTER_URL, {
+            email: email,
+            name: name,
+            password: password
+        }).then(res => {
+            if (res.status === 200 && res.data.status === "success") {
+                toast.success("Registration is successful, please login");
+                history.push({pathname: '/'});
+            } else {
+                toast.error(`Registration has failed, ${res.data.status}`)
+            }
+        }, error => {
+            toast.error("Error with registration, try agian later");
+        })
     }
 
-    const handleLogin = (event) => {
-        console.log(event);
-        console.log("HI")
+    const handleLogin = async (event) => {
+        event.preventDefault();
+        const email = event.target.email.value;
+        const password = event.target.password.value;
+        axios.post(LOGIN_URL, {
+            email: email,
+            password: password
+        }).then(res => {
+            if (res.status === 200 && res.data.status === "success") {
+                toast.success("Login successful");
+                localStorage.setItem("user", JSON.stringify(res.data));
+                setUser(res.data);
+                history.push({pathname: '/'});
+            } else {
+                toast.error(`Login has failed, ${res.data.status}`)
+            }
+        }, error => {
+            console.log(error);
+            toast.error("Error logging in, try agian later");
+        })
     }
 
     return (

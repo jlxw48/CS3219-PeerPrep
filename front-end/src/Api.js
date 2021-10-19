@@ -1,9 +1,9 @@
-const REACT_APP_BACKEND_URL = 'localhost:3000/api/system_manager/';
+const REACT_APP_BACKEND_URL = 'http://localhost:3002/';
 
 const QUESTION_URL = REACT_APP_BACKEND_URL + "questions";
-
-const LOGIN_URL = REACT_APP_BACKEND_URL + "login";
-const REGISTER_URL = REACT_APP_BACKEND_URL + "register";
+const USERS_URL = REACT_APP_BACKEND_URL + "users/"
+const LOGIN_URL = USERS_URL + "login";
+const REGISTER_URL = USERS_URL + "register";
 const LOGOUT_URL = REACT_APP_BACKEND_URL + "logout"
 
 const FIND_MATCH_URL = REACT_APP_BACKEND_URL + "find_match";

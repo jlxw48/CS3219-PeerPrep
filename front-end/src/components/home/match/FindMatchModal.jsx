@@ -31,6 +31,7 @@ function FindMatchModal(props) {
         setFinding(false);
         props.setShowMatchModal(false);
     }
+    
     return (
         <Modal show={props.show} difficulty={props.difficulty} onHide={() => handleCancel()} className="find-match-modal" centered>
             <Modal.Body>
@@ -45,8 +46,9 @@ function FindMatchModal(props) {
                     {finding && <Spinner animation="border" />}
                 </Row><br />
                 <div className="text-center">
-                    {finding || <Button variant="dark" onClick={() => handleFindMatch()}>Find Match</Button>}
-                    {finding && <Button variant="danger" onClick={() => handleCancel()}>Cancel</Button>}
+                    {props.enableFindMatch && (finding || <Button variant="dark" onClick={() => handleFindMatch()}>Find Match</Button>)}
+                    {props.enableFindMatch && (finding && <Button variant="danger" onClick={() => handleCancel()}>Cancel</Button>)}
+                    {props.enableFindMatch || "Please login to find a match."}
                 </div>
             </Modal.Body>
         </Modal>

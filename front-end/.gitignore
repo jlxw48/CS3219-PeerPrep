@@ -11,6 +11,8 @@
 # production
 /build
 
+/json-mock-api/node_modules
+
 # misc
 .DS_Store
 .env.local

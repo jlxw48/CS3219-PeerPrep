@@ -1,6 +1,6 @@
 import './css/App.css';
 import React from 'react';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import PeerPrepNav from './components/PeerPrepNav';
 import Home from './components/home/Home';
 import Login from './components/login/Login';
@@ -9,27 +9,34 @@ import Practice from './components/practice/Practice';
 import ReactTimeAgo from 'react-time-ago'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import useState from 'react-usestateref';
+
+
+export const AppContext = React.createContext();
+
 
 function App() {
+  let userStored = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+  const [user, setUser, userRef] = useState(userStored);
+  let context = {
+    user: user,
+    setUser: setUser,
+    userRef: userRef
+  }
+
   return (
     <>
       <Router>
-        <PeerPrepNav />
-        <ToastContainer />
-        <Switch>
-          <Route exact path='/'>
-            <Home />
-          </Route>
-          <Route path='/login'>
-            <Login />
-          </Route>
-          <Route path="/practice">
-            <Practice />
-          </Route>
-          <Route path="/register" >
-            <Login isRegister={true} />
-          </Route>
-        </Switch>
+        <AppContext.Provider value={context}>
+          <PeerPrepNav />
+          <ToastContainer />
+          <Switch>
+            <Route exact path='/' render={props => <Home/>} />
+            <Route path='/login' render={props => <Login />} />
+            <Route path="/practice" render={props => <Practice/>} />
+            <Route path="/register" render={props => <Login isRegister={true} />} />
+          </Switch>
+        </AppContext.Provider>
       </Router>
     </>
   );
