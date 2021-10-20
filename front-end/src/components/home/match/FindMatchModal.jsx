@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Modal from "react-bootstrap/Modal"
 import DifficultyCard from "../difficulties/DifficultyCard";
 import Button from "react-bootstrap/Button";
@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import { toast } from 'react-toastify'
 import authHeader from "../../../auth-header";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import { AppContext } from "../../../App.js"
 
 function FindMatchModal(props) {
     const [finding, setFinding] = useState(false);
@@ -22,8 +23,8 @@ function FindMatchModal(props) {
     const history = useHistory();
     const [findProgress, setFindProgress] = useState(100)
     const cancelTokenSource = axios.CancelToken.source();
+    const { setMatch } = useContext(AppContext);
     
-
     const handleFindMatch = () => {
         setFinding(true);
         const findMatchTimeout = setTimeout(() => {
@@ -41,6 +42,7 @@ function FindMatchModal(props) {
             if (response.status === 200 && response.data.status == "success") {
                 toast.success("Match found, practice session starting now");
                 clearTimeout(findMatchTimeout);
+                setMatch(response.data.data);
                 history.push({ pathname: '/practice' });
             } else {
                 toast.error("Failed to find a match, please try againbbbs.");

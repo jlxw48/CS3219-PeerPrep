@@ -18,10 +18,14 @@ export const AppContext = React.createContext();
 function App() {
   let userStored = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
   const [user, setUser, userRef] = useState(userStored);
+  const [match, setMatch, matchRef] = useState(null);
   let context = {
     user: user,
     setUser: setUser,
-    userRef: userRef
+    userRef: userRef,
+    match: match,
+    matchRef: matchRef,
+    setMatch: setMatch
   }
 
   return (

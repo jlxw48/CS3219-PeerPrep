@@ -11,7 +11,6 @@ const fs = require('fs');
 const path = require("path");
 var cors = require('cors');
 
-
 // Create a token from a payload 
 function createToken(payload) {
     return jwt.sign(payload, SECRET_KEY, { expiresIn })
@@ -60,7 +59,6 @@ server.post('/users/register', (req, res) => {
         res.json({
             "status": "success"
         })
-
     }
 });
 
@@ -73,7 +71,7 @@ server.post('/users/login', (req, res) => {
         return
     }
     const access_token = createToken({ email, password })
-    res.status(200).json({ access_token, status: "success" })
+    res.status(200).json({ access_token, status: "success", email })
 })
 
 server.get('/fetch_match_question', (req, res) => {
@@ -91,7 +89,17 @@ server.get('/match/start_find', (req, res) => {
                 interviewId: "1234567890"
             }
         })
-    }, 20000)
+    }, 1000)
+})
+
+server.get('/chat/get_messages', (req, res) => {
+    res.status = 200;
+    res.json({
+        status: "success",
+        data: {
+            history: db['chats']
+        }
+    })
 })
 
 server.use(/^(?!\/users).*$/, (req, res, next) => {
