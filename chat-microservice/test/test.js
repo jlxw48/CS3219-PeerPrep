@@ -28,7 +28,7 @@ describe("GET /chat/status", () => {
     });
 });
 
-describe("POST /chat/get_messages", () => {
+describe("GET /chat/get_messages/:interviewId", () => {
     describe("Get chat history for interview id", () => {
         // insert chat history
         before(async () => {
@@ -39,8 +39,7 @@ describe("POST /chat/get_messages", () => {
         it("should return chat history", (done) => {
             const firstInterviewId = testData.firstInterviewId;
             chai.request(app)
-                .post('/chat/get_messages')
-                .send({ interviewId : firstInterviewId })
+                .get(`/chat/get_messages/${firstInterviewId}`)
                 .end((err, res) => {
                     if (err) {
                         return done(err);
@@ -69,8 +68,7 @@ describe("POST /chat/get_messages", () => {
         it("should not get chat history for invalid interview id", (done) => {
             const secondInterviewId = testData.secondInterviewId;
             chai.request(app)
-                .post('/chat/get_messages')
-                .send({ interviewId : secondInterviewId })
+                .get(`/chat/get_messages/${secondInterviewId}`)
                 .end((err, res) => {
                     if (err) {
                         return done(err);

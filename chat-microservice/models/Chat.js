@@ -10,6 +10,11 @@ const chatSchema = new Schema({
         type: [{userEmail : String, message: String}],
         required: true
     },
+    createdAt: {
+        type: Date,
+        expires: 3600,  // expires after 1h
+        default: Date.now
+    }
 });
 
 const Chat = mongoose.model('Chat', chatSchema);

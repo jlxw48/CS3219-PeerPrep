@@ -87,13 +87,13 @@ const get_messages = (req, res) => {
             res.status(400).json({
                 status: responseStatus.FAILED,
                 data: {
-                    message: clientErrMessages.MISSING_REQUEST_BODY
+                    message: clientErrMessages.MISSING_INTERVIEW_ID_PARAM
                 }
             });
             return;
     }
     Chat.findOne({
-        interviewId: req.body.interviewId
+        interviewId: req.params.interviewId
     })
     .then(result => {
         if (!result) {

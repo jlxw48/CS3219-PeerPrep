@@ -3,7 +3,7 @@ const hasMissingFieldsForAddNewMessage = req => {
 }
 
 const hasMissingFieldsForGetMessages = req => {
-    return req.body.interviewId == undefined;
+    return req.params.interviewId == undefined;
 }
 
 module.exports = {
