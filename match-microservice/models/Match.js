@@ -19,6 +19,12 @@ const matchSchema = new Schema({
     },
     interviewId: {
         type: String
+    },
+    questionTitle: {
+        type: String
+    },
+    questionDescription: {
+        type: String
     }
 });
 

@@ -18,24 +18,72 @@ const statusCheck = (req, res) => {
     });
 };
 
-// Get number of current ongoing interviews
-const interviewsCount = (req, res) => {
-    Match.find()
-    .distinct("interviewId")
+// Get interview of user (if it exist)
+const getInterview = (req, res) => {
+    const email = req.query.email;
+    Match.findOne({
+        email: email
+    })
     .then(result => {
+        if (result && result.interviewId) {
+            res.json({
+                status: responseStatus.SUCCESS,
+                data: {
+                    partnerEmail: result.partnerEmail,
+                    interviewId: result.interviewId,
+                    question: {
+                        title: result.questionTitle,
+                        description: result.questionDescription
+                    }
+                }
+            });
+            return;
+        }
+        res.status(404).json({
+            status: responseStatus.FAILED,
+            data: {
+                message: clientErrMessages.NO_INTERVIEW
+            }
+        });
+        return;
+    })
+    .catch(err => {
+        res.status(500).json({
+            status: responseStatus.ERROR,
+            error_message: dbErrMessages.readError(err)
+        });
+    });
+}
+
+// End the interview for the requested user
+const endInterview = (req, res) => {
+    const email = req.query.email;
+    Match.findOneAndDelete({
+        email: email
+    })
+    .then(result => {
+        if (!result) {
+            res.status(404).json({
+                status: responseStatus.FAILED,
+                data: {
+                    message: clientErrMessages.DELETE_INTERVIEW_FAILED
+                }
+            });
+            return;
+        }
         res.json({
             status: responseStatus.SUCCESS,
             data: {
-                count: result.length
+                message: clientMessages.INTERVIEW_ENDED
             }
         });
     })
     .catch(err => {
         res.status(500).json({
             status: responseStatus.ERROR,
-            error_message: dbErrMessages.readError(err) // failed to get number of interviews
+            error_message: dbErrMessages.readError(err)
         });
-    })
+    });
 }
 
 // Tries to find a match for a user for 30s
@@ -87,7 +135,7 @@ const findMatch = (req, res) => {
                     email: email
                 })
                 .then(result => {
-                    res.status(404).json({  // check what status code this should be
+                    res.status(404).json({
                         status: responseStatus.FAILED,
                         data: {
                             message: clientErrMessages.TIMEOUT_30_SECONDS
@@ -115,7 +163,11 @@ const findMatch = (req, res) => {
                         status: responseStatus.SUCCESS,
                         data: {
                             partnerEmail: userResult.partnerEmail,
-                            interviewId: userResult.interviewId
+                            interviewId: userResult.interviewId,
+                            question: {
+                                title: userResult.questionTitle,
+                                description: userResult.questionDescription
+                            }
                         }
                     });
                     return;
@@ -162,38 +214,77 @@ const findMatch = (req, res) => {
 
                     // match is found
                     clearInterval(intervalId);
-                    // Update partner info for current user
+
+                    // To fetch question here and save for both users
+                    
+                    // Update question for partner
                     Match.findOneAndUpdate({
-                        email: email,
-                        partnerEmail: { $exists : false }    // make sure the current user has no partner yet (to mitigate race conditions?)
-                    }, { 
-                        partnerEmail: partnerResult.email,
-                        interviewId: partnerResult.interviewId
-                    }, { new : true })
-                    .then(finalResult => {
-                        if (!finalResult) {
-                            // maybe clean up the match records here
-                            res.status(404).json({
-                                status: responseStatus.FAILED,
+                        email: partnerResult.email
+                    }, {
+                        questionTitle: "dummy question title",
+                        questionDescription: "dummy question description"
+                    }, {
+                        new: true                 // return the updated document
+                    })
+                    .then(partnerUpdateQuestionResult => {
+                        // Update partner info for current user
+                        Match.findOneAndUpdate({
+                            email: email,
+                            partnerEmail: { $exists : false }    // make sure the current user has no partner yet (to mitigate race conditions?)
+                        }, { 
+                            partnerEmail: partnerResult.email,
+                            interviewId: partnerResult.interviewId,
+                            questionTitle: partnerUpdateQuestionResult.questionTitle,
+                            questionDescription: partnerUpdateQuestionResult.questionDescription
+                        }, { new : true })
+                        .then(finalResult => {
+                            if (!finalResult) {
+                                // Clean up match record
+                                Match.findOneAndDelete({
+                                    email: email
+                                })
+                                .then(cleanUpResult => {
+                                    res.status(404).json({
+                                        status: responseStatus.FAILED,
+                                        data: {
+                                            message: clientErrMessages.INCONSISTENT_PARTNERS
+                                        }
+                                    });
+                                    return;
+                                })
+                                .catch(cleanUpErr => {
+                                    res.status(500).json({
+                                        status: responseStatus.ERROR,
+                                        error_message: dbErrMessages.deleteError(finalResultErr)  // failed to delete match details of current user after detecting inconsistencies
+                                    });
+                                    return;
+                                });
+                            }
+                            res.json({
+                                status: responseStatus.SUCCESS,
                                 data: {
-                                    message: clientErrMessages.INCONSISTENT_PARTNERS
+                                    partnerEmail: partnerResult.email,
+                                    interviewId: partnerResult.interviewId,
+                                    question: {
+                                        title: partnerUpdateQuestionResult.questionTitle,
+                                        description: partnerUpdateQuestionResult.questionDescription
+                                    }
                                 }
                             });
                             return;
-                        }
-                        res.json({
-                            status: responseStatus.SUCCESS,
-                            data: {
-                                partnerEmail: partnerResult.email,
-                                interviewId: partnerResult.interviewId
-                            }
+                        })
+                        .catch(finalResultErr => {
+                            res.status(500).json({
+                                status: responseStatus.ERROR,
+                                error_message: dbErrMessages.writeError(finalResultErr)  // failed to update match details of current user after finding a match
+                            });
+                            return;
                         });
-                        return;
                     })
-                    .catch(finalResultErr => {
+                    .catch(partnerUpdateQuestionErr => {
                         res.status(500).json({
                             status: responseStatus.ERROR,
-                            error_message: dbErrMessages.writeError(finalResultErr)  // failed to update match details of current user after finding a match
+                            error_message: dbErrMessages.writeError(partnerUpdateQuestionErr)  // failed to update question details of partner user after finding a match
                         });
                         return;
                     });
@@ -225,6 +316,26 @@ const findMatch = (req, res) => {
         });
     });
 };
+
+// Get number of current ongoing interviews
+const interviewsCount = (req, res) => {
+    Match.find()
+    .distinct("interviewId")
+    .then(result => {
+        res.json({
+            status: responseStatus.SUCCESS,
+            data: {
+                count: result.length
+            }
+        });
+    })
+    .catch(err => {
+        res.status(500).json({
+            status: responseStatus.ERROR,
+            error_message: dbErrMessages.readError(err) // failed to get number of interviews
+        });
+    })
+}
 
 // Get the current partner of the user
 const getPartner = (req, res) => {
@@ -261,63 +372,11 @@ const getPartner = (req, res) => {
     })
 };
 
-// End the interview for the requested interviewId
-const endInterview = (req, res) => {
-    const interviewId = req.query.interviewId;
-    Match.findOneAndDelete({
-        interviewId: interviewId
-    })
-    .then(firstResult => {
-        if (!firstResult) {
-            res.status(404).json({
-                status: responseStatus.FAILED,
-                data: {
-                    message: clientErrMessages.INVALID_INTERVIEW_ID
-                }
-            });
-            return;
-        }
-        Match.findOneAndDelete({
-            interviewId: interviewId
-        })
-        .then(secondResult => {
-            if (!secondResult) {
-                res.status(404).json({
-                    status: responseStatus.FAILED,
-                    data: {
-                        message: clientErrMessages.MISSING_SECOND_USER_FOR_INTERVIEW_ID
-                    }
-                });
-                return;
-            }
-            res.json({
-                status: responseStatus.SUCCESS,
-                data: {
-                    message: clientMessages.INTERVIEW_ENDED
-                }
-            });
-            return;
-        })
-        .catch(secondResultErr => {
-            res.status(500).json({
-                status: responseStatus.ERROR,
-                error_message: db.deleteError(secondResultErr) // failed to delete interview for second user
-            });
-            return;
-        })
-    })
-    .catch(firstResultErr => {
-        res.status(500).json({
-            status: responseStatus.ERROR,
-            error_message: db.deleteError(firstResultErr) // failed to delete interview for first user
-        })
-    });
-}
-
 module.exports = {
     statusCheck,
-    interviewsCount,
+    getInterview,
+    endInterview,
     findMatch,
-    getPartner,
-    endInterview
+    interviewsCount,
+    getPartner
 };
