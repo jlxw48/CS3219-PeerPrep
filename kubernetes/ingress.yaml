@@ -11,8 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/affinity-mode: "persistent"
 spec:
   rules:
-  - host: kubernetes.docker.internal
-    http:
+  - http:
       paths:
       - path: /api/questions
         pathType: Prefix
@@ -21,17 +20,17 @@ spec:
             name: questions
             port: 
               number: 3000
-      # - path: /load-1
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: load-1
-      #       port: 
-      #         number: 3000
-      # - path: /load-2
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: load-2
-      #       port: 
-      #         number: 3000
+      - path: /load-1
+        pathType: Prefix
+        backend:
+          service:
+            name: load-1
+            port: 
+              number: 3000
+      - path: /load-2
+        pathType: Prefix
+        backend:
+          service:
+            name: load-2
+            port: 
+              number: 3000
