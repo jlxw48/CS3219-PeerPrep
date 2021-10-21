@@ -5,7 +5,7 @@ metadata:
   labels:
     app: questions
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: questions
@@ -17,23 +17,10 @@ spec:
       containers:
       - name: questions
         image: jlxw48/questions
-        imagePullPolicy: Never # setting local image
+        imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
         - containerPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: questions
-spec:
-  selector:
-    app: questions
-  ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
-  # sessionAffinity: ClientIP

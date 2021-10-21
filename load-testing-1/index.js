@@ -7,8 +7,7 @@ const port = process.env.PORT || 3000;
 
 app.route( "/load-1/questions" )
     .get( ( req, res ) => {
-    console.log("http://questions:3000/api/questions")
-        axios.get( 'http://questions:3000' ) // this is not routing to port 3000
+        axios.get( 'http://questions:3000/api/questions' ) // this is not routing to port 3000
             .then( ( response ) => {
                 // console.log(response.data);
                 res.json( response.data );
