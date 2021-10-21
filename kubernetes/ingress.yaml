@@ -11,7 +11,8 @@ metadata:
     nginx.ingress.kubernetes.io/affinity-mode: "persistent"
 spec:
   rules:
-  - http:
+  - host: kubernetes.docker.internal
+    http:
       paths:
       - path: /api/questions
         pathType: Prefix

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: questions
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: questions
@@ -36,4 +36,4 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3000
-  sessionAffinity: ClientIP
+  # sessionAffinity: ClientIP
