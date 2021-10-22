@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.23.0",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "dotenv": "^10.0.0",

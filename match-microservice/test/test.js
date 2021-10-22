@@ -66,6 +66,8 @@ describe("GET /match/get_interview", () => {
 });
 
 describe("POST /match/start_find", () => {
+
+    // Note: Need the question-microservice to be running since need to fetch a random question
     describe("Find match for a user", () => {
         // insert user to mimic queueing
         before(async () => {
