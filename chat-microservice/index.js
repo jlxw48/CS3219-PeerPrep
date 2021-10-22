@@ -26,6 +26,16 @@ const io = new Server(server, {
 io.on("connection", socket => {
     console.log("a user connected");
     socket.on("message", newMessage => {
+        // If partner has ended interview, send a message to inform the other buddy
+        if (newMessage.contents.message === "/end_interview") {
+            const endMessageContents = {
+                userEmail: newMessage.contents.userEmail,
+                message: "Your partner has ended the interview"
+            }
+            io.emit(newMessage.interviewId, endMessageContents);
+            return;
+        }
+
         // Saves the chat message to chat history
         dbController.saveNewMessage(newMessage);
         io.emit(newMessage.interviewId, newMessage.contents);
