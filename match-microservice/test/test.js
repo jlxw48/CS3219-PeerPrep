@@ -66,43 +66,6 @@ describe("GET /match/get_interview", () => {
 });
 
 describe("POST /match/start_find", () => {
-
-    // Note: Need the question-microservice to be running since need to fetch a random question
-    describe("Find match for a user", () => {
-        // insert user to mimic queueing
-        before(async () => {
-            const firstUserMatchDetails = new Match(testData.firstUserMatchDetails);
-            await firstUserMatchDetails.save().catch(err => console.log(err));
-        });
-
-        it("should find match for 2 users queueing with the same difficulty", (done) => {
-            const secondUserFindDetails = testData.secondUserFindDetails;
-            chai.request(app)
-                .post('/match/start_find')
-                .send(secondUserFindDetails)
-                .end((err, res) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.status.should.be.eql('success');
-                    res.body.data.partnerEmail.should.be.eql("user1@gmail.com");
-                    done();
-                });
-        });
-
-        after(done => {
-            Match.deleteMany({})
-            .then(result => {
-                done();
-            })
-            .catch(err => {
-                done(err);
-            });
-        });
-    });
-
     describe("Unable to find match for a user due to different difficulties", () => {
         // insert user to mimic queueing
         before(async () => {
