@@ -4,6 +4,7 @@ const clientErrorMessages = require('../common/clientErrors');
 const clientSuccessMessages = require('../common/clientSuccess');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const hasMissingNameField = (req) => {
 	return req.body.name == undefined;
@@ -39,12 +40,25 @@ const isPasswordAndUserMatch = (req, res) => {
         		let salt = passwordFields[0];
         		let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
 				if (hash == passwordFields[1]) {
-        			res.status(200).send({
+					const token = jwt.sign(
+						{
+							user: email,
+						},
+						'CS3219_SECRET_KEY',
+						{
+							expiresIn: "1h",
+						}
+					);
+
+        			res.status(200).cookie("cs3219_jwt", token, {
+            				httpOnly: true,
+            			}).json({
    						status: responseStatus.SUCCESS, 
     					data: {
+    						email: email,
         					message: clientSuccessMessages.VALID_LOGIN
     					}
-   					});
+   					  });
    					return;
    				} else {
             		res.status(400).send({
