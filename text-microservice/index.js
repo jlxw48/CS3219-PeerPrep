@@ -1,4 +1,5 @@
 const responseStatus = require('./common/responseStatus');
+const clientSuccessMessages = require('./common/clientSuccess');
 const clientErrorMessages = require('./common/clientErrors');
 const dbErrorMessages = require('./common/dbErrors');
 const express = require("express");
@@ -29,19 +30,11 @@ var redis_pw = process.env.REDIS_PASSWORD;
 
 var redis = require("redis"),
 
-  subClient = redis.createClient({
-  	host: redis_endpoint,
-  	port:6379,
-  	auth_pass: redis_pw
-  }),
-
   pubClient = redis.createClient({
     host: redis_endpoint,
     port:6379,
     auth_pass: redis_pw
   });
-
-io.adapter(createAdapter(pubClient, subClient));
 
 pubClient.on("connect", () => console.log("pubClient connected to Redis"));
 
@@ -55,7 +48,7 @@ app.get("/editor/get_text", (req, res) => {
   pubClient.get(sessionId, (err, response) => {
 
     if (response === null) {
-
+     pubClient.set(sessionId, '');
      res.status(404).json({
       	status: responseStatus.FAILURE,
       	data: {
@@ -74,35 +67,14 @@ app.get("/editor/get_text", (req, res) => {
   });
 });
 
-app.get('/editor/find-session', (req, res) => {
-  const sessionId = req.query.interviewId;
-  pubClient.get(sessionId, (err, response) => {
-  	if (response === null) {
-  		res.status(400).json({
-      	status: responseStatus.FAILURE,
-      	data: {
-      		message: clientErrorMessages.SESSION_NOT_FOUND
-      	}
-      });
-  	} else {
-  		res.status(200).json({
-		    status: responseStatus.SUCCESS,
-		    data: {
-		    	message: clientErrorMessages.SESSION_ONGOING
-			}
-		});
-  	}
-  });
-});
-
 app.get("/editor/end-session", (req, res) => {
   const sessionId = req.query.interviewId;
   pubClient.get(sessionId, (err, response) => {
     if (response === null) {
-      res.status(400).json({
+      res.status(404).json({
       	status: responseStatus.FAILURE,
       	data: {
-      		message: "No such session exists"
+      		message: clientErrorMessages.SESSION_NOT_FOUND
       	}
 
       });
@@ -112,7 +84,7 @@ app.get("/editor/end-session", (req, res) => {
 		    res.status(200).json({
 		    	status: responseStatus.SUCCESS,
 		    	data: {
-		    		message: "Session deleted"
+		    		message: clientSuccessMessages.DELETE_SESSION + sessionId
 				}
 		    });
 		});
@@ -126,15 +98,50 @@ const saveText = (newText) => {
   pubClient.set(sessionId, text, redis.print);
 };
 
-io.on("connection", socket => {
-  console.log("connected");
+io.sockets.on("connection", socket => {
+  var sessionId = '';
+  console.log("Server connected");
+  subClient = redis.createClient({
+    host: redis_endpoint,
+    port:6379,
+    auth_pass: redis_pw
+  });
 
-	socket.on("message", message => {
+  subClient.on("connect", () => console.log("subClient connected to Redis"));
+
+  subClient.on("error", function (error) {
+    console.error(error);
+  });
+
+  subClient.on('message', function(channel, message){
+    socket.send(message);
+  });
+
+	socket.on("newMessage", message => {
+
     console.log(message);
     saveText(message);
+
     const interviewId = message.interviewId;
-    io.emit(message.interviewId, message.text);
+    pubClient.publish(message.interviewId, message.text, redis.print);
 	});
+
+  socket.on('unsubscribe', packet => {
+    var interviewId = packet.interviewId;
+    subClient.unsubscribe(interviewId);
+    console.log("Client unsubscribed from session: " + interviewId);
+  });
+
+  socket.on('subscribe', packet => {
+    var interviewId = packet.interviewId;
+    sessionId = interviewId;
+    subClient.subscribe(interviewId);
+    console.log("Client subscribed to session: " + interviewId);
+  });
+
+  socket.on('disconnect', socket => {
+    delete subClient;
+  });
 });
 
 const port = process.env.PORT || 3005;
