@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: match
+  labels:
+    app: match
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: match
+  template:
+    metadata:
+      labels:
+        app: match
+    spec:
+      containers:
+      - name: match
+        image: jlxw48/match
+        imagePullPolicy: IfNotPresent # setting local image
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8001
