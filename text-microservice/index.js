@@ -1,12 +1,11 @@
-require("dotenv").config();
-
-const responseStatus = require('../common/responseStatus');
-const clientErrorMessages = require('../common/clientErrors');
-const dbErrorMessages = require('../common/dbErrors');
+const responseStatus = require('./common/responseStatus');
+const clientErrorMessages = require('./common/clientErrors');
+const dbErrorMessages = require('./common/dbErrors');
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const bodyParser = require('body-parser');
+require("dotenv").config();
 
 app.use(cors());
 app.use(express.json());

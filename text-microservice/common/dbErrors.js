@@ -8,4 +8,4 @@ const WRITE_ERROR = err => {
  module.exports = {
  	WRITE_ERROR,
  	READ_ERROR
- }
+ };
