@@ -67,7 +67,7 @@ app.get("/editor/get_text", (req, res) => {
   });
 });
 
-app.get("/editor/end-session", (req, res) => {
+app.delete("/editor/end-session", (req, res) => {
   const sessionId = req.query.interviewId;
   pubClient.get(sessionId, (err, response) => {
     if (response === null) {
