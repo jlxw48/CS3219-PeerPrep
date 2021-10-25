@@ -27,3 +27,17 @@ spec:
             name: match
             port: 
               number: 3000
+      - path: /chat
+        pathType: Prefix
+        backend:
+          service:
+            name: chat
+            port: 
+              number: 3000
+      - path: /user
+        pathType: Prefix
+        backend:
+          service:
+            name: users
+            port: 
+              number: 3000
