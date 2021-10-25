@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: questions
+  name: user
   labels:
-    app: questions
+    app: user
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: questions
+      app: user
   template:
     metadata:
       labels:
-        app: questions
+        app: user
     spec:
       containers:
-      - name: questions
-        image: jlxw48/questions
+      - name: user
+        image: jlxw48/user
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

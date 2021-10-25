@@ -11,17 +11,10 @@ spec:
   rules:
   - http:
       paths:
-      - path: /load-1
+      - path: /user
         pathType: Prefix
         backend:
           service:
-            name: load-1
-            port: 
-              number: 3000
-      - path: /load-2
-        pathType: Prefix
-        backend:
-          service:
-            name: load-2
+            name: user
             port: 
               number: 3000

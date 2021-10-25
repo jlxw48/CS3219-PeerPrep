@@ -34,10 +34,3 @@ spec:
             name: chat
             port: 
               number: 3000
-      - path: /user
-        pathType: Prefix
-        backend:
-          service:
-            name: users
-            port: 
-              number: 3000
