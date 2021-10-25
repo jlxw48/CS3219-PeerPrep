@@ -23,7 +23,7 @@ function FindMatchModal(props) {
     const history = useHistory();
     const [findProgress, setFindProgress] = useState(100)
     const cancelTokenSource = axios.CancelToken.source();
-    const { setMatch } = useContext(AppContext);
+    const { user, setMatch } = useContext(AppContext);
     
     const handleFindMatch = () => {
         setFinding(true);
@@ -36,6 +36,7 @@ function FindMatchModal(props) {
             headers: authHeader(),
             cancelToken: cancelTokenSource.token,
             data: {
+                email: user.email,
                 difficulty: props.difficulty
             }
         }).then(response => {

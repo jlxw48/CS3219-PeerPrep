@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { AppContext } from "../../App.js"
 
-import { MATCH_QUESTION_URL, CONNECT_MESSENGER_URL, CHAT_HISTORY_URL } from "../../Api.js";
+import { MATCH_QUESTION_URL, CONNECT_MESSENGER_URL, CHAT_HISTORY_URL, CHAT_URL } from "../../Api.js";
 import ChatEntry from "./ChatEntry";
 import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
@@ -33,16 +33,13 @@ function Chat() {
             axios.get(CHAT_HISTORY_URL, {
                 interviewId: interviewId
             }).then(res => {
-                if (res.data.data) {
+                if (res.data.status === "success" && res.data.data) {
                     const chatHistory = res.data.data.history;
                     setChats(chatHistory);
                 }
             }).catch(err => console.log(err))
 
         });
-
-        addResponseMessage("bro");
-
 
         /**
          * Push chat history from chat variables into chat widget
@@ -102,7 +99,7 @@ function Chat() {
             </div> */}
             <Widget
                 handleNewUserMessage={handleNewUserMessage}
-                title="Chat with your practice partner"
+                title="Chat"
                 subtitle=""
                 showTimeStamp={false}
             />

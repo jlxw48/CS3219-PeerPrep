@@ -23,7 +23,8 @@ function PeerPrepNav() {
     return (
         <Navbar bg="dark" variant="dark">
             <Container fluid>
-                <Navbar.Brand className="NavbarBrand">PeerPrep</Navbar.Brand>
+                <NavLink to="/" exact className="navbar-brand NavbarBrand">PeerPrep</NavLink>
+                {/* <Navbar.Brand className="NavbarBrand"><a></a>PeerPrep</Navbar.Brand> */}
                 <Nav className="me-auto">
                     <NavLink to="/" exact className="nav-link">Home</NavLink>
                     {

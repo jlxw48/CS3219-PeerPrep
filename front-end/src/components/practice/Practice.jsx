@@ -10,7 +10,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import Skeleton from 'react-loading-skeleton';
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/theme-github";
-import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/ext-language_tools"
 import "../../css/Practice.css"
 import Seeds from '../../Seeds';
@@ -59,7 +59,7 @@ function Practice() {
                     <div className="editor-section-container">
                         <AceEditor
                             placeholder=""
-                            mode="javascript"
+                            mode="python"
                             theme="github"
                             name="editor"
                             fontSize={14}
