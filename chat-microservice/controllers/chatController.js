@@ -48,7 +48,7 @@ const new_message = (req, res) => {
                 });
             })
             .catch((err) => {
-                res.status(400).json({
+                res.status(500).json({
                     status: responseStatus.ERROR,
                     error_message: dbErrMessages.writeError(err)
                 });
