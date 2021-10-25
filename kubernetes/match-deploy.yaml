@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: questions
+  name: match
   labels:
-    app: questions
+    app: match
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: questions
+      app: match
   template:
     metadata:
       labels:
-        app: questions
+        app: match
     spec:
       containers:
-      - name: questions
-        image: jlxw48/questions
+      - name: match
+        image: jlxw48/match
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 3000
+        - containerPort: 8001
