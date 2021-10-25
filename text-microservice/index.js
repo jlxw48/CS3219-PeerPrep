@@ -1,5 +1,8 @@
 require("dotenv").config();
 
+const responseStatus = require('../common/responseStatus');
+const clientErrorMessages = require('../common/clientErrors');
+const dbErrorMessages = require('../common/dbErrors');
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -54,16 +57,16 @@ app.get("/editor/get_text", (req, res) => {
 
     if (response === null) {
 
-     res.status(400).json({
-      	status: "failure",
+     res.status(404).json({
+      	status: responseStatus.FAILURE,
       	data: {
-      		message: "No prior text history"
+      		message: dbErrorMessages.READ_ERROR(err)
       	}
       });
     } else {
       console.log(response);
     	res.status(200).json({
-    		status: "success",
+    		status: responseStatus.SUCCESS,
     		data: {
     			message: response
     		}
@@ -77,16 +80,16 @@ app.get('/editor/find-session', (req, res) => {
   pubClient.get(sessionId, (err, response) => {
   	if (response === null) {
   		res.status(400).json({
-      	status: "failure",
+      	status: responseStatus.FAILURE,
       	data: {
-      		message: "No such session exists"
+      		message: clientErrorMessages.SESSION_NOT_FOUND
       	}
       });
   	} else {
   		res.status(200).json({
-		    status: "success",
+		    status: responseStatus.SUCCESS,
 		    data: {
-		    	message: "Session in progress"
+		    	message: clientErrorMessages.SESSION_ONGOING
 			}
 		});
   	}
@@ -98,7 +101,7 @@ app.get("/editor/end-session", (req, res) => {
   pubClient.get(sessionId, (err, response) => {
     if (response === null) {
       res.status(400).json({
-      	status: "failure",
+      	status: responseStatus.FAILURE,
       	data: {
       		message: "No such session exists"
       	}
@@ -108,7 +111,7 @@ app.get("/editor/end-session", (req, res) => {
     	pubClient.del(sessionId, (err, response) => {
 		    console.log("Deleted ", sessionId);
 		    res.status(200).json({
-		    	status: "success",
+		    	status: responseStatus.SUCCESS,
 		    	data: {
 		    		message: "Session deleted"
 				}
