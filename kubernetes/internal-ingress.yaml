@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: system-manager
+  name: internal-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
     # nginx.ingress.kubernetes.io/auth-url: https://jwt-test-cs3219.herokuapp.com/jwt/validate_token # need to set this to some external service
@@ -11,8 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/affinity-mode: "persistent"
 spec:
   rules:
-  - host: kubernetes.docker.internal
-    http:
+  - http:
       paths:
       - path: /api/questions
         pathType: Prefix
