@@ -26,6 +26,7 @@ const new_message = (req, res) => {
             });
             return;
     }
+
     Chat.findOne({
         interviewId: req.body.interviewId
     })
@@ -36,6 +37,7 @@ const new_message = (req, res) => {
                 interviewId: req.body.interviewId,
                 history: [message]
             });
+
             chat.save()
             .then(saveResult => {
                 res.json({
@@ -51,30 +53,32 @@ const new_message = (req, res) => {
                     error_message: dbErrMessages.writeError(err)
                 });
             });
-        } else {
-            Chat.findOneAndUpdate({
-                interviewId: req.body.interviewId
-            }, {
-                $push: {history: message}
-            })
-            .then(updateResult => {
-                res.json({
-                    status: responseStatus.SUCCESS,
-                    data: {
-                        message: clientMessages.CHAT_SAVED
-                    }
-                });
-            })
-            .catch((err) => {
-                res.status(400).json({
-                    status: responseStatus.ERROR,
-                    error_message: dbErrMessages.writeError(err)
-                });
-            });
+            return;
         }
+
+        Chat.findOneAndUpdate({
+            interviewId: req.body.interviewId
+        }, {
+            $push: {history: message}
+        })
+        .then(updateResult => {
+            res.json({
+                status: responseStatus.SUCCESS,
+                data: {
+                    message: clientMessages.CHAT_SAVED
+                }
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                status: responseStatus.ERROR,
+                error_message: dbErrMessages.writeError(err)
+            });
+        });
+        return;
     })
     .catch((err) => {
-        res.status(400).json({
+        res.status(500).json({
             status: responseStatus.ERROR,
             error_message: dbErrMessages.readError(err)
         });
@@ -113,7 +117,7 @@ const get_messages = (req, res) => {
         }
     })
     .catch((err) => {
-        res.status(400).json({
+        res.status(500).json({
             status: responseStatus.ERROR,
             error_message: dbErrMessages.readError(err)
         });
