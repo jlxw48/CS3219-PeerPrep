@@ -2,6 +2,7 @@ const User = require('../models/User');
 const responseStatus = require('../common/responseStatus');
 const clientErrorMessages = require('../common/clientErrors');
 const clientSuccessMessages = require('../common/clientSuccess');
+const dbErrorMessages = require('../common/dbErrors');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -27,49 +28,50 @@ const isPasswordAndUserMatch = (req, res) => {
 	User.find({email: email})
         .then((result) => {
             if (Object.keys(result).length == 0) {
-				res.status(404).send({
+				res.status(400).send({
             		status: responseStatus.FAILURE,
             		data: {
                 		message: clientErrorMessages.INVALID_EMAIL
             		}
         		});
         		return;
-			} else {
-				data = result[0];
-				let passwordFields = data.password.split('$');
-        		let salt = passwordFields[0];
-        		let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
-				if (hash == passwordFields[1]) {
-					const token = jwt.sign(
-						{
-							user: email,
-						},
-						'CS3219_SECRET_KEY',
-						{
-							expiresIn: "1h",
-						}
-					);
-
-        			res.status(200).cookie("cs3219_jwt", token, {
-            				httpOnly: true,
-            			}).json({
-   						status: responseStatus.SUCCESS, 
-    					data: {
-    						email: email,
-        					message: clientSuccessMessages.VALID_LOGIN
-    					}
-   					  });
-   					return;
-   				} else {
-            		res.status(400).send({
-            			status: responseStatus.FAILURE,
-            			data: {
-            				message: clientErrorMessages.INVALID_PASSWORD
-            			}
-            		});
-            		return;
-        		}
 			}
+			
+			data = result[0];
+			let passwordFields = data.password.split('$');
+        	let salt = passwordFields[0];
+        	let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
+			if (hash == passwordFields[1]) {
+				const token = jwt.sign(
+					{
+						user: email,
+					},
+					'CS3219_SECRET_KEY',
+					{
+						expiresIn: "1h",
+					}
+				);
+
+        		res.status(200).cookie("cs3219_jwt", token, {
+            			httpOnly: true,
+            		}).json({
+   					status: responseStatus.SUCCESS, 
+    				data: {
+    					email: email,
+        				message: clientSuccessMessages.VALID_LOGIN
+    				}
+  				  });
+   				return;
+   			} else {
+           		res.status(400).send({
+           			status: responseStatus.FAILURE,
+           			data: {
+           				message: clientErrorMessages.INVALID_PASSWORD
+            		}
+            	});
+            	return;
+        	}
+			
         });
 };
 
@@ -148,7 +150,13 @@ exports.create_account = (req, res) => {
         		});
         		return;
 			}
-		});
+		}).catch((err) => {
+             res.status(500).json({
+                 status: responseStatus.ERROR,
+                 error_message: dbErrorMessages.writeError(err)
+             });
+         });
+         return;
 };
 
 exports.user_login = (req, res) => {
@@ -182,6 +190,5 @@ exports.user_login = (req, res) => {
 		return;
 	}
 
-	isPasswordAndUserMatch(req, res);
-	return;
+	return isPasswordAndUserMatch(req, res);
 };
