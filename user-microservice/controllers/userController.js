@@ -192,3 +192,13 @@ exports.user_login = (req, res) => {
 
 	return isPasswordAndUserMatch(req, res);
 };
+
+exports.user_logout = (req, res) => {
+	res.status(200).clearCookie()
+	.json({
+		status: responseStatus.SUCCESS, 
+    	data: {
+        	message: clientSuccessMessages.USER_LOGOUT
+    	}
+    });
+};
