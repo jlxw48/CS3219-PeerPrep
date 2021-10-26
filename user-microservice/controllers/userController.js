@@ -44,7 +44,8 @@ const isPasswordAndUserMatch = (req, res) => {
 			if (hash == passwordFields[1]) {
 				const token = jwt.sign(
 					{
-						user: email,
+						email: email,
+						name: data.name
 					},
 					'CS3219_SECRET_KEY',
 					{
@@ -192,3 +193,50 @@ exports.user_login = (req, res) => {
 
 	return isPasswordAndUserMatch(req, res);
 };
+
+exports.jwt_validate = (req, res) => {
+	const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    try {
+        if (token == null) {
+            return res
+                .status(401)
+                .json({
+                    status: responseStatus.FAILURE,
+                    data: {
+						message: clientErrorMessages.JWT_AUTH_FAILED
+					}
+                });
+        }
+    
+        jwt.verify(token, 'CS3219_SECRET_KEY', (err, user) => {
+            if (err) {
+                console.log(err);
+                return res
+                .status(401)
+                .json({
+                    status: responseStatus.FAILURE,
+                    message: clientErrorMessages.JWT_AUTH_FAILED
+                });
+            }
+    
+            req.user = user;
+			res.status(200).send({
+				status: responseStatus.SUCCESS,
+				data: {
+					email: user.email,
+					name: user.name
+				}
+			});
+			return;
+        });
+    } catch (error) {
+        res.status(500).send({
+			status: responseStatus.ERROR,
+			data: {
+				message: JWT_ERROR(error)
+			}
+		});
+    }
+}
