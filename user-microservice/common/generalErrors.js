@@ -1,0 +1,1 @@
+export const JWT_ERROR = (err) => "JWT check failed: " + err;
