@@ -1,38 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: load-2
+  name: chat
   labels:
-    app: load-2
+    app: chat
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: load-2
+      app: chat
   template:
     metadata:
       labels:
-        app: load-2
+        app: chat
     spec:
       containers:
-      - name: load-2
-        image: jlxw48/load-2
-        imagePullPolicy: Never # setting local image
+      - name: chat
+        image: asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5/chat:v1 # change this
+        imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "200m"
         ports:
-        - containerPort: 3000
+        - containerPort: 8002
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: load-2
+  name: chat
 spec:
   selector:
-    app: load-2
+    app: chat
   ports:
     - protocol: TCP
       port: 3000
-      targetPort: 3000
+      targetPort: 8002
+  type: NodePort
