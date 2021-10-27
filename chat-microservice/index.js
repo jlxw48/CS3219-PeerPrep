@@ -62,5 +62,14 @@ mongoose.connect(dbURI)
 // Use the chat API routes
 app.use('/chat', chatApiRoutes);
 
+app.use((req, res) => {
+    res.status(404).json({
+        status: "failed",
+        data: {
+            message: "invalid API endpoint"
+        }
+    });
+});
+
 // Export app for testing purposes
 module.exports = app;
