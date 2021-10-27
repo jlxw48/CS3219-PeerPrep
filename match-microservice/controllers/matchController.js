@@ -236,7 +236,7 @@ const findMatch = (req, res) => {
                         // failed to retrieve question for interview
                         if (response.status != responseStatus.SUCCESS || !response.data 
                             || response.data.questions.length < 1) {
-                            res.status(500).json({  
+                            res.status(404).json({  
                                 status: responseStatus.FAILED,
                                 data: {
                                     message: clientErrMessages.RETRIEVE_QUESTION_FAILED

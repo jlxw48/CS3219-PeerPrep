@@ -5,7 +5,7 @@ const TIMEOUT_30_SECONDS = "failed to find a match after 30s";
 const RETRIEVE_QUESTION_FAILED = "failed to retrieve question for interview";
 const NO_QUESTION = "no question allocated for interview";
 const NO_PARTNER = "failed to retrieve partner details";
-const INCONSISTENT_PARTNERS = "Inconsistent partners detected"
+const INCONSISTENT_PARTNERS = "inconsistent partners detected";
 const NO_INTERVIEW = "failed to retrieve interview details";
 const DELETE_INTERVIEW_FAILED = "failed to end interview for user";
 
