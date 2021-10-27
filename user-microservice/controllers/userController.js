@@ -8,15 +8,15 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const hasMissingNameField = (req) => {
-	return req.body.name == undefined;
+	return req.body.name == undefined || req.body.name.length == 0;
 }
 
 const hasMissingEmailField = (req) => {
-	return req.body.email == undefined;
+	return req.body.email == undefined || req.body.email.length == 0;
 };
 
 const hasMissingPasswordField = (req) => {
-	return req.body.password == undefined;
+	return req.body.password == undefined || req.body.password.length == 0;
 };
 
 const hasMissingAuthFields = (req) => {
@@ -50,7 +50,7 @@ const isPasswordAndUserMatch = (req, res) => {
 					{
 						expiresIn: "1h",
 					}
-				);
+				); 
 
         		res.status(200).cookie("cs3219_jwt", token, {
             			httpOnly: true,
@@ -191,4 +191,14 @@ exports.user_login = (req, res) => {
 	}
 
 	return isPasswordAndUserMatch(req, res);
+};
+
+exports.user_logout = (req, res) => {
+	res.status(200).clearCookie("cs3219_jwt")
+	.json({
+		status: responseStatus.SUCCESS, 
+    	data: {
+        	message: clientSuccessMessages.USER_LOGOUT
+    	}
+    });
 };
