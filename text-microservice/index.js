@@ -85,9 +85,34 @@ app.delete("/editor/end-session", (req, res) => {
 		    	status: responseStatus.SUCCESS,
 		    	data: {
 		    		message: clientSuccessMessages.DELETE_SESSION + sessionId
-				}
+				  }
 		    });
 		});
+    }
+  });  
+});
+
+//This function is for testing to populate dummy data
+app.post("/editor/save-text", (req, res) => {
+  const sessionId = req.body.interviewId;
+  const text = req.body.text;
+  pubClient.set(sessionId, text, redis.print);
+  pubClient.get(sessionId, (err, response) => {
+    if (response === null) {
+      res.status(404).json({
+        status: responseStatus.FAILURE,
+        data: {
+          message: clientErrorMessages.SAVE_TEXT_ERROR
+        }
+
+      });
+    } else {
+      res.status(201).json({
+        status: responseStatus.SUCCESS,
+        data: {
+          message: clientSuccessMessages.SAVE_TEXT
+        }
+      });
     }
   });  
 });
