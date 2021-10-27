@@ -21,7 +21,7 @@ const io = new Server(server, {
      path: "/editor/create",
      cors: {
          origin: "*",
-         methods: ["GET", "POST"]
+         methods: ["GET", "POST", "DELETE"]
      }
  });
 
@@ -52,7 +52,7 @@ app.get("/editor/get_text", (req, res) => {
      res.status(404).json({
       	status: responseStatus.FAILURE,
       	data: {
-      		message: dbErrorMessages.READ_ERROR(err)
+      		message: clientErrorMessages.TEXT_NOT_FOUND
       	}
       });
     } else {
