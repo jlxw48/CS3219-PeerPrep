@@ -6,6 +6,7 @@ const dbErrorMessages = require('../common/dbErrors');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const generalErrors = require('../common/generalErrors');
 
 const hasMissingNameField = (req) => {
 	return req.body.name == undefined || req.body.name.length == 0;
@@ -195,11 +196,9 @@ exports.user_login = (req, res) => {
 };
 
 exports.jwt_validate = (req, res) => {
-	const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
+	const token = req.cookies["cs3219_jwt"];
     try {
-        if (token == null) {
+        if (token == null || token.length === 0) {
             return res
                 .status(401)
                 .json({
@@ -235,7 +234,7 @@ exports.jwt_validate = (req, res) => {
         res.status(500).send({
 			status: responseStatus.ERROR,
 			data: {
-				message: JWT_ERROR(error)
+				message: generalErrors.JWT_ERROR(error)
 			}
 		});
     }
