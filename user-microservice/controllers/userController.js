@@ -8,15 +8,15 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const hasMissingNameField = (req) => {
-	return req.body.name == undefined;
+	return req.body.name == undefined || req.body.name.length == 0;
 }
 
 const hasMissingEmailField = (req) => {
-	return req.body.email == undefined;
+	return req.body.email == undefined || req.body.email.length == 0;
 };
 
 const hasMissingPasswordField = (req) => {
-	return req.body.password == undefined;
+	return req.body.password == undefined || req.body.password.length == 0;
 };
 
 const hasMissingAuthFields = (req) => {
