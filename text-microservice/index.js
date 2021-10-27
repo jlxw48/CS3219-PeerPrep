@@ -148,3 +148,15 @@ const port = process.env.PORT || 3005;
 server.listen(port, () => {
 	console.log(`Text microservice is listening on port ${port} `);
 });
+
+app.use((req, res) => {
+  res.status(404).json({
+    status: responseStatus.FAILURE,
+    data: {
+      message: "invalid API endpoint"
+    }
+  });
+});
+
+ // Export app for testing purposes
+module.exports = app;
