@@ -8,6 +8,7 @@ const NO_PARTNER = "failed to retrieve partner details";
 const INCONSISTENT_PARTNERS = "inconsistent partners detected";
 const NO_INTERVIEW = "failed to retrieve interview details";
 const DELETE_INTERVIEW_FAILED = "failed to end interview for user";
+const INVALID_API_ENDPOINT = "invalid API endpoint";
 
 module.exports = {
     MISSING_REQUEST_BODY,
@@ -19,5 +20,6 @@ module.exports = {
     NO_PARTNER,
     INCONSISTENT_PARTNERS,
     NO_INTERVIEW,
-    DELETE_INTERVIEW_FAILED
+    DELETE_INTERVIEW_FAILED,
+    INVALID_API_ENDPOINT
 };
