@@ -50,7 +50,7 @@ const isPasswordAndUserMatch = (req, res) => {
 					{
 						expiresIn: "1h",
 					}
-				);
+				); 
 
         		res.status(200).cookie("cs3219_jwt", token, {
             			httpOnly: true,
@@ -191,4 +191,14 @@ exports.user_login = (req, res) => {
 	}
 
 	return isPasswordAndUserMatch(req, res);
+};
+
+exports.user_logout = (req, res) => {
+	res.status(200).clearCookie("cs3219_jwt")
+	.json({
+		status: responseStatus.SUCCESS, 
+    	data: {
+        	message: clientSuccessMessages.USER_LOGOUT
+    	}
+    });
 };
