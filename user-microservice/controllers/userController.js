@@ -258,3 +258,15 @@ exports.statusCheck = (req, res) => {
         }
     });
 };
+
+exports.load = (req, res) => {
+	for (var i = 0; i < 1000000000; i++)  {
+		Math.sqrt(i);
+	}
+    res.json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: clientSuccessMessages.STATUS_WORKING
+        }
+    });
+};

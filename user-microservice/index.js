@@ -23,7 +23,6 @@ mongoose.connect(uri)
      })
      .catch((err) => console.log(err));
 
-
  app.use('/api/user', userApiRoutes);
 
  app.use((req, res) => {
