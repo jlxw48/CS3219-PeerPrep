@@ -14,12 +14,12 @@ import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/ext-language_tools"
 import "../../css/Practice.css"
 import Seeds from '../../Seeds';
-import { MATCH_QUESTION_URL } from "../../Api.js";
 import Chat from "./Chat";
 
 function Practice() {
     const history = useHistory();
     const [practiceQuestion, setQuestion] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     let { user, userRef, match, matchRef } = useContext(AppContext);
 
@@ -32,18 +32,15 @@ function Practice() {
             history.push({ pathname: '/' });
             toast.error("You can only practice if you are logged in.");
         } else {
-            axios({ method: 'get', url: MATCH_QUESTION_URL, headers: authHeader() }).then(res => {
-                setQuestion(res.data.question);
-            }, err => {
-                toast.error("Error fetching practice quesiton, please try again.");
-            });
+            setQuestion(matchRef.current.question);
         }
+
+        setIsLoading(false);
     }, []);
-
-
 
     const seeds = Seeds();
     return (
+        isLoading ? <></> : 
         <Container className="practice-container">
             <Row className="practice-container-row">
                 <Col md={9} className="question-editor-col">
@@ -52,7 +49,7 @@ function Practice() {
                         <div className="practice-question-body">
                             {
                                 practiceQuestion ? <><h2>{practiceQuestion.title}</h2><br />
-                                    {practiceQuestion.question}</> : <Skeleton height={"100%"} />
+                                    {practiceQuestion.description}</> : <Skeleton height={"100%"} />
                             }
                         </div>
                     </div>

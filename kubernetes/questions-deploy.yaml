@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: questions
-        image: jlxw48/questions
+        image: swayongshen/questions
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

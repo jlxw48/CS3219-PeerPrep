@@ -21,7 +21,6 @@ function FindMatchModal(props) {
     const [finding, setFinding] = useState(false);
     const THIRTY_SECONDS = 30 * 1000;
     const history = useHistory();
-    const [findProgress, setFindProgress] = useState(100)
     const cancelTokenSource = axios.CancelToken.source();
     const { user, setMatch } = useContext(AppContext);
     
@@ -31,22 +30,25 @@ function FindMatchModal(props) {
             handleTimeout();
         }, THIRTY_SECONDS)
         axios({
-            method: "get",
+            method: "post",
             url: FIND_MATCH_URL,
-            headers: authHeader(),
             cancelToken: cancelTokenSource.token,
             data: {
                 email: user.email,
                 difficulty: props.difficulty
             }
         }).then(response => {
-            if (response.status === 200 && response.data.status == "success") {
-                toast.success("Match found, practice session starting now");
-                clearTimeout(findMatchTimeout);
-                setMatch(response.data.data);
-                history.push({ pathname: '/practice' });
+            if (response.status === 200) {
+                if (response.data.status == "success") {
+                    toast.success("Match found, practice session starting now");
+                    clearTimeout(findMatchTimeout);
+                    setMatch(response.data.data);
+                    history.push({ pathname: '/practice' });
+                } else {
+                    toast.error(response.data.data.message);
+                }
             } else {
-                toast.error("Failed to find a match, please try againbbbs.");
+                toast.error("Failed to find a match, please try again.");
                 handleCancel();
             }
         }).catch((error) => {

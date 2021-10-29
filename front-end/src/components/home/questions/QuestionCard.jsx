@@ -4,7 +4,7 @@ import DifficultyBadge from "../../../DifficultyBadge";
 
 // Props: {qn_num, title, difficulty, question}
 function QuestionCard(props) {
-    const trimmedQuestionBody = props.question.length > 300 ? props.question.substring(0, 300) + "..." : props.question 
+    const trimmedQuestionBody = props.description.length > 300 ? props.description.substring(0, 300) + "..." : props.description 
     return (
         <Card className="home-question-card">
             <Card.Body>

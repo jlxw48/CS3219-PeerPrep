@@ -14,7 +14,7 @@ function Questions(props) {
                     <div className="home-questions-wrapper">
                         {props.questions.filter(question => question.difficulty === "easy").map(question => {
                             return (
-                                <Row key={question.qn_num}>
+                                <Row key={question._id}>
                                     <QuestionCard {...question} />
                                 </Row>
                             )
@@ -25,7 +25,7 @@ function Questions(props) {
                     <div className="home-questions-wrapper">
                         {props.questions.filter(question => question.difficulty === "medium").map(question => {
                             return (
-                                <Row key={question.qn_num}>
+                                <Row key={question._id}>
                                     <QuestionCard {...question} />
                                 </Row>
                             )
@@ -36,7 +36,7 @@ function Questions(props) {
                     <div className="home-questions-wrapper">
                         {props.questions.filter(question => question.difficulty === "hard").map(question => {
                             return (
-                                <Row key={question.qn_num}>
+                                <Row key={question._id}>
                                     <QuestionCard {...question} />
                                 </Row>
                             )

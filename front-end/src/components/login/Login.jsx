@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Card from 'react-bootstrap/Card'
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
@@ -14,11 +14,12 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AppContext } from "../../App.js"
 import Spinner from 'react-bootstrap/Spinner'
+import { resHasMessage, getResMessage } from "../../Helpers.js";
 
 
 function Login(props) {
     const history = useHistory();
-    const { setUser } = useContext(AppContext);
+    const { setUser, userRef } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleRegister = (event) => {
@@ -32,14 +33,20 @@ function Login(props) {
             name: name,
             password: password
         }).then(res => {
-            if (res.status === 200 && res.data.status === "success") {
+            if (res.status === 201 && res.data.status === "success") {
                 toast.success("Registration is successful, please login");
                 history.push({ pathname: '/' });
             } else {
-                toast.error(`Registration has failed, ${res.data.status}`)
+                toast.error(`Registration has failed, ${res.data.data.message}`)
+                setIsLoading(false);
             }
         }, error => {
-            toast.error("Error with registration, try agian later");
+            if (error.response && resHasMessage(error.response)) {
+                toast.error(`${getResMessage(error.response)}`);
+            } else {
+                toast.error("Error with registration, try agian later");
+            }
+            setIsLoading(false);
         })
     }
 
@@ -53,18 +60,29 @@ function Login(props) {
             password: password
         }).then(res => {
             if (res.status === 200 && res.data.status === "success") {
+                setUser(res.data.data);
                 toast.success("Login successful");
-                localStorage.setItem("user", JSON.stringify(res.data));
-                setUser(res.data);
                 history.push({ pathname: '/' });
             } else {
                 toast.error(`Login has failed, ${res.data.status}`)
+                setIsLoading(false);
             }
-        }, error => {
-            console.log(error);
-            toast.error("Error logging in, try agian later");
-        })
+        }).catch(error => {
+            if (error.response && resHasMessage(error.response)) {
+                toast.error(`${getResMessage(error.response)}`);
+            } else {
+                toast.error("Error logging in, try agian later");
+            }
+            setIsLoading(false);
+        });
     }
+
+    useEffect(() => {
+        if (userRef.current !== null) {
+            toast.success("You are already logged in.");
+            history.push({ pathname: '/' });
+        }
+    }, []);
 
     return (
         <>

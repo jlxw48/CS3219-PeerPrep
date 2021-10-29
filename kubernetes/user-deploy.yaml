@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: jlxw48/user
+        image: swayongshen/user
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

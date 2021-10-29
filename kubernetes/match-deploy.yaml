@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: match
-        image: jlxw48/match
+        image: swayongshen/match
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

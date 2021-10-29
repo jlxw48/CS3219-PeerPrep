@@ -5,8 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TimeAgo from 'javascript-time-ago'
+import axios from 'axios';
 
 import en from 'javascript-time-ago/locale/en.json'
+
+axios.defaults.withCredentials = true;
 TimeAgo.addDefaultLocale(en)
 
 ReactDOM.render(
