@@ -5,6 +5,7 @@ const qnController = require( "./db/question_controller" );
 const configs = require( "./configs/configs" );
 const clientErr = require( "./common/error_msgs/client_errors" );
 const dbErr = require( "./common/error_msgs/db_errors" );
+const msg = require( "./common/msgs" );
 
 const app = express();
 app.use( express.json() );
@@ -32,8 +33,12 @@ app.route( "/questions/" )
     .post( qnController.createQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
+app.route( "/questions/status" )
+    .get(statusCheck)
+    .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
+
 app.route( "/*" )
-    .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) )
+    .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
 
 const dbUri = configs[ process.env.NODE_ENV.trim() ][ "DB_URI" ];
 
@@ -50,3 +55,12 @@ app.listen( port, async () => {
 } );
 
 module.exports = app;
+
+const statusCheck = (req, res) => {
+    res.json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: msg.STATUS_HEALTHY
+        }
+    });
+};
