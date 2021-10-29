@@ -6,6 +6,7 @@ const configs = require( "./configs/configs" );
 const clientErr = require( "./common/error_msgs/client_errors" );
 const dbErr = require( "./common/error_msgs/db_errors" );
 const msg = require( "./common/msgs" );
+const responseStatus = require( "./common/status" );
 
 const app = express();
 app.use( express.json() );
@@ -15,29 +16,43 @@ const setErrorMessage = ( errMessage, code ) => ( req, res ) => {
     res.statusCode = code;
     res.setHeader( 'content-type', 'application/json' );
     res.setHeader( 'Access-Control-Allow-Origin', '*' );
-    res.json( { error_message: errMessage } );
+    res.json( { 
+        status: responseStatus.FAILED,
+        data: {
+            message: errMessage
+        } 
+    } );
 }
+
+const statusCheck = (req, res) => {
+    res.json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: msg.STATUS_HEALTHY
+        }
+    });
+};
 
 // for matching
 app.route( "/api/questions/get_random_question" )
     .get( qnController.getRandomQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
+app.route( "/api/questions/status" )
+    .get(statusCheck)
+    .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
+
 app.route( "/api/questions/:id" )
     .put( qnController.updateQuestion )
     .delete( qnController.deleteQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
-app.route( "/api/questions/" )
+app.route( "/api/questions/" ) // TODO fix routing prefix issue 
     .get( qnController.getAllQuestions )
     .post( qnController.createQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
-app.route( "/api/questions/status" )
-    .get(statusCheck)
-    .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
-
-app.route( "/api/questions/*" )
+app.route( "/*" )
     .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
 
 const dbUri = configs[ process.env.NODE_ENV.trim() ][ "DB_URI" ];
@@ -55,12 +70,3 @@ app.listen( port, async () => {
 } );
 
 module.exports = app;
-
-const statusCheck = (req, res) => {
-    res.json({
-        status: responseStatus.SUCCESS,
-        data: {
-            message: msg.STATUS_HEALTHY
-        }
-    });
-};

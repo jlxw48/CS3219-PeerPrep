@@ -24,7 +24,7 @@ mongoose.connect(uri)
      .catch((err) => console.log(err));
 
 
- app.use('/user', userApiRoutes);
+ app.use('/api/user', userApiRoutes);
 
  app.use((req, res) => {
      res.status(404).json({
