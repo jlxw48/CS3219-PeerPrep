@@ -29,7 +29,7 @@ mongoose.connect(dbURI)
     .catch((err) => console.log(err));
 
 // Use the match API routes
-app.use('/match', matchApiRoutes);
+app.use('/api/match', matchApiRoutes);
 
 app.use((req, res) => {
     res.status(404).json({

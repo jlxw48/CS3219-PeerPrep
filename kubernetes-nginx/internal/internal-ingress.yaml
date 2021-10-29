@@ -15,21 +15,21 @@ spec:
   - host: "34.87.48.62.nip.io"
     http:
       paths:
-      - path: /questions
+      - path: /api/questions
         pathType: Prefix
         backend:
           service:
             name: questions
             port: 
               number: 3000
-      - path: /match
+      - path: /api/match
         pathType: Prefix
         backend:
           service:
             name: match
             port: 
               number: 3000
-      - path: /chat
+      - path: /api/chat
         pathType: Prefix
         backend:
           service:

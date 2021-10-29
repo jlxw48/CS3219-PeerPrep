@@ -18,7 +18,7 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 
 const io = new Server(server, {
-    path: "/chat/create",
+    path: "/api/chat/create",
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
@@ -63,7 +63,7 @@ mongoose.connect(dbURI)
     .catch((err) => console.log(err));
 
 // Use the chat API routes
-app.use('/chat', chatApiRoutes);
+app.use('/api/chat', chatApiRoutes);
 
 app.use((req, res) => {
     res.status(404).json({

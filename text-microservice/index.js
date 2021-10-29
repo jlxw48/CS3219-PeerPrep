@@ -18,7 +18,7 @@ const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/redis-adapter");
 
 const io = new Server(server, {
-     path: "/editor/create",
+     path: "/api/editor/create",
      cors: {
          origin: "*",
          methods: ["GET", "POST", "DELETE"]
@@ -42,7 +42,7 @@ pubClient.on("error", function (error) {
   console.error(error);
 });
 
-app.get("/editor/get_text", (req, res) => {
+app.get("/api/editor/get_text", (req, res) => {
 	const sessionId = req.query.interviewId;
 
   pubClient.get(sessionId, (err, response) => {
@@ -67,7 +67,7 @@ app.get("/editor/get_text", (req, res) => {
   });
 });
 
-app.delete("/editor/end-session", (req, res) => {
+app.delete("/api/editor/end-session", (req, res) => {
   const sessionId = req.query.interviewId;
   pubClient.get(sessionId, (err, response) => {
     if (response === null) {
@@ -93,7 +93,7 @@ app.delete("/editor/end-session", (req, res) => {
 });
 
 //This function is for testing to populate dummy data
-app.post("/editor/save-text", (req, res) => {
+app.post("/api/editor/save-text", (req, res) => {
   const sessionId = req.body.interviewId;
   const text = req.body.text;
   pubClient.set(sessionId, text, redis.print);
