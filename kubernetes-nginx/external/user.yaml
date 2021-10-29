@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
       - name: user
-        image: jlxw48/user
+        image: asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5/user:v1
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "100m"
         ports:
         - containerPort: 3600
 ---
@@ -36,3 +36,4 @@ spec:
     - protocol: TCP
       port: 3000
       targetPort: 3600
+  type: NodePort

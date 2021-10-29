@@ -18,7 +18,7 @@ mongoose.connect(uri)
 
          const port = process.env.PORT || 3600;
          app.listen(port, () => {
-             console.log(`User microservice listening on port ${port}`);
+             console.log(`User microservice listening on port ${port}!`);
          });
      })
      .catch((err) => console.log(err));

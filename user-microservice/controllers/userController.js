@@ -249,3 +249,12 @@ exports.user_logout = (req, res) => {
     	}
     });
 };
+
+exports.statusCheck = (req, res) => {
+    res.json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: clientSuccessMessages.STATUS_WORKING
+        }
+    });
+};
