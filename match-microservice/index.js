@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 require("dotenv").config();
 
 const matchApiRoutes = require('./routes/matchApiRoutes');
+const responseStatus = require('./common/status/responseStatus');
+const clientErrors = require('./common/errors/clientErrors');
 
 // Connect to mongodb
 var dbURI = process.env.MONGODB_URI;
@@ -31,9 +33,9 @@ app.use('/api/match', matchApiRoutes);
 
 app.use((req, res) => {
     res.status(404).json({
-        status: "failed",
+        status: responseStatus.FAILED,
         data: {
-            message: "invalid API endpoint"
+            message: clientErrors.INVALID_API_ENDPOINT
         }
     });
 });
