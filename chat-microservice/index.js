@@ -9,6 +9,9 @@ app.use(cors());
 const mongoose = require('mongoose');
 const dbController = require('./controllers/dbController')
 const chatApiRoutes = require('./routes/chatApiRoutes');
+const responseStatus = require('./common/status/responseStatus');
+const clientErrors = require('./common/errors/clientErrors');
+const clientMessages = require('./common/messages/clientMessages')
 
 const http = require('http');
 const server = http.createServer(app);
@@ -30,7 +33,7 @@ io.on("connection", socket => {
         if (newMessage.contents.message === "/end_interview") {
             const endMessageContents = {
                 userEmail: newMessage.contents.userEmail,
-                message: "Your partner has ended the interview"
+                message: clientMessages.PARTNER_ENDED_INTERVIEW
             }
             io.emit(newMessage.interviewId, endMessageContents);
             return;
@@ -61,6 +64,15 @@ mongoose.connect(dbURI)
 
 // Use the chat API routes
 app.use('/chat', chatApiRoutes);
+
+app.use((req, res) => {
+    res.status(404).json({
+        status: responseStatus.FAILED,
+        data: {
+            message: clientErrors.INVALID_API_ENDPOINT
+        }
+    });
+});
 
 // Export app for testing purposes
 module.exports = app;
