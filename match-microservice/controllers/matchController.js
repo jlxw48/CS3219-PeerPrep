@@ -229,7 +229,7 @@ const findMatch = (req, res) => {
                     clearInterval(intervalId);
                     
                     // Fetch a random question from question-microservice for the interview
-                    axios.get("http://questions:3000/api/questions/get_random_question")
+                    axios.get(`http://localhost:3000/api/questions/get_random_question?difficulty=${difficulty}`)
                     .then(questionResult => {
                         const response = questionResult.data;
                         
