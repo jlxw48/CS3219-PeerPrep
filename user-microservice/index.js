@@ -3,11 +3,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userApiRoutes = require('./routes/userApiRoutes');
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
 
 const app = express();
-app.use(cors());
+var corsOptions = {
+    origin: '*',
+    credentials: true };
+
+app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({extended: true}));
 var uri = process.env.MONGO_URI;
 
@@ -23,7 +28,7 @@ mongoose.connect(uri)
      .catch((err) => console.log(err));
 
 
- app.use('/user', userApiRoutes);
+ app.use('/api/user', userApiRoutes);
 
  app.use((req, res) => {
      res.status(404).json({

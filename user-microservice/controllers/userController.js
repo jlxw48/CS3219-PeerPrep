@@ -55,6 +55,7 @@ const isPasswordAndUserMatch = (req, res) => {
 
         		res.status(200).cookie("cs3219_jwt", token, {
             			httpOnly: true,
+						sameSite: 'none'
             		}).json({
    					status: responseStatus.SUCCESS, 
     				data: {
@@ -204,11 +205,10 @@ exports.user_logout = (req, res) => {
     });
 };
 exports.jwt_validate = (req, res) => {
-	const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = req.cookies.cs3219_jwt;
 
     try {
-        if (token == null) {
+        if (!token) {
             return res
                 .status(401)
                 .json({

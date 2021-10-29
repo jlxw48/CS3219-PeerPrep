@@ -13,24 +13,38 @@ spec:
   rules:
   - http:
       paths:
-      - path: /questions
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: front-end
+            port: 
+              number: 3000
+      - path: /api/questions
         pathType: Prefix
         backend:
           service:
             name: questions
             port: 
               number: 3000
-      - path: /match
+      - path: /api/match
         pathType: Prefix
         backend:
           service:
             name: match
             port: 
               number: 3000
-      - path: /chat
+      - path: /api/chat
         pathType: Prefix
         backend:
           service:
             name: chat
+            port: 
+              number: 3000
+      - path: /api/user
+        pathType: Prefix
+        backend:
+          service:
+            name: user
             port: 
               number: 3000

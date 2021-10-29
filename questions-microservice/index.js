@@ -20,16 +20,16 @@ const setErrorMessage = ( errMessage, code ) => ( req, res ) => {
 }
 
 // for matching
-app.route( "/questions/get_random_question" )
+app.route( "/api/questions/get_random_question" )
     .get( qnController.getRandomQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
-app.route( "/questions/:id" )
+app.route( "/api/questions/:id" )
     .put( qnController.updateQuestion )
     .delete( qnController.deleteQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
-app.route( "/questions/" )
+app.route( "/api/questions/" )
     .get( qnController.getAllQuestions )
     .post( qnController.createQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
