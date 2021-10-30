@@ -125,238 +125,253 @@ const findMatch = (req, res) => {
         createdAt: Date()
     });
 
-    match.save()
-    .then(saveResult => {
-        var count = 0;
-        const intervalId = setInterval(() => {
-            // In case some of the db operations below fails and never go into the 'count === 6' clause
-            if (count >= 6) {
-                clearInterval(intervalId);
-                Match.findOneAndDelete({
-                    email: email
-                })
-                .then(result => {
-                    res.status(404).json({
-                        status: responseStatus.FAILED,
-                        data: {
-                            message: clientErrMessages.TIMEOUT_30_SECONDS
-                        }
-                    });
-                    return;
-                })
-                .catch(err => {
-                    res.status(500).json({
-                        status: responseStatus.ERROR,
-                        error_message: dbErrMessages.deleteError(err) // failed to delete match details after 30s timeout
-                    });
-                    return;
-                });
-            }
+    Match.findOne({
+        email: email
+    })
+    .then(existResult => {
+        if (existResult) {
+            res.status(404).json({
+                status: responseStatus.FAILED,
+                data: {
+                    message: clientErrMessages.DUPLICATE_FIND
+                }
+            });
+            return;
+        }
 
-            // Try to see if a partner has already updated the match details of this user
-            Match.findOne({
-                email: email
-            })
-            .then(userResult => {
-                // if user is already matched with a partner (the partner has already updated the current user's document)
-                if (userResult.partnerEmail && userResult.interviewId) {
+        match.save()
+        .then(saveResult => {
+            var count = 0;
+            const intervalId = setInterval(() => {
+                // In case some of the db operations below fails and never go into the 'count === 6' clause
+                if (count >= 6) {
                     clearInterval(intervalId);
-
-                    if (!userResult.questionTitle || !userResult.questionDescription) {
+                    Match.findOneAndDelete({
+                        email: email
+                    })
+                    .then(result => {
                         res.status(404).json({
                             status: responseStatus.FAILED,
                             data: {
-                                message: clientErrMessages.NO_QUESTION
+                                message: clientErrMessages.TIMEOUT_30_SECONDS
                             }
                         });
                         return;
-                    }
-
-                    res.json({
-                        status: responseStatus.SUCCESS,
-                        data: {
-                            partnerEmail: userResult.partnerEmail,
-                            interviewId: userResult.interviewId,
-                            question: {
-                                title: userResult.questionTitle,
-                                description: userResult.questionDescription
-                            }
-                        }
-                    });
-                    return;
-                }
-                
-                // if user is not matched with a partner yet, try to find a partner and update info for partner 
-                Match.findOneAndUpdate({
-                    email: { $ne: email},  // exclude the current user
-                    partnerEmail: { $exists : false },  // make sure the other user has no partner yet
-                    difficulty: difficulty
-                }, {
-                    partnerEmail: email,
-                    interviewId: mongoose.Types.ObjectId()  // Generate a random inverviewId
-                }, {
-                    sort: { "createdAt": 1},  // find the earliest queueing user
-                    new: true                 // return the updated document
-                })
-                .then(partnerResult => {
-                    // no suitable match found
-                    if (!partnerResult) {
-                        if (count === 6) {
-                            clearInterval(intervalId);
-                            Match.findOneAndDelete({
-                                email: email
-                            })
-                            .then(result => {
-                                res.status(404).json({
-                                    status: responseStatus.FAILED,
-                                    data: {
-                                        message: clientErrMessages.TIMEOUT_30_SECONDS
-                                    }
-                                });
-                                return;
-                            })
-                            .catch(err => {
-                                res.status(500).json({
-                                    status: responseStatus.ERROR,
-                                    error_message: dbErrMessages.deleteError(err) // failed to delete match details after 30s timeout
-                                });
-                            })
-                        }
+                    })
+                    .catch(err => {
+                        res.status(500).json({
+                            status: responseStatus.ERROR,
+                            error_message: dbErrMessages.deleteError(err) // failed to delete match details after 30s timeout
+                        });
                         return;
-                    }
+                    });
+                }
 
-                    // match is found
-                    clearInterval(intervalId);
-                    
-                    // Fetch a random question from question-microservice for the interview
-                    axios.get(`http://localhost:3000/api/questions/get_random_question?difficulty=${difficulty}`)
-                    .then(questionResult => {
-                        const response = questionResult.data;
-                        
-                        // failed to retrieve question for interview
-                        if (response.status != responseStatus.SUCCESS || !response.data 
-                            || response.data.questions.length < 1) {
-                            res.status(404).json({  
+                // Try to see if a partner has already updated the match details of this user
+                Match.findOne({
+                    email: email
+                })
+                .then(userResult => {
+                    // if user is already matched with a partner (the partner has already updated the current user's document)
+                    if (userResult.partnerEmail && userResult.interviewId) {
+                        clearInterval(intervalId);
+
+                        if (!userResult.questionTitle || !userResult.questionDescription) {
+                            res.status(404).json({
                                 status: responseStatus.FAILED,
                                 data: {
-                                    message: clientErrMessages.RETRIEVE_QUESTION_FAILED
-                                }  
+                                    message: clientErrMessages.NO_QUESTION
+                                }
                             });
                             return;
                         }
 
-                        // Update question for partner
-                        const question = response.data.questions[0];
-                        const questionTitle = question.title;
-                        const questionDescription = question.description;
-                        Match.findOneAndUpdate({
-                            email: partnerResult.email
-                        }, {
-                            questionTitle: questionTitle,
-                            questionDescription: questionDescription
-                        }, {
-                            new: true                 // return the updated document
-                        })
-                        .then(partnerUpdateQuestionResult => {
-                            // Update partner info for current user
-                            Match.findOneAndUpdate({
-                                email: email,
-                                partnerEmail: { $exists : false }    // make sure the current user has no partner yet (to mitigate race conditions?)
-                            }, { 
-                                partnerEmail: partnerResult.email,
-                                interviewId: partnerResult.interviewId,
-                                questionTitle: partnerUpdateQuestionResult.questionTitle,
-                                questionDescription: partnerUpdateQuestionResult.questionDescription
-                            }, { new : true })
-                            .then(finalResult => {
-                                if (!finalResult) {
-                                    // Clean up match record
-                                    Match.findOneAndDelete({
-                                        email: email
-                                    })
-                                    .then(cleanUpResult => {
-                                        res.status(404).json({
-                                            status: responseStatus.FAILED,
-                                            data: {
-                                                message: clientErrMessages.INCONSISTENT_PARTNERS
-                                            }
-                                        });
-                                        return;
-                                    })
-                                    .catch(cleanUpErr => {
-                                        res.status(500).json({
-                                            status: responseStatus.ERROR,
-                                            error_message: dbErrMessages.deleteError(finalResultErr)  // failed to delete match details of current user after detecting inconsistencies
-                                        });
-                                        return;
-                                    });
+                        res.json({
+                            status: responseStatus.SUCCESS,
+                            data: {
+                                partnerEmail: userResult.partnerEmail,
+                                interviewId: userResult.interviewId,
+                                question: {
+                                    title: userResult.questionTitle,
+                                    description: userResult.questionDescription
                                 }
-
-                                res.json({
-                                    status: responseStatus.SUCCESS,
-                                    data: {
-                                        partnerEmail: partnerResult.email,
-                                        interviewId: partnerResult.interviewId,
-                                        question: {
-                                            title: partnerUpdateQuestionResult.questionTitle,
-                                            description: partnerUpdateQuestionResult.questionDescription
+                            }
+                        });
+                        return;
+                    }
+                    
+                    // if user is not matched with a partner yet, try to find a partner and update info for partner 
+                    Match.findOneAndUpdate({
+                        email: { $ne: email},  // exclude the current user
+                        partnerEmail: { $exists : false },  // make sure the other user has no partner yet
+                        difficulty: difficulty
+                    }, {
+                        partnerEmail: email,
+                        interviewId: mongoose.Types.ObjectId()  // Generate a random inverviewId
+                    }, {
+                        sort: { "createdAt": 1},  // find the earliest queueing user
+                        new: true                 // return the updated document
+                    })
+                    .then(partnerResult => {
+                        // no suitable match found
+                        if (!partnerResult) {
+                            if (count === 6) {
+                                clearInterval(intervalId);
+                                Match.findOneAndDelete({
+                                    email: email
+                                })
+                                .then(result => {
+                                    res.status(404).json({
+                                        status: responseStatus.FAILED,
+                                        data: {
+                                            message: clientErrMessages.TIMEOUT_30_SECONDS
                                         }
-                                    }
+                                    });
+                                    return;
+                                })
+                                .catch(err => {
+                                    res.status(500).json({
+                                        status: responseStatus.ERROR,
+                                        error_message: dbErrMessages.deleteError(err) // failed to delete match details after 30s timeout
+                                    });
+                                })
+                            }
+                            return;
+                        }
+
+                        // match is found
+                        clearInterval(intervalId);
+                        
+                        // Fetch a random question from question-microservice for the interview
+                        axios.get(`http://localhost:3000/api/questions/get_random_question?difficulty=${difficulty}`)
+                        .then(questionResult => {
+                            const response = questionResult.data;
+                            
+                            // failed to retrieve question for interview
+                            if (response.status != responseStatus.SUCCESS || !response.data 
+                                || response.data.questions.length < 1) {
+                                res.status(404).json({  
+                                    status: responseStatus.FAILED,
+                                    data: {
+                                        message: clientErrMessages.RETRIEVE_QUESTION_FAILED
+                                    }  
                                 });
                                 return;
+                            }
+
+                            // Update question for partner
+                            const question = response.data.questions[0];
+                            const questionTitle = question.title;
+                            const questionDescription = question.description;
+                            Match.findOneAndUpdate({
+                                email: partnerResult.email
+                            }, {
+                                questionTitle: questionTitle,
+                                questionDescription: questionDescription
+                            }, {
+                                new: true                 // return the updated document
                             })
-                            .catch(finalResultErr => {
+                            .then(partnerUpdateQuestionResult => {
+                                // Update partner info for current user
+                                Match.findOneAndUpdate({
+                                    email: email,
+                                    partnerEmail: { $exists : false }    // make sure the current user has no partner yet (to mitigate race conditions?)
+                                }, { 
+                                    partnerEmail: partnerResult.email,
+                                    interviewId: partnerResult.interviewId,
+                                    questionTitle: partnerUpdateQuestionResult.questionTitle,
+                                    questionDescription: partnerUpdateQuestionResult.questionDescription
+                                }, { new : true })
+                                .then(finalResult => {
+                                    if (!finalResult) {
+                                        // Clean up match record
+                                        Match.findOneAndDelete({
+                                            email: email
+                                        })
+                                        .then(cleanUpResult => {
+                                            res.status(404).json({
+                                                status: responseStatus.FAILED,
+                                                data: {
+                                                    message: clientErrMessages.INCONSISTENT_PARTNERS
+                                                }
+                                            });
+                                            return;
+                                        })
+                                        .catch(cleanUpErr => {
+                                            res.status(500).json({
+                                                status: responseStatus.ERROR,
+                                                error_message: dbErrMessages.deleteError(finalResultErr)  // failed to delete match details of current user after detecting inconsistencies
+                                            });
+                                            return;
+                                        });
+                                    }
+
+                                    res.json({
+                                        status: responseStatus.SUCCESS,
+                                        data: {
+                                            partnerEmail: partnerResult.email,
+                                            interviewId: partnerResult.interviewId,
+                                            question: {
+                                                title: partnerUpdateQuestionResult.questionTitle,
+                                                description: partnerUpdateQuestionResult.questionDescription
+                                            }
+                                        }
+                                    });
+                                    return;
+                                })
+                                .catch(finalResultErr => {
+                                    clearInterval(intervalId);
+                                    res.status(500).json({
+                                        status: responseStatus.ERROR,
+                                        error_message: dbErrMessages.writeError(finalResultErr)  // failed to update match details of current user after finding a match
+                                    });
+                                    return;
+                                });
+                            })
+                            .catch(partnerUpdateQuestionErr => {
                                 clearInterval(intervalId);
                                 res.status(500).json({
                                     status: responseStatus.ERROR,
-                                    error_message: dbErrMessages.writeError(finalResultErr)  // failed to update match details of current user after finding a match
+                                    error_message: dbErrMessages.writeError(partnerUpdateQuestionErr)  // failed to update question details of partner user after finding a match
                                 });
                                 return;
                             });
                         })
-                        .catch(partnerUpdateQuestionErr => {
+                        .catch(questionResultErr => {
                             clearInterval(intervalId);
                             res.status(500).json({
                                 status: responseStatus.ERROR,
-                                error_message: dbErrMessages.writeError(partnerUpdateQuestionErr)  // failed to update question details of partner user after finding a match
+                                error_message: dbErrMessages.readError(questionResultErr) // failed to retrieve random question details after finding a match
                             });
                             return;
                         });
                     })
-                    .catch(questionResultErr => {
+                    .catch(partnerResultErr => {
                         clearInterval(intervalId);
                         res.status(500).json({
                             status: responseStatus.ERROR,
-                            error_message: dbErrMessages.readError(questionResultErr) // failed to retrieve random question details after finding a match
+                            error_message: dbErrMessages.writeError(partnerResultErr) // failed to update match details of partner user after finding a match
                         });
                         return;
                     });
                 })
-                .catch(partnerResultErr => {
+                .catch(userResultErr => {
                     clearInterval(intervalId);
                     res.status(500).json({
                         status: responseStatus.ERROR,
-                        error_message: dbErrMessages.writeError(partnerResultErr) // failed to update match details of partner user after finding a match
+                        error_message: dbErrMessages.readError(userResultErr) // this should not happen but failed to find match details of current user
                     });
                     return;
                 });
-            })
-            .catch(userResultErr => {
-                clearInterval(intervalId);
-                res.status(500).json({
-                    status: responseStatus.ERROR,
-                    error_message: dbErrMessages.readError(userResultErr) // this should not happen but failed to find match details of current user
-                });
-                return;
+                
+                count = count + 1;
+            }, 5000);  // Try to find a match every 5s, until 30s is up
+        })
+        .catch((err) => {
+            res.status(500).json({
+                status: responseStatus.ERROR,
+                error_message: dbErrMessages.writeError(err) // failed to store find match details
             });
-            
-            count = count + 1;
-        }, 5000);  // Try to find a match every 5s, until 30s is up
-    })
-    .catch((err) => {
-        res.status(500).json({
-            status: responseStatus.ERROR,
-            error_message: dbErrMessages.writeError(err) // failed to store find match details
         });
     });
 };
