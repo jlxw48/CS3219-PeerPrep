@@ -12,18 +12,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-const http = require('http');
-const server = http.createServer(app);
+const port = process.env.PORT || 3005;
+var server = app.listen(port, () => {
+	console.log(`Text microservice is listening on port ${port} `);
+});
+
 const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/redis-adapter");
 
 const io = new Server(server, {
-     path: "/editor/create",
-     cors: {
-         origin: "*",
-         methods: ["GET", "POST", "DELETE"]
-     }
- });
+  path: "/api/editor/create",
+  cors: {
+      origin: "*",
+      methods: ["GET", "POST", "DELETE"]
+  }
+});
 
 var redis_endpoint = process.env.REDIS_ENDPOINT;
 var redis_pw = process.env.REDIS_PASSWORD;
@@ -42,7 +45,7 @@ pubClient.on("error", function (error) {
   console.error(error);
 });
 
-app.get("/editor/get_text", (req, res) => {
+app.get("/api/editor/get_text", (req, res) => {
 	const sessionId = req.query.interviewId;
 
   pubClient.get(sessionId, (err, response) => {
@@ -67,7 +70,7 @@ app.get("/editor/get_text", (req, res) => {
   });
 });
 
-app.delete("/editor/end-session", (req, res) => {
+app.delete("/api/editor/end-session", (req, res) => {
   const sessionId = req.query.interviewId;
   pubClient.get(sessionId, (err, response) => {
     if (response === null) {
@@ -93,7 +96,7 @@ app.delete("/editor/end-session", (req, res) => {
 });
 
 //This function is for testing to populate dummy data
-app.post("/editor/save-text", (req, res) => {
+app.post("/api/editor/save-text", (req, res) => {
   const sessionId = req.body.interviewId;
   const text = req.body.text;
   pubClient.set(sessionId, text, redis.print);
@@ -169,10 +172,7 @@ io.sockets.on("connection", socket => {
   });
 });
 
-const port = process.env.PORT || 3005;
-server.listen(port, () => {
-	console.log(`Text microservice is listening on port ${port} `);
-});
+
 
 app.use((req, res) => {
   res.status(404).json({

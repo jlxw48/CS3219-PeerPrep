@@ -10,6 +10,8 @@ cd ../front-end
 docker build -t swayongshen/front-end .
 cd ../chat-microservice
 docker build -t swayongshen/chat .
+cd ../text-microservice
+docker build -t swayongshen/text .
 cd ../kubernetes
 kubectl delete -f .
 kubectl apply -f .

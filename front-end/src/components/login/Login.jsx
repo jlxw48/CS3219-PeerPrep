@@ -15,12 +15,14 @@ import { useHistory } from "react-router-dom";
 import { AppContext } from "../../App.js"
 import Spinner from 'react-bootstrap/Spinner'
 import { resHasMessage, getResMessage } from "../../Helpers.js";
+import { useAppStateHelper } from "../../common/state_handlers/AppState.js";
 
 
 function Login(props) {
     const history = useHistory();
-    const { setUser, userRef } = useContext(AppContext);
+    const { setUser, userRef, setMatch } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
+    const { checkIfUserInMatch } = useAppStateHelper();
 
     const handleRegister = (event) => {
         event.preventDefault();
@@ -62,7 +64,11 @@ function Login(props) {
             if (res.status === 200 && res.data.status === "success") {
                 setUser(res.data.data);
                 toast.success("Login successful");
-                history.push({ pathname: '/' });
+                checkIfUserInMatch().then(hasMatch => {
+                    if (!hasMatch) {
+                        redirectToHome();
+                    }
+                });
             } else {
                 toast.error(`Login has failed, ${res.data.status}`)
                 setIsLoading(false);
@@ -71,18 +77,23 @@ function Login(props) {
             if (error.response && resHasMessage(error.response)) {
                 toast.error(`${getResMessage(error.response)}`);
             } else {
+                console.error(error);
                 toast.error("Error logging in, try agian later");
             }
             setIsLoading(false);
         });
     }
 
+    function redirectToHome() {
+        history.push({ pathname: '/' });
+    }
+
     useEffect(() => {
         if (userRef.current !== null) {
+            redirectToHome();
             toast.success("You are already logged in.");
-            history.push({ pathname: '/' });
         }
-    }, [history.push]);
+    }, []);
 
     return (
         <>

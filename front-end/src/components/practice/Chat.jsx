@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { AppContext } from "../../App.js"
 
-import { CONNECT_MESSENGER_URL, CHAT_HISTORY_URL, CHAT_URL, REACT_APP_BACKEND_URL } from "../../Api.js";
+import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../Api.js";
 import ChatEntry from "./ChatEntry";
 import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
@@ -16,8 +16,8 @@ function Chat() {
     let { user, userRef, match, matchRef } = useContext(AppContext);
 
     const interviewId = matchRef.current.interviewId;
-    const chatSocket = io.connect("http://localhost:8010", {
-        path: "/proxy/api/chat/create"
+    const chatSocket = io.connect(BACKEND_DOMAIN, {
+        path: CHAT_SOCKET_PATH
     });
     console.log("hi");
     const [chats, setChats] = useState([]);

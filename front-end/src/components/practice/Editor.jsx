@@ -3,7 +3,7 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/ext-language_tools"
 import io from 'socket.io-client';
-import { BACKEND_DOMAIN, EDITOR_HISTORY_URL } from "../../Api.js";
+import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH } from "../../Api.js";
 import { useState, useContext, useEffect } from "react";
 import ace from "react-ace";
 import axios from "axios";
@@ -13,15 +13,16 @@ function Editor() {
     let { user, userRef, match, matchRef } = useContext(AppContext);
     const interviewId = matchRef.current.interviewId;
     const editorSocket = io(BACKEND_DOMAIN, {
-        path: "proxy/api/editor/create"
+        path: EDITOR_SOCKET_PATH,
     });
 
     // Current content of the code editor
     const [code, setCode] = useState();
 
     useEffect(() => {
+        console.log("Edior useEffect")
         editorSocket.on("connect", () => {
-            console.log("You have connected...");
+            console.log("Successfully connected to editor socket");
 
             // Fetch text history
             axios.get(EDITOR_HISTORY_URL, {
@@ -32,10 +33,9 @@ function Editor() {
                     if (data.status === "success") {
                         const textHistory = data.data.message;
                         console.log(textHistory);
-                        setCode([textHistory]);
+                        setCode(textHistory);
                     } else if (data.status == "failed") {
-                        const textHistory = "";
-                        setCode([textHistory]);
+                        setCode("");
                     }
                 })
                 .catch(err => console.log(err));
@@ -56,7 +56,7 @@ function Editor() {
     const handleCodeChange = (event) => {
         editorSocket.emit('newMessage', {
             interviewId,
-            text: event.target.value
+            text: event
         });
     }
 
