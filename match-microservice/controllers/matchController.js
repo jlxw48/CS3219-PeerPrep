@@ -310,7 +310,7 @@ const findMatch = async (req, res) => {
 // Get number of current ongoing interviews
 const interviewsCount = async (req, res) => {
     try {
-        const numInterviews = await Match.countDocuments({});
+        const numInterviews = await Interview.countDocuments({});
         res.json({
             status: responseStatus.SUCCESS,
             data: {

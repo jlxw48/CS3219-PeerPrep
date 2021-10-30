@@ -13,7 +13,7 @@ const matchSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        expires: 10,  // expires after 30s
+        expires: 30,
         default: Date.now
     }
 });
