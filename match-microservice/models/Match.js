@@ -13,19 +13,8 @@ const matchSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        required: true
-    },
-    partnerEmail: {
-        type: String
-    },
-    interviewId: {
-        type: String
-    },
-    questionTitle: {
-        type: String
-    },
-    questionDescription: {
-        type: String
+        expires: 10,  // expires after 30s
+        default: Date.now
     }
 });
 
