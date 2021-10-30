@@ -169,6 +169,15 @@ io.sockets.on("connection", socket => {
   });
 });
 
+app.all("/api/editor/status", (req, res) => {
+  res.status(200).json({
+    status: responseStatus.SUCCESS,
+    data: {
+      message: clientSuccessMessages.STATUS_HEALTHY
+    }
+  });
+});
+
 const port = process.env.PORT || 3005;
 server.listen(port, () => {
 	console.log(`Text microservice is listening on port ${port} `);
