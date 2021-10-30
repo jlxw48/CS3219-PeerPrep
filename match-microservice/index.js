@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === "test") {
 }
 
 const port = process.env.PORT || 8001;
-app.listen(port, () => {
+app.listen(port, async () => {
     try {
         await mongoose.connect(dbURI);
         console.log('Connected to MongoDB');
@@ -26,7 +26,6 @@ app.listen(port, () => {
     } catch (err) {
         console.log(err)
     }
-    
 });
 
 // Use the match API routes
