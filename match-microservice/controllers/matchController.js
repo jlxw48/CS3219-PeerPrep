@@ -44,16 +44,18 @@ const getInterview = async (req, res) => {
         if (partnerEmail == email) {
             partnerEmail = interview.secondUserEmail;
         }
+
+        // Calculate time left for interview
+        var secondsPassed = Math.floor((new Date().getTime() - interview.createdAt.getTime()) / 1000);
+        const durationLeft = 3600 - secondsPassed;
         
         res.json({
             status: responseStatus.SUCCESS,
             data: {
                 partnerEmail: partnerEmail,
                 interviewId: interview.interviewId,
-                question: {
-                    title: interview.questionTitle,
-                    description: interview.questionDescription
-                }
+                question: interview.question,
+                durationLeft: durationLeft
             }
         });
     } catch (err) {
@@ -135,7 +137,7 @@ const findMatch = async (req, res) => {
     }
     
     try {
-        const numInterviews = await Match.countDocuments({});
+        const numInterviews = await Interview.countDocuments({});
         if (numInterviews >= 5) {
             res.status(404).json({
                 status: responseStatus.FAILED,
@@ -168,13 +170,7 @@ const findMatch = async (req, res) => {
     try {
         const matchExists = await Match.findOne({ email: email }).exec();
         if (matchExists) {
-            res.status(404).json({
-                status: responseStatus.FAILED,
-                data: {
-                    message: clientErrMessages.DUPLICATE_FIND
-                }
-            });
-            return;
+            await Match.findOneAndDelete({ email: email }).exec();
         }
         
         const match = new Match({
@@ -182,122 +178,6 @@ const findMatch = async (req, res) => {
             difficulty: difficulty,
         });
         await match.save();
-        
-        var count = 0;
-        const intervalId = setInterval(async () => {
-            count = count + 1;
-            // 30s time limit reached
-            if (count >= 6) {
-                clearInterval(intervalId);
-                await Match.findOneAndDelete({ email: email }).exec();
-                res.status(404).json({
-                    status: responseStatus.FAILED,
-                    data: {
-                        message: clientErrMessages.TIMEOUT_30_SECONDS
-                    }
-                });
-                return;
-            }
-
-            try {
-                const interviewExists = await Interview.findOne({
-                    $or: [
-                        { firstUserEmail: email },
-                        { secondUserEmail: email }
-                    ]
-                });
-                
-                if (interviewExists) {
-                    // user is already matched with a partner
-                    clearInterval(intervalId);
-                    var partnerEmail = interviewExists.firstUserEmail;
-                    if (partnerEmail == email) {
-                        partnerEmail = interviewExists.secondUserEmail;
-                    }
-
-                    res.json({
-                        status: responseStatus.SUCCESS,
-                        data: {
-                            partnerEmail: partnerEmail,
-                            interviewId: interviewExists.interviewId,
-                            question: {
-                                title: interviewExists.questionTitle,
-                                description: interviewExists.questionDescription
-                            }
-                        }
-                    });
-                    return;
-                }
-                
-                // if user is not matched with a partner yet, try to find a partner
-                const partnerResult = await Match.findOne({
-                    email: { $ne: email},  // exclude the current user
-                    difficulty: difficulty
-                }, {}, {
-                    sort: { "createdAt": 1}  // find the earliest queueing user
-                })
-                .exec();
-                
-                if (!partnerResult) {
-                    // no suitable match found
-                    return;
-                }
-                
-                // match is found
-                clearInterval(intervalId);
-                        
-                // Fetch a random question from question-microservice for the interview
-                const questionResult = await axios.get(`http://localhost:3000/api/questions/get_random_question?difficulty=${difficulty}`);
-                const response = questionResult.data;
-
-                // failed to retrieve question for interview
-                if (response.status != responseStatus.SUCCESS || !response.data || response.data.questions.length < 1) {
-                    res.status(404).json({  
-                        status: responseStatus.FAILED,
-                        data: {
-                            message: clientErrMessages.RETRIEVE_QUESTION_FAILED
-                        }  
-                    });
-                    return;
-                }
-                
-                const question = response.data.questions[0];
-                const questionTitle = question.title;
-                const questionDescription = question.description;
-                
-                const interview = new Interview({
-                    interviewId: mongoose.Types.ObjectId(),  // Generate a random inverviewId
-                    difficulty: difficulty,
-                    questionTitle: questionTitle,
-                    questionDescription: questionDescription,
-                    firstUserEmail: email,
-                    secondUserEmail: partnerResult.email
-                });
-                await interview.save();
-                
-                await Match.findOneAndDelete({ email: email }).exec();
-                await Match.findOneAndDelete({ email: partnerResult.email }).exec();
-
-                res.json({
-                    status: responseStatus.SUCCESS,
-                    data: {
-                        partnerEmail: partnerResult.email,
-                        interviewId: interview.interviewId,
-                        question: {
-                            title: questionTitle,
-                            description: questionDescription
-                        }
-                    }
-                });
-            } catch (intervalErr) {
-                clearInterval(intervalId);
-                res.status(500).json({
-                    status: responseStatus.ERROR,
-                    error_message: dbErrMessages.writeError(intervalErr)
-                });
-                return;
-            }
-        }, 5000);  // Try to find a match every 5s, until 30s is up
     } catch (err) {
         res.status(500).json({
             status: responseStatus.ERROR,
@@ -305,6 +185,114 @@ const findMatch = async (req, res) => {
         });
         return;
     }
+        
+    var count = 0;
+    const intervalId = setInterval(async () => {
+        count = count + 1;
+        // 30s time limit reached
+        if (count >= 6) {
+            clearInterval(intervalId);
+            await Match.findOneAndDelete({ email: email }).exec();
+            res.status(404).json({
+                status: responseStatus.FAILED,
+                data: {
+                    message: clientErrMessages.TIMEOUT_30_SECONDS
+                }
+            });
+            return;
+        }
+
+        try {
+            const interviewExists = await Interview.findOne({
+                $or: [
+                    { firstUserEmail: email },
+                    { secondUserEmail: email }
+                ]
+            });
+            
+            if (interviewExists) {
+                // user is already matched with a partner
+                clearInterval(intervalId);
+                var partnerEmail = interviewExists.firstUserEmail;
+                if (partnerEmail == email) {
+                    partnerEmail = interviewExists.secondUserEmail;
+                }
+
+                res.json({
+                    status: responseStatus.SUCCESS,
+                    data: {
+                        partnerEmail: partnerEmail,
+                        interviewId: interviewExists.interviewId,
+                        question: interviewExists.question
+                    }
+                });
+                return;
+            }
+            
+            // if user is not matched with a partner yet, try to find a partner
+            const partnerResult = await Match.findOne({
+                email: { $ne: email},  // exclude the current user
+                difficulty: difficulty
+            }, {}, {
+                sort: { "createdAt": 1}  // find the earliest queueing user
+            })
+            .exec();
+            
+            if (!partnerResult) {
+                // no suitable match found
+                return;
+            }
+            
+            // match is found
+            clearInterval(intervalId);
+
+            // Delete both match records
+            await Match.findOneAndDelete({ email: email }).exec();
+            await Match.findOneAndDelete({ email: partnerResult.email }).exec();
+                    
+            // Fetch a random question from question-microservice for the interview
+            const questionResult = await axios.get(`http://localhost:3000/api/questions/get_random_question?difficulty=${difficulty}`);
+            const response = questionResult.data;
+            
+            // failed to retrieve question for interview
+            if (response.status != responseStatus.SUCCESS || !response.data || response.data.questions.length < 1) {
+                res.status(404).json({  
+                    status: responseStatus.FAILED,
+                    data: {
+                        message: clientErrMessages.RETRIEVE_QUESTION_FAILED
+                    }  
+                });
+                return;
+            }
+            
+            const question = response.data.questions[0];
+
+            const interview = new Interview({
+                interviewId: mongoose.Types.ObjectId(),  // Generate a random inverviewId
+                difficulty: difficulty,
+                question: question,
+                firstUserEmail: email,
+                secondUserEmail: partnerResult.email
+            });
+            await interview.save();
+            
+            res.json({
+                status: responseStatus.SUCCESS,
+                data: {
+                    partnerEmail: partnerResult.email,
+                    interviewId: interview.interviewId,
+                    question: question
+                }
+            });
+        } catch (err) {
+            clearInterval(intervalId);
+            res.status(500).json({
+                status: responseStatus.ERROR,
+                error_message: dbErrMessages.writeError(err)
+            });
+            return;
+        }
+    }, 5000);  // Try to find a match every 5s, until 30s is up
 }
 
 // Get number of current ongoing interviews

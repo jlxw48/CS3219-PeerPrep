@@ -11,12 +11,8 @@ const interviewSchema = new Schema({
         type: String,
         required: true
     },
-    questionTitle: {
-        type: String,
-        required: true
-    },
-    questionDescription: {
-        type: String,
+    question: {
+        type: Object,
         required: true
     },
     firstUserEmail: {
@@ -27,6 +23,7 @@ const interviewSchema = new Schema({
     },
     createdAt: {
         type: Date,
+        expires: 3600,
         default: Date.now
     }
 });
