@@ -82,7 +82,7 @@ function Login(props) {
             toast.success("You are already logged in.");
             history.push({ pathname: '/' });
         }
-    }, []);
+    }, [history.push]);
 
     return (
         <>

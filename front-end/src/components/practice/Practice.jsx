@@ -8,13 +8,10 @@ import { useHistory } from "react-router-dom";
 
 import { Container, Row, Col } from "react-bootstrap";
 import Skeleton from 'react-loading-skeleton';
-import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/theme-github";
-import "ace-builds/src-noconflict/mode-python";
-import "ace-builds/src-noconflict/ext-language_tools"
 import "../../css/Practice.css"
 import Seeds from '../../Seeds';
 import Chat from "./Chat";
+import Editor from "./Editor";
 
 function Practice() {
     const history = useHistory();
@@ -26,6 +23,7 @@ function Practice() {
     useEffect(() => {
         if (matchRef.current === null) {
             history.push({ pathname: '/' });
+            return;
         }
 
         if (userRef.current === null) {
@@ -54,24 +52,7 @@ function Practice() {
                         </div>
                     </div>
                     <div className="editor-section-container">
-                        <AceEditor
-                            placeholder=""
-                            mode="python"
-                            theme="github"
-                            name="editor"
-                            fontSize={14}
-                            showPrintMargin={false}
-                            showGutter={true}
-                            height="100%"
-                            highlightActiveLine={false}
-                            value={``}
-                            setOptions={{
-                                enableBasicAutocompletion: true,
-                                enableLiveAutocompletion: true,
-                                enableSnippets: false,
-                                showLineNumbers: true,
-                                tabSize: 4,
-                            }} />
+                        <Editor />
                     </div>
                 </Col>
                 <Chat />

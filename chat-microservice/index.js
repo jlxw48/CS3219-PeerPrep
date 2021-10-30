@@ -1,11 +1,9 @@
 require("dotenv").config();
 
 const express = require('express');
-const cors = require("cors")
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(cors());
 const mongoose = require('mongoose');
 const dbController = require('./controllers/dbController')
 const chatApiRoutes = require('./routes/chatApiRoutes');
@@ -18,15 +16,11 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 
 const io = new Server(server, {
-    path: "/api/chat/create",
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
+    path: "/api/chat/create"
 });
 
 // Event 'connection': Fired upon a connection from client
-io.on("connection", socket => {
+io.sockets.on("connection", socket => {
     console.log("a user connected");
     socket.on("message", newMessage => {
         // If partner has ended interview, send a message to inform the other buddy
@@ -35,13 +29,14 @@ io.on("connection", socket => {
                 userEmail: newMessage.contents.userEmail,
                 message: clientMessages.PARTNER_ENDED_INTERVIEW
             }
-            io.emit(newMessage.interviewId, endMessageContents);
+            io.sockets.emit(newMessage.interviewId, endMessageContents);
             return;
         }
 
         // Saves the chat message to chat history
         dbController.saveNewMessage(newMessage);
-        io.emit(newMessage.interviewId, newMessage.contents);
+        console.log(newMessage);
+        io.sockets.emit(newMessage.interviewId, newMessage.contents);
     });
 });
 
@@ -54,7 +49,6 @@ if (process.env.NODE_ENV === "test") {
 mongoose.connect(dbURI)
     .then((result) => {
         console.log('Connected to MongoDB');
-
         const port = process.env.PORT || 8002;
         server.listen(port, () => {
             console.log(`Chat microservice listening on port ${port}`);

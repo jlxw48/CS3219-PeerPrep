@@ -8,13 +8,16 @@ import TimeAgo from 'javascript-time-ago'
 import axios from 'axios';
 
 import en from 'javascript-time-ago/locale/en.json'
+import { BrowserRouter, withRouter } from "react-router-dom";
 
 axios.defaults.withCredentials = true;
 TimeAgo.addDefaultLocale(en)
-
+const WithRouterApp = withRouter(App);
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <WithRouterApp />
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

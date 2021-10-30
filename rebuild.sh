@@ -8,6 +8,8 @@ cd ../questions-microservice
 docker build -t swayongshen/questions .
 cd ../front-end
 docker build -t swayongshen/front-end .
+cd ../chat-microservice
+docker build -t swayongshen/chat .
 cd ../kubernetes
 kubectl delete -f .
 kubectl apply -f .

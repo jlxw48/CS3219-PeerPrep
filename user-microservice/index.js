@@ -1,16 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const userApiRoutes = require('./routes/userApiRoutes');
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 
 const app = express();
-var corsOptions = {
-    origin: '*',
-    credentials: true };
-
-app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));

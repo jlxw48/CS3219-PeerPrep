@@ -9460,6 +9460,13 @@ react-app-polyfill@^2.0.0:
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
 
+react-bootstrap-confirmation@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-confirmation/-/react-bootstrap-confirmation-1.0.4.tgz#82cf6038121c9264fdf2387a0ba6f9e1a643d8b5"
+  integrity sha512-4Nd8gkMTAxxym7ZvEysPbJqi3cTpxF/Xz82zsINpd6bG3lpWGgxlimuDNZnLYWwi79DcUUPYD+COeijhzM0Xtw==
+  dependencies:
+    react-confirm "^0.1.18"
+
 react-bootstrap@^2.0.0-rc.0:
   version "2.0.0-rc.0"
   resolved "https://registry.npmjs.org/react-bootstrap/-/react-bootstrap-2.0.0-rc.0.tgz"
@@ -9496,6 +9503,11 @@ react-chat-widget@3.0.5:
     markdown-it-sup "^1.0.0"
     react-redux "^7.2.0"
     redux "^4.0.5"
+
+react-confirm@^0.1.18:
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/react-confirm/-/react-confirm-0.1.24.tgz#789a8ca5bc9ae52a4bbe6fd75c6b4b9ef69a60fd"
+  integrity sha512-96qA+mbZyBRmh/3Y5aDgrYLwLndbaRjkP3GlXQtPEQbIH0P66xGcHJ7ui6y/MN85AZWq/V3drA1fJOiEcVkAVA==
 
 react-countdown-circle-timer@^2.5.4:
   version "2.5.4"

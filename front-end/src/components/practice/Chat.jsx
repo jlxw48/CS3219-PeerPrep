@@ -16,56 +16,57 @@ function Chat() {
     let { user, userRef, match, matchRef } = useContext(AppContext);
 
     const interviewId = matchRef.current.interviewId;
-    const chatSocket = io(REACT_APP_BACKEND_URL, {
-        'path': CONNECT_MESSENGER_URL
+    const chatSocket = io.connect("http://localhost:8010", {
+        path: "/proxy/api/chat/create"
     });
+    console.log("hi");
     const [chats, setChats] = useState([]);
 
     useEffect(() => {
         /**
          * Fetch chat history from backend into chats variable.
          */
-        chatSocket.on("connection", () => {
+        chatSocket.on("connect", () => {
             // Successfully connected/reconnected
-            console.log("Chat socket connected.");
 
-            axios.get(CHAT_HISTORY_URL, {
-                interviewId: interviewId
-            }).then(res => {
+            axios.get(CHAT_HISTORY_URL + interviewId).then(res => {
                 if (res.data.status === "success" && res.data.data) {
                     const chatHistory = res.data.data.history;
                     setChats(chatHistory);
                 }
-            }).catch(err => console.log(err))
+
+                /**
+                 * Push chat history from chat variables into chat widget
+                 */
+                for (let chat in chats) {
+                    if (chat.senderEmail === user.email) {
+                        addUserMessage(chat.message);
+                    } else {
+                        addResponseMessage(chat.message);
+                    }
+                }
+            }).catch(err => console.log(err));
+
+            /**
+             * Set event upon receiving new message to add to chats variable and to chat widget.
+             */
+            console.log("hi", interviewId);
+            chatSocket.on(interviewId, newMessage => {
+                console.log("received", newMessage);
+                setChats(oldMessages => [...oldMessages, newMessage]);
+                if (newMessage.senderEmail !== user.email) {
+                    addResponseMessage(newMessage.message);
+                }
+            });
 
         });
 
-        /**
-         * Push chat history from chat variables into chat widget
-         */
-        for (let chat in chats) {
-            if (chat.senderEmail === user.email) {
-                addUserMessage(chat.message);
-            } else {
-                addResponseMessage(chat.message);
-            }
+        // When tearing down Chat component, close the socket.
+        return () => {
+            console.log("closing chat socket");
+            chatSocket.disconnect();
+            chatSocket.close();
         }
-
-        /**
-         * Set event upon receiving new message to add to chats variable and to chat widget.
-         */
-        chatSocket.on(interviewId, newMessage => {
-            setChats(oldMessages => [...oldMessages, newMessage]);
-            if (newMessage.senderEmail === user.email) {
-                addUserMessage(newMessage.message)
-            } else {
-                addResponseMessage(newMessage.message);
-            }
-        });
-
-       
-        return () => chatSocket.disconnect();
-
     }, []);
 
 
@@ -76,8 +77,6 @@ function Chat() {
         console.log(`New message incoming! ${msgString}`);
 
         const newChat = { senderEmail: user.email, message: msgString }
-        alert(msgString);
-        // setChats(oldMessages => [...oldMessages, newChat]);
         chatSocket.emit("message", {
             interviewId: interviewId,
             contents: newChat
@@ -87,15 +86,6 @@ function Chat() {
 
     return (
         <Col md={3} className="chat-col">
-            {/* <div className="chat-entry-container">
-                <br /> */}
-            {/* {seeds.chats.map(chat => {
-                    return <><ChatEntry {...chat} /><br /></>
-                })} */}
-            {/* </div>
-            <div className="chat-input-container">
-                <input type="textarea" className="chat-input" placeholder="Enter a message..." />
-            </div> */}
             <Widget
                 handleNewUserMessage={handleNewUserMessage}
                 title="Chat"

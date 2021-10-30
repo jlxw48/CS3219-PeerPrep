@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import axios from 'axios'
 import { LOGOUT_URL, END_MATCH_URL } from "../Api.js";
 import { Button } from 'react-bootstrap'
-import useWaitForDOMRef from '@restart/ui/esm/useWaitForDOMRef'
+import {confirm} from 'react-bootstrap-confirmation';
 
 
 
@@ -27,13 +27,16 @@ function PeerPrepNav() {
     }
 
     // Calls match API to end interview and set state of match to be none.
-    const handleEndInterview = () => {
+    const handleEndInterview = async () => {
+        const isEndInterview = await confirm("Are you sure?", {title: 'End interview', okText: 'End interview', okButtonStyle: 'danger', cancelButtonStyle: 'dark'});
+        if (!isEndInterview) {
+            return;
+        }
         axios.delete(END_MATCH_URL, {
-            email: user.email
+            params: {email: user.email}
         }).then(res => {
             if (res.status === 200 && res.data.status == "success") {
                 toast.success("Successfully ended interview.");
-                history.push({pathname: '/'});
                 setMatch(null);
             } else {
                 toast.error("Error ending interview, please try again");
@@ -41,6 +44,7 @@ function PeerPrepNav() {
         }).catch(err => {
             toast.error("Error contacting server to end interview, please try again.");
         });
+        history.push({pathname: '/'});
     }
 
     return (
@@ -59,7 +63,7 @@ function PeerPrepNav() {
                         user !== null && <Nav.Link onClick={() => handleLogout()} className="nav-link">Logout</Nav.Link>
                     }
                 </Nav>
-                { matchRef.current !== null && <Nav className="ml-auto" onClick={() => handleEndInterview()}><Button variant="danger">End interview</Button></Nav> }
+                { matchRef.current !== null && <Nav className="ml-auto" onClick={() => handleEndInterview()}><Button variant="danger"><b>End interview</b></Button></Nav> }
             </Container>
         </Navbar>
     );
