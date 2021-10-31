@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: match
-        image: swayongshen/match
+        image: cs3219-g5/match
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

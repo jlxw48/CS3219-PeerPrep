@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: chat
-        image: swayongshen/chat
+        image: cs3219-g5/chat
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: text
-        image: swayongshen/text
+        image: cs3219-g5/text
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

@@ -12,6 +12,7 @@ import "../../css/Practice.css"
 import Seeds from '../../Seeds';
 import Chat from "./Chat";
 import Editor from "./Editor";
+import LoadingScreen from "../LoadingScreen";
 
 function Practice() {
     const history = useHistory();
@@ -20,15 +21,17 @@ function Practice() {
 
     let { user, userRef, match, matchRef } = useContext(AppContext);
 
+    // If user go to /practice, check if he's logged in and has an existing match.
     useEffect(() => {
-        if (matchRef.current === null) {
-            history.push({ pathname: '/' });
-            return;
-        }
-
         if (userRef.current === null) {
             history.push({ pathname: '/' });
             toast.error("You can only practice if you are logged in.");
+        }
+
+        if (matchRef.current === null) {
+            history.push({ pathname: '/' });
+            toast.error("Please use the main menu to find a practice partner.");
+            return;
         } else {
             setQuestion(matchRef.current.question);
         }
@@ -38,7 +41,7 @@ function Practice() {
 
     const seeds = Seeds();
     return (
-        isLoading ? <></> : 
+        isLoading ? <LoadingScreen/> : 
         <Container className="practice-container">
             <Row className="practice-container-row">
                 <Col md={9} className="question-editor-col">

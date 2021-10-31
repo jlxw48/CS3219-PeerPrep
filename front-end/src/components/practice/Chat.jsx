@@ -19,7 +19,7 @@ function Chat() {
     const chatSocket = io.connect(BACKEND_DOMAIN, {
         path: CHAT_SOCKET_PATH
     });
-    console.log("hi");
+
     const [chats, setChats] = useState([]);
 
     useEffect(() => {
@@ -36,7 +36,7 @@ function Chat() {
                 }
 
                 /**
-                 * Push chat history from chat variables into chat widget
+                 * Push chat history from chats variable into chat widget
                  */
                 for (let chat in chats) {
                     if (chat.senderEmail === user.email) {
@@ -50,9 +50,7 @@ function Chat() {
             /**
              * Set event upon receiving new message to add to chats variable and to chat widget.
              */
-            console.log("hi", interviewId);
             chatSocket.on(interviewId, newMessage => {
-                console.log("received", newMessage);
                 setChats(oldMessages => [...oldMessages, newMessage]);
                 if (newMessage.senderEmail !== user.email) {
                     addResponseMessage(newMessage.message);
@@ -61,9 +59,16 @@ function Chat() {
 
         });
 
+        const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
+        // Upon timeout, close socket to conserve resources
+        setTimeout(() => {
+            chatSocket.disconnect();
+            chatSocket.close();
+        }, matchRef.current.durationLeft * SECONDS_TO_MICROSECONDS_MULTIPLIER);
+
         // When tearing down Chat component, close the socket.
         return () => {
-            console.log("closing chat socket");
+            console.log("Closing chat socket");
             chatSocket.disconnect();
             chatSocket.close();
         }
@@ -71,7 +76,7 @@ function Chat() {
 
 
     /**
-     * Upon user entering new message, send to socket.
+     * Upon user entering new message into chat widget, send to socket.
      */
     const handleNewUserMessage = (msgString) => {
         console.log(`New message incoming! ${msgString}`);
@@ -81,7 +86,6 @@ function Chat() {
             interviewId: interviewId,
             contents: newChat
         });
-
     };
 
     return (
@@ -94,8 +98,6 @@ function Chat() {
             />
         </Col>
     )
-
-
 }
 
 export default Chat;

@@ -20,7 +20,6 @@ function Editor() {
     const [code, setCode] = useState();
 
     useEffect(() => {
-        console.log("Edior useEffect")
         editorSocket.on("connect", () => {
             console.log("Successfully connected to editor socket");
 
@@ -28,31 +27,39 @@ function Editor() {
             axios.get(EDITOR_HISTORY_URL, {
                 params: { interviewId }
             })
-                .then(res => res.data)
-                .then(data => {
-                    if (data.status === "success") {
-                        const textHistory = data.data.message;
-                        console.log(textHistory);
-                        setCode(textHistory);
-                    } else if (data.status == "failed") {
-                        setCode("");
-                    }
-                })
-                .catch(err => console.log(err));
+            .then(res => res.data)
+            .then(data => {
+                if (data.status === "success") {
+                    const textHistory = data.data.message;
+                    setCode(textHistory);
+                } else if (data.status == "failed") {
+                    setCode("");
+                }
+            })
+            .catch(err => console.log(err));
 
             editorSocket.emit('subscribe', {
                 interviewId
             });
         });
 
+        // Upon receiving message from editorSocket, replace the "code" state variable with the incoming message.
         editorSocket.on('message', data => {
             console.log(`Receiving: ${data}`);
             setCode(data);
         });
 
+        const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
+        // Upon timeout, close socket to conserve resources
+        setTimeout(() => {
+            editorSocket.disconnect();
+            editorSocket.close();
+        }, matchRef.current.durationLeft * SECONDS_TO_MICROSECONDS_MULTIPLIER);
+
         return () => editorSocket.disconnect();
     }, []);
 
+    // When user changes something in the code editor, send the entire text in the code editor over the editor socket.
     const handleCodeChange = (event) => {
         editorSocket.emit('newMessage', {
             interviewId,
@@ -78,8 +85,8 @@ function Editor() {
                 enableSnippets: false,
                 showLineNumbers: true,
                 tabSize: 4,
-            }} 
-            onChange={(e) => handleCodeChange(e)}/>
+            }}
+            onChange={(e) => handleCodeChange(e)} />
     )
 }
 

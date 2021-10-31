@@ -1,17 +1,17 @@
 #!/bin/bash
 
 cd user-microservice
-docker build -t swayongshen/user .
+docker build -t cs3219-g5/user .
 cd ../match-microservice
-docker build -t swayongshen/match .
+docker build -t cs3219-g5/match .
 cd ../questions-microservice
-docker build -t swayongshen/questions .
+docker build -t cs3219-g5/questions .
 cd ../front-end
-docker build -t swayongshen/front-end .
+docker build -t cs3219-g5/front-end .
 cd ../chat-microservice
-docker build -t swayongshen/chat .
+docker build -t cs3219-g5/chat .
 cd ../text-microservice
-docker build -t swayongshen/text .
+docker build -t cs3219-g5/text .
 cd ../kubernetes
 kubectl delete -f .
 kubectl apply -f .

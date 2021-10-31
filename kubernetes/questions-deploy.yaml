@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: questions
-        image: swayongshen/questions
+        image: cs3219-g5/questions
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

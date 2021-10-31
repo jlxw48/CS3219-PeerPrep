@@ -21,9 +21,11 @@ function Home() {
             if (res.status !== 200 || res.data.status !== "success") {
                 console.error("Error fetching questions for home page.");
             }
-            setQuestions(res.data.data.questions);
+            return res.data.data;
+        }).then(data => {
+            setQuestions(data.questions);
         }).catch(err => {
-            console.error(err);
+            console.error("Error fetching questions for home page.", err);
         })
     }, [])
     

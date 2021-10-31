@@ -24,16 +24,18 @@ function Login(props) {
     const [isLoading, setIsLoading] = useState(false);
     const { checkIfUserInMatch } = useAppStateHelper();
 
+    // When register form is submitted.
     const handleRegister = (event) => {
         event.preventDefault();
         const email = event.target.email.value;
         const password = event.target.password.value;
         const name = event.target.name.value;
+        // Show the loading spinner
         setIsLoading(true);
         axios.post(REGISTER_URL, {
-            email: email,
-            name: name,
-            password: password
+            email,
+            name,
+            password
         }).then(res => {
             if (res.status === 201 && res.data.status === "success") {
                 toast.success("Registration is successful, please login");
@@ -42,37 +44,34 @@ function Login(props) {
                 toast.error(`Registration has failed, ${res.data.data.message}`)
                 setIsLoading(false);
             }
-        }, error => {
+        }).catch(error => {
             if (error.response && resHasMessage(error.response)) {
                 toast.error(`${getResMessage(error.response)}`);
             } else {
                 toast.error("Error with registration, try agian later");
             }
             setIsLoading(false);
-        })
+        });
     }
 
+    // When login form is submitted.
     const handleLogin = async (event) => {
         event.preventDefault();
         const email = event.target.email.value;
         const password = event.target.password.value;
         setIsLoading(true);
         axios.post(LOGIN_URL, {
-            email: email,
-            password: password
-        }).then(res => {
-            if (res.status === 200 && res.data.status === "success") {
-                setUser(res.data.data);
-                toast.success("Login successful");
-                checkIfUserInMatch().then(hasMatch => {
-                    if (!hasMatch) {
-                        redirectToHome();
-                    }
-                });
-            } else {
-                toast.error(`Login has failed, ${res.data.status}`)
-                setIsLoading(false);
-            }
+            email,
+            password
+        }).then(res => res.data.data).then(data => {
+            setUser(data);
+            toast.success("Login successful");
+            // Checks Match microservice to see if user is in match, if so, redirect to practice page, else redirect to home.
+            checkIfUserInMatch().then(hasMatch => {
+                if (!hasMatch) {
+                    redirectToHome();
+                }
+            });
         }).catch(error => {
             if (error.response && resHasMessage(error.response)) {
                 toast.error(`${getResMessage(error.response)}`);

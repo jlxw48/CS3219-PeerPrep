@@ -26,41 +26,29 @@ function FindMatchModal(props) {
     
     const handleFindMatch = () => {
         setFinding(true);
-        const findMatchTimeout = setTimeout(() => {
-            handleTimeout();
-        }, THIRTY_SECONDS)
         axios({
             method: "post",
             url: FIND_MATCH_URL,
-            cancelToken: cancelTokenSource.token,
+            cancelToken = cancelTokenSource.token,
             data: {
                 email: user.email,
                 difficulty: props.difficulty
             }
-        }).then(response => {
-            if (response.status === 200) {
-                if (response.data.status == "success") {
-                    toast.success("Match found, practice session starting now");
-                    clearTimeout(findMatchTimeout);
-                    setMatch(response.data.data);
-                    history.push({ pathname: '/practice' });
-                } else {
-                    toast.error(response.data.data.message);
-                }
-            } else {
-                toast.error("Failed to find a match, please try again.");
-                handleCancel();
-            }
+        }).then(response => response.data.data).then(data => {
+            toast.success("Match found, practice session starting now");
+            setMatch(data);
+            history.push({ pathname: '/practice' });
         }).catch((error) => {
-            if (!axios.isCancel(error)) {
-                toast.error("Network error when finding match.")
+            // If request was cancelled then ignore the error.
+            if (axios.isCancel(error)) {
+                return;
+            }
+            if (error.status === 404) {
+                toast.error(error.response.data.data.message);
+            } else {
+                console.error(error);
             }
         })
-    }
-
-    const handleTimeout = () => {
-        handleCancel();
-        toast.error("Failed to find a match within 30s, please try again.");
     }
 
     const handleCancel = () => {

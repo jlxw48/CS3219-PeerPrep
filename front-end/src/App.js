@@ -15,6 +15,7 @@ import axios from 'axios';
 import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL } from "./Api.js"
 import { useHistory } from "react-router-dom";
 import LoadingScreen from './components/LoadingScreen';
+import { useAppStateHelper } from './common/state_handlers/AppState';
 
 
 export const AppContext = React.createContext();
@@ -25,6 +26,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser, userRef] = useState(null);
   const [match, setMatch, matchRef] = useState(null);
+  const { checkLogin, checkIfUserInMatch } = useAppStateHelper();
+
   let context = {
     user: user,
     setUser: setUser,
@@ -34,51 +37,16 @@ function App() {
     setMatch: setMatch
   }
 
-  function redirectToPractice() {
-    history.push({ pathname: '/practice' });
-  }
-
-  function redirectToHome() {
-    history.push({ pathname: '/' });
-  }
-
-  const EndInterViewToastMsg = () => (<p>Interview successfully resumed. Click <b>End Interview</b> to find another match.</p>)
-
-  function checkLogin() {
-    return axios.get(VALIDATE_LOGIN_URL).then(res => {
-      if (res.status == 200) {
-        setUser(res.data.data);
-      }
-      setIsLoading(false);
-    }).catch(err => {
-      setIsLoading(false);
-    }); // No JWT cookie or invalid JWT cookie
-  }
-
-  function checkIfUserInMatch() {
-    axios.get(MATCH_GET_INTERVIEW_URL + `?email=${userRef.current.email}`).then(res => {
-      if (res.status == 200 && res.data.status == "success") {
-        setMatch(res.data.data);
-        return true;
-      } else {
-        return false;
-      }
-    }).then(hasMatch => {
-      if (hasMatch) {
-        console.log("yea");
-        toast.success(EndInterViewToastMsg);
-        redirectToPractice();
-      }
-    }).catch(err => {}); // Not in match
-  }
-
   // Upon page load, check if user is logged in then check if user is already in a match.
   useEffect(() => {
-    checkLogin().then(res => {
-      if (userRef.current === null) {
+    checkLogin().then(isLoggedIn => {
+      if (!isLoggedIn) {
+        setIsLoading(false);
         return
       }
+
       checkIfUserInMatch();
+      setIsLoading(false);
     }).catch(err => {});
   }, []);
 

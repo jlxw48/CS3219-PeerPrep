@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: swayongshen/user
+        image: cs3219-g5/user
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

@@ -251,7 +251,7 @@ const findMatch = async (req, res) => {
             await Match.findOneAndDelete({ email: partnerResult.email }).exec();
                     
             // Fetch a random question from question-microservice for the interview
-            const questionResult = await axios.get(`http://localhost:3000/api/questions/get_random_question?difficulty=${difficulty}`);
+            const questionResult = await axios.get(`http://questions:3000/api/questions/get_random_question?difficulty=${difficulty}`);
             const response = questionResult.data;
             
             // failed to retrieve question for interview
