@@ -12,9 +12,22 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
-  - host: "peerprep.ml"
-    http:
+  - http:
       paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: front-end
+            port: 
+              number: 3000
+      - path: /api/user
+        pathType: Prefix
+        backend:
+          service:
+            name: user
+            port: 
+              number: 3000
       - path: /api/questions
         pathType: Prefix
         backend:
@@ -29,17 +42,17 @@ spec:
             name: match
             port: 
               number: 3000
-      - path: /api/chat
-        pathType: Prefix
-        backend:
-          service:
-            name: chat
-            port: 
-              number: 3000
-      - path: /api/editor
-        pathType: Prefix
-        backend:
-          service:
-            name: text
-            port: 
-              number: 3000
+      # - path: /api/chat
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: chat
+      #       port: 
+      #         number: 3000
+      # - path: /api/editor
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: text
+      #       port: 
+      #         number: 3000

@@ -12,7 +12,6 @@ const clientErrors = require('./common/errors/clientErrors');
 const clientMessages = require('./common/messages/clientMessages')
 const { Server } = require('socket.io');
 
-<<<<<<< HEAD
 const io = new Server(server, {
     path: "/api/chat/create",
     cors: {
@@ -40,8 +39,6 @@ io.on("connection", socket => {
         io.emit(newMessage.interviewId, newMessage.contents);
     });
 });
-=======
->>>>>>> 1e6141493c7814fae04a2bf814473f19a553517f
 
 // Connect to mongodb
 var dbURI = process.env.MONGODB_URI;
