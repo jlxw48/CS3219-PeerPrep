@@ -19,59 +19,32 @@ const firstUserMatchDetails = {
     createdAt: new Date(2021, 9, 6, 19, 30, 0)
 };
 
-const firstUserInterviewDetails = {
-    email: "user1@gmail.com",
-    difficulty: "easy",
-    createdAt: new Date(2021, 9, 6, 19, 30, 0),
-    partnerEmail: "user2@gmail.com",
+const firstInterviewDetails = {
     interviewId: "615d93afdb4e069cbdfe114a",
-    questionTitle: "easy question title 1",
-    questionDescription: "easy question description 1"
-};
-const secondUserInterviewDetails = {
-    email: "user2@gmail.com",
     difficulty: "easy",
-    createdAt: new Date(2021, 9, 6, 19, 30, 10),
-    partnerEmail: "user1@gmail.com",
-    interviewId: "615d93afdb4e069cbdfe114a",
-    questionTitle: "easy question title 1",
-    questionDescription: "easy question description 1"
+    questionTitle: "easy question",
+    questionDescription: "easy question description",
+    firstUserEmail: "user1@gmail.com",
+    secondUserEmail: "user2@gmail.com",
+    createdAt: new Date(2021, 9, 6, 19, 30, 0)
 };
-const thirdUserInterviewDetails = {
-    email: "user3@gmail.com",
-    difficulty: "medium",
-    createdAt: new Date(2021, 9, 6, 19, 35, 0),
-    partnerEmail: "user4@gmail.com",
+const secondInterviewDetails = {
     interviewId: "615d93afdb4e069cbdfe114b",
-    questionTitle: "medium question title 2",
-    questionDescription: "medium question description 2"
-};
-const fourthUserInterviewDetails = {
-    email: "user4@gmail.com",
     difficulty: "medium",
-    createdAt: new Date(2021, 9, 6, 19, 35, 10),
-    partnerEmail: "user3@gmail.com",
-    interviewId: "615d93afdb4e069cbdfe114b",
-    questionTitle: "medium question title 2",
-    questionDescription: "medium question description 2"
+    questionTitle: "medium question",
+    questionDescription: "medium question description",
+    firstUserEmail: "user3@gmail.com",
+    secondUserEmail: "user4@gmail.com",
+    createdAt: new Date(2021, 9, 6, 19, 30, 10)
 };
-const fifthUserInterviewDetails = {
-    email: "user5@gmail.com",
-    difficulty: "hard",
-    createdAt: new Date(2021, 9, 6, 19, 40, 0),
-    partnerEmail: "user6@gmail.com",
+const thirdInterviewDetails = {
     interviewId: "615d93afdb4e069cbdfe114c",
-    questionTitle: "hard question title 2",
-    questionDescription: "hard question description 2"
-};
-const sixthUserInterviewDetails = {
-    email: "user6@gmail.com",
     difficulty: "hard",
-    createdAt: new Date(2021, 9, 6, 19, 40, 10),
-    partnerEmail: "user5@gmail.com",
-    interviewId: "615d93afdb4e069cbdfe114c",
-    questionTitle: "hard question title 2",
-    questionDescription: "hard question description 2"
+    questionTitle: "hard question",
+    questionDescription: "hard question description",
+    firstUserEmail: "user5@gmail.com",
+    secondUserEmail: "user6@gmail.com",
+    createdAt: new Date(2021, 9, 6, 19, 35, 0)
 };
 
 module.exports = {
@@ -79,10 +52,7 @@ module.exports = {
     secondUserFindDetails,
     thirdUserFindDetails,
     firstUserMatchDetails,
-    firstUserInterviewDetails,
-    secondUserInterviewDetails,
-    thirdUserInterviewDetails,
-    fourthUserInterviewDetails,
-    fifthUserInterviewDetails,
-    sixthUserInterviewDetails
+    firstInterviewDetails,
+    secondInterviewDetails,
+    thirdInterviewDetails
 }
