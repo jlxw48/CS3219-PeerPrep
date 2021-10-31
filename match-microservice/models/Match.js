@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const matchSchema = new Schema({
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     difficulty: {
         type: String,
@@ -12,19 +13,8 @@ const matchSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        required: true
-    },
-    partnerEmail: {
-        type: String
-    },
-    interviewId: {
-        type: String
-    },
-    questionTitle: {
-        type: String
-    },
-    questionDescription: {
-        type: String
+        expires: 30,
+        default: Date.now
     }
 });
 

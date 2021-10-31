@@ -1,6 +1,7 @@
 const MISSING_REQUEST_BODY = "missing some required fields in request body";
 const MAX_INTERVIEW_REACHED = "total interviews has been reached";
 const INVALID_DIFFICULTY = "difficulty should only be one of easy, medium or hard";
+const DUPLICATE_FIND = "duplicate request to find match";
 const TIMEOUT_30_SECONDS = "failed to find a match after 30s";
 const RETRIEVE_QUESTION_FAILED = "failed to retrieve question for interview";
 const NO_QUESTION = "no question allocated for interview";
@@ -14,6 +15,7 @@ module.exports = {
     MISSING_REQUEST_BODY,
     MAX_INTERVIEW_REACHED,
     INVALID_DIFFICULTY,
+    DUPLICATE_FIND,
     TIMEOUT_30_SECONDS,
     RETRIEVE_QUESTION_FAILED,
     NO_QUESTION,

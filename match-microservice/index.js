@@ -15,17 +15,17 @@ if (process.env.NODE_ENV === "test") {
     dbURI = process.env.TEST_MONGODB_URI;
 }
 
-mongoose.connect(dbURI)
-    .then((result) => {
+const port = process.env.PORT || 8001;
+app.listen(port, async () => {
+    try {
+        await mongoose.connect(dbURI);
         console.log('Connected to MongoDB');
+        console.log(`Match microservice listening on port ${port}`);
+    } catch (err) {
+        console.log(err)
+    }
+});
 
-        const port = process.env.PORT || 8001;
-        app.listen(port, () => {
-            console.log(`Match microservice listening on port ${port}`);
-        });
-    })
-    .catch((err) => console.log(err));
-    
 // Use the match API routes
 app.use('/api/match', matchApiRoutes);
 
