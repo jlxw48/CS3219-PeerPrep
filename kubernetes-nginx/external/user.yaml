@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: user
-        image: asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5/user:v2
+        image: asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5/user:v1
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

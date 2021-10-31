@@ -4,26 +4,26 @@
 const REACT_APP_BACKEND_URL = 'http://localhost/api/';
 const BACKEND_DOMAIN = "http://localhost"
 
-const QUESTION_URL = REACT_APP_BACKEND_URL + "questions/";
+const QUESTION_URL = "http://peerprep.ml/api/questions/";
 
-const USERS_URL = REACT_APP_BACKEND_URL + "user/"
+const USERS_URL = "http://user:3000/api/user/"
 const LOGIN_URL = USERS_URL + "user_login";
 const REGISTER_URL = USERS_URL + "create_account";
 const LOGOUT_URL = USERS_URL + "user_logout"
 const VALIDATE_LOGIN_URL = USERS_URL + "jwt_validate";
 
-const MATCH_URL = REACT_APP_BACKEND_URL + "match/"
+const MATCH_URL = "http://peerprep.ml/api/match/"
 const FIND_MATCH_URL = MATCH_URL + "start_find";
 const END_MATCH_URL = MATCH_URL + "end_interview";
 const MATCH_GET_INTERVIEW_URL = MATCH_URL + "get_interview"
 
-const CHAT_URL = REACT_APP_BACKEND_URL + "chat/"
+const CHAT_URL = "http://peerprep.ml/api/chat/"
 const CONNECT_MESSENGER_URL = "/chat/create/";
 const CHAT_HISTORY_URL = CHAT_URL + "get_messages/"
 const CHAT_SOCKET_PATH = "/api/chat/create"
 // const CHAT_SOCKET_PATH = "/proxy/api/chat/create"
 
-const EDITOR_URL = REACT_APP_BACKEND_URL + "editor/";
+const EDITOR_URL = "http://peerprep.ml/api/editor/";
 const EDITOR_HISTORY_URL = EDITOR_URL + "get_text";
 const EDITOR_SOCKET_PATH = "/api/editor/create"
 // const EDITOR_SOCKET_PATH = "/proxy/api/editor/create"

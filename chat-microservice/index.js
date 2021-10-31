@@ -20,26 +20,6 @@ const io = new Server(server, {
     }
 });
 
-// Event 'connection': Fired upon a connection from client
-io.on("connection", socket => {
-    console.log("a user connected");
-    socket.on("message", newMessage => {
-        // If partner has ended interview, send a message to inform the other buddy
-        if (newMessage.contents.message === "/end_interview") {
-            const endMessageContents = {
-                userEmail: newMessage.contents.userEmail,
-                message: clientMessages.PARTNER_ENDED_INTERVIEW
-            }
-            io.emit(newMessage.interviewId, endMessageContents);
-            return;
-        }
-
-        // Saves the chat message to chat history
-        dbController.saveNewMessage(newMessage);
-        io.emit(newMessage.interviewId, newMessage.contents);
-    });
-});
-
 // Connect to mongodb
 var dbURI = process.env.MONGODB_URI;
 if (process.env.NODE_ENV === "test") {
@@ -67,10 +47,6 @@ app.use((req, res) => {
 const port = process.env.PORT || 8002;
 var server = app.listen(port, () => {
     console.log(`Chat microservice listening on port ${port}`);
-});
-
-const io = new Server(server, {
-    path: "/api/chat/create"
 });
 
 // Event 'connection': Fired upon a connection from client

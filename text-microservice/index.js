@@ -181,11 +181,6 @@ app.all("/api/editor/status", (req, res) => {
   });
 });
 
-const port = process.env.PORT || 3005;
-server.listen(port, () => {
-	console.log(`Text microservice is listening on port ${port} `);
-});
-
 app.use((req, res) => {
   res.status(404).json({
     status: responseStatus.FAILURE,
