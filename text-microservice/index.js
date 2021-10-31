@@ -12,18 +12,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-const http = require('http');
-const server = http.createServer(app);
+const port = process.env.PORT || 3005;
+var server = app.listen(port, () => {
+	console.log(`Text microservice is listening on port ${port} `);
+});
+
 const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/redis-adapter");
 
 const io = new Server(server, {
-     path: "/api/editor/create",
-     cors: {
-         origin: "*",
-         methods: ["GET", "POST", "DELETE"]
-     }
- });
+  path: "/api/editor/create",
+  cors: {
+      origin: "*",
+      methods: ["GET", "POST", "DELETE"]
+  }
+});
 
 var redis_endpoint = process.env.REDIS_ENDPOINT;
 var redis_pw = process.env.REDIS_PASSWORD;

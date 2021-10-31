@@ -8,6 +8,13 @@ spec:
   rules:
   - http:
       paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: front-end
+            port: 
+              number: 3000
       - path: /api/user
         pathType: Prefix
         backend:

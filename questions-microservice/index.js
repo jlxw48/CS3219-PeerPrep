@@ -7,9 +7,11 @@ const clientErr = require( "./common/error_msgs/client_errors" );
 const dbErr = require( "./common/error_msgs/db_errors" );
 const msg = require( "./common/msgs" );
 const responseStatus = require( "./common/status" );
+const cors = require('cors');
 
 const app = express();
 app.use( express.json() );
+app.use(cors());
 const port = 3000;
 
 const setErrorMessage = ( errMessage, code ) => ( req, res ) => {

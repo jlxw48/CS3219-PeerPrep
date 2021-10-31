@@ -187,6 +187,7 @@ const findMatch = async (req, res) => {
     }
         
     var count = 0;
+    const ONE_HOUR = 3600;
     const intervalId = setInterval(async () => {
         count = count + 1;
         // 30s time limit reached
@@ -223,7 +224,8 @@ const findMatch = async (req, res) => {
                     data: {
                         partnerEmail: partnerEmail,
                         interviewId: interviewExists.interviewId,
-                        question: interviewExists.question
+                        question: interviewExists.question,
+                        durationLeft: ONE_HOUR
                     }
                 });
                 return;
@@ -251,7 +253,7 @@ const findMatch = async (req, res) => {
             await Match.findOneAndDelete({ email: partnerResult.email }).exec();
                     
             // Fetch a random question from question-microservice for the interview
-            const questionResult = await axios.get(`http://localhost:3000/api/questions/get_random_question?difficulty=${difficulty}`);
+            const questionResult = await axios.get(`http://questions:3000/api/questions/get_random_question?difficulty=${difficulty}`);
             const response = questionResult.data;
             
             // failed to retrieve question for interview
@@ -281,7 +283,8 @@ const findMatch = async (req, res) => {
                 data: {
                     partnerEmail: partnerResult.email,
                     interviewId: interview.interviewId,
-                    question: question
+                    question: question,
+                    durationLeft: ONE_HOUR
                 }
             });
         } catch (err) {

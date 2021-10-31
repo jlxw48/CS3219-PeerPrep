@@ -1,0 +1,14 @@
+.login-container .card-row {
+    height: 700px;
+}
+
+.login-container .card-header {
+    background: darkorchid;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+}
+
+.login-container .form-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}

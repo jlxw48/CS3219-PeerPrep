@@ -55,7 +55,7 @@ const isPasswordAndUserMatch = (req, res) => {
 				); 
 
         		res.status(200).cookie("cs3219_jwt", token, {
-            			httpOnly: true,
+            			httpOnly: true
             		}).json({
    					status: responseStatus.SUCCESS, 
     				data: {
@@ -211,6 +211,7 @@ exports.jwt_validate = (req, res) => {
     
         jwt.verify(token, 'CS3219_SECRET_KEY', (err, user) => {
             if (err) {
+				console.log("1");
                 console.log(err);
                 return res
                 .status(401)
@@ -219,7 +220,7 @@ exports.jwt_validate = (req, res) => {
                     message: clientErrorMessages.JWT_AUTH_FAILED
                 });
             }
-    
+			console.log("2");
             req.user = user;
 			res.status(200).send({
 				status: responseStatus.SUCCESS,
@@ -231,6 +232,7 @@ exports.jwt_validate = (req, res) => {
 			return;
         });
     } catch (error) {
+		console.log("3");
         res.status(500).send({
 			status: responseStatus.ERROR,
 			data: {
