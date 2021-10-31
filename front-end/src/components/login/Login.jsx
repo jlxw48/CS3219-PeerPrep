@@ -20,7 +20,7 @@ import { useAppStateHelper } from "../../common/state_handlers/AppState.js";
 
 function Login(props) {
     const history = useHistory();
-    const { setUser, userRef, setMatch } = useContext(AppContext);
+    const { setUser, userRef } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
     const { checkIfUserInMatch } = useAppStateHelper();
 
@@ -89,10 +89,10 @@ function Login(props) {
 
     useEffect(() => {
         if (userRef.current !== null) {
-            redirectToHome();
+            history.push({ pathname: '/' });
             toast.success("You are already logged in.");
         }
-    }, []);
+    }, [history, userRef]);
 
     return (
         <>

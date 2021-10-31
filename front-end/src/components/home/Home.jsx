@@ -3,15 +3,12 @@ import { useState, useContext } from 'react';
 import Difficulties from './difficulties/Difficulties';
 import Container from 'react-bootstrap/Container'
 import Questions from './questions/Questions';
-import Seeds from '../../Seeds';
 import FindMatchModal from './match/FindMatchModal';
 import { AppContext } from "../../App.js"
 import { QUESTION_URL } from '../../Api';
-import { toast } from 'react-toastify';
 import axios from 'axios';
 
 function Home() {
-    const seeds = Seeds();
     const [matchDifficulty, setMatchDifficulty] = useState("");
     const [showMatchModal, setShowMatchModal] = useState(false);
     const { user } = useContext(AppContext);

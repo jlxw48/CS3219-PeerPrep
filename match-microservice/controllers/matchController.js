@@ -187,6 +187,7 @@ const findMatch = async (req, res) => {
     }
         
     var count = 0;
+    const ONE_HOUR = 3600;
     const intervalId = setInterval(async () => {
         count = count + 1;
         // 30s time limit reached
@@ -223,7 +224,8 @@ const findMatch = async (req, res) => {
                     data: {
                         partnerEmail: partnerEmail,
                         interviewId: interviewExists.interviewId,
-                        question: interviewExists.question
+                        question: interviewExists.question,
+                        durationLeft: ONE_HOUR
                     }
                 });
                 return;
@@ -281,7 +283,8 @@ const findMatch = async (req, res) => {
                 data: {
                     partnerEmail: partnerResult.email,
                     interviewId: interview.interviewId,
-                    question: question
+                    question: question,
+                    durationLeft: ONE_HOUR
                 }
             });
         } catch (err) {

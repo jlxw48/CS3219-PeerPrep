@@ -1,25 +1,23 @@
 import React, { useEffect } from "react";
 import { useState, useContext } from "react";
-import authHeader from "../../auth-header";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { AppContext } from "../../App.js"
 import { useHistory } from "react-router-dom";
-
 import { Container, Row, Col } from "react-bootstrap";
 import Skeleton from 'react-loading-skeleton';
-import "../../css/Practice.css"
-import Seeds from '../../Seeds';
 import Chat from "./Chat";
 import Editor from "./Editor";
 import LoadingScreen from "../LoadingScreen";
+
+import "../../css/Practice.css"
+import DifficultyBadge from "../DifficultyBadge.jsx";
 
 function Practice() {
     const history = useHistory();
     const [practiceQuestion, setQuestion] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    let { user, userRef, match, matchRef } = useContext(AppContext);
+    let { userRef, matchRef } = useContext(AppContext);
 
     // If user go to /practice, check if he's logged in and has an existing match.
     useEffect(() => {
@@ -29,27 +27,29 @@ function Practice() {
         }
 
         if (matchRef.current === null) {
+            console.log(matchRef.current);
             history.push({ pathname: '/' });
             toast.error("Please use the main menu to find a practice partner.");
             return;
         } else {
             setQuestion(matchRef.current.question);
+            const minutesLeft = Math.floor(matchRef.current.durationLeft / 60);
+            toast.info(`You have ${minutesLeft} minutes remaining for your interview session.`);
         }
 
         setIsLoading(false);
-    }, []);
+    }, [userRef, matchRef, history]);
 
-    const seeds = Seeds();
     return (
         isLoading ? <LoadingScreen/> : 
         <Container className="practice-container">
             <Row className="practice-container-row">
-                <Col md={9} className="question-editor-col">
+                <Col md={12} className="question-editor-col">
                     <div className="practice-question-container">
 
                         <div className="practice-question-body">
                             {
-                                practiceQuestion ? <><h2>{practiceQuestion.title}</h2><br />
+                                practiceQuestion ? <><h2>{practiceQuestion.title}&nbsp;<DifficultyBadge difficulty={practiceQuestion.difficulty}/></h2><br />
                                     {practiceQuestion.description}</> : <Skeleton height={"100%"} />
                             }
                         </div>
@@ -57,8 +57,8 @@ function Practice() {
                     <div className="editor-section-container">
                         <Editor />
                     </div>
+                    <Chat />
                 </Col>
-                <Chat />
             </Row>
         </Container>
     )

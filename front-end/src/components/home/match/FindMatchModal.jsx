@@ -13,13 +13,10 @@ import { FIND_MATCH_URL } from "../../../Api";
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { toast } from 'react-toastify'
-import authHeader from "../../../auth-header";
-import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { AppContext } from "../../../App.js"
 
 function FindMatchModal(props) {
     const [finding, setFinding] = useState(false);
-    const THIRTY_SECONDS = 30 * 1000;
     const history = useHistory();
     const cancelTokenSource = axios.CancelToken.source();
     const { user, setMatch } = useContext(AppContext);
@@ -29,7 +26,7 @@ function FindMatchModal(props) {
         axios({
             method: "post",
             url: FIND_MATCH_URL,
-            cancelToken = cancelTokenSource.token,
+            cancelToken: cancelTokenSource.token,
             data: {
                 email: user.email,
                 difficulty: props.difficulty

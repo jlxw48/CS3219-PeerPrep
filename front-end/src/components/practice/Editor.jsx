@@ -4,47 +4,44 @@ import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/ext-language_tools"
 import io from 'socket.io-client';
 import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH } from "../../Api.js";
-import { useState, useContext, useEffect } from "react";
-import ace from "react-ace";
+import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { AppContext } from "../../App.js";
 
 function Editor() {
-    let { user, userRef, match, matchRef } = useContext(AppContext);
+    let { matchRef } = useContext(AppContext);
     const interviewId = matchRef.current.interviewId;
-    const editorSocket = io(BACKEND_DOMAIN, {
-        path: EDITOR_SOCKET_PATH,
-    });
+    var editorSocket = useRef()
 
     // Current content of the code editor
     const [code, setCode] = useState();
 
     useEffect(() => {
-        editorSocket.on("connect", () => {
+        editorSocket.current = io(BACKEND_DOMAIN, {
+            path: EDITOR_SOCKET_PATH,
+        });
+
+        editorSocket.current.on("connect", () => {
             console.log("Successfully connected to editor socket");
 
             // Fetch text history
             axios.get(EDITOR_HISTORY_URL, {
                 params: { interviewId }
             })
-            .then(res => res.data)
+            .then(res => res.data.data)
             .then(data => {
-                if (data.status === "success") {
-                    const textHistory = data.data.message;
-                    setCode(textHistory);
-                } else if (data.status == "failed") {
-                    setCode("");
-                }
+                const textHistory = data.message;
+                setCode(textHistory);
             })
-            .catch(err => console.log(err));
+            .catch(err => setCode(""));
 
-            editorSocket.emit('subscribe', {
+            editorSocket.current.emit('subscribe', {
                 interviewId
             });
         });
 
-        // Upon receiving message from editorSocket, replace the "code" state variable with the incoming message.
-        editorSocket.on('message', data => {
+        // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
+        editorSocket.current.on('message', data => {
             console.log(`Receiving: ${data}`);
             setCode(data);
         });
@@ -52,16 +49,19 @@ function Editor() {
         const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
         // Upon timeout, close socket to conserve resources
         setTimeout(() => {
-            editorSocket.disconnect();
-            editorSocket.close();
+            editorSocket.current.disconnect();
+            editorSocket.current.close();
         }, matchRef.current.durationLeft * SECONDS_TO_MICROSECONDS_MULTIPLIER);
 
-        return () => editorSocket.disconnect();
+        return () => {
+            editorSocket.current.disconnect();
+            setCode("");
+        }
     }, []);
 
     // When user changes something in the code editor, send the entire text in the code editor over the editor socket.
     const handleCodeChange = (event) => {
-        editorSocket.emit('newMessage', {
+        editorSocket.current.emit('newMessage', {
             interviewId,
             text: event
         });

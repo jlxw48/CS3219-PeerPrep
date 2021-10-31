@@ -1,32 +1,30 @@
-import authHeader from "../../auth-header";
-import { useState, useContext, useEffect } from "react";
-import { toast } from "react-toastify";
+import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
-import { AppContext } from "../../App.js"
-
-import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../Api.js";
-import ChatEntry from "./ChatEntry";
 import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
 import { Widget, addResponseMessage, addUserMessage } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
+import { AppContext } from "../../App.js"
+import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../Api.js";
 import "../../css/Chat.css"
 
 function Chat() {
-    let { user, userRef, match, matchRef } = useContext(AppContext);
+    let { user, matchRef } = useContext(AppContext);
 
     const interviewId = matchRef.current.interviewId;
-    const chatSocket = io.connect(BACKEND_DOMAIN, {
-        path: CHAT_SOCKET_PATH
-    });
-
+    var chatSocket = useRef();
     const [chats, setChats] = useState([]);
 
     useEffect(() => {
+
+        chatSocket.current = io.connect(BACKEND_DOMAIN, {
+            path: CHAT_SOCKET_PATH
+        });
+
         /**
          * Fetch chat history from backend into chats variable.
          */
-        chatSocket.on("connect", () => {
+        chatSocket.current.on("connect", () => {
             // Successfully connected/reconnected
 
             axios.get(CHAT_HISTORY_URL + interviewId).then(res => {
@@ -45,12 +43,12 @@ function Chat() {
                         addResponseMessage(chat.message);
                     }
                 }
-            }).catch(err => console.log(err));
+            }).catch(err => console.log("Error fetching chat history", err));
 
             /**
              * Set event upon receiving new message to add to chats variable and to chat widget.
              */
-            chatSocket.on(interviewId, newMessage => {
+            chatSocket.current.on(interviewId, newMessage => {
                 setChats(oldMessages => [...oldMessages, newMessage]);
                 if (newMessage.senderEmail !== user.email) {
                     addResponseMessage(newMessage.message);
@@ -62,15 +60,16 @@ function Chat() {
         const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
         // Upon timeout, close socket to conserve resources
         setTimeout(() => {
-            chatSocket.disconnect();
-            chatSocket.close();
+            chatSocket.current.disconnect();
+            chatSocket.current.close();
         }, matchRef.current.durationLeft * SECONDS_TO_MICROSECONDS_MULTIPLIER);
 
         // When tearing down Chat component, close the socket.
         return () => {
             console.log("Closing chat socket");
-            chatSocket.disconnect();
-            chatSocket.close();
+            setChats([]);
+            chatSocket.current.disconnect();
+            chatSocket.current.close();
         }
     }, []);
 
@@ -82,7 +81,7 @@ function Chat() {
         console.log(`New message incoming! ${msgString}`);
 
         const newChat = { senderEmail: user.email, message: msgString }
-        chatSocket.emit("message", {
+        chatSocket.current.emit("message", {
             interviewId: interviewId,
             contents: newChat
         });

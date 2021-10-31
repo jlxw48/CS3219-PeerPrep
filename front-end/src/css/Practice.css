@@ -20,6 +20,15 @@
     overflow-y: auto;
 }
 
+.practice-question-body h2 {
+    display: inline-block;
+}
+
+.practice-question-body .badge {
+    font-size: 15px;
+    vertical-align: middle;
+}
+
 .editor-section-container {
     height: 55%;
     padding-top: 20px;

@@ -35,7 +35,7 @@ function PeerPrepNav() {
         axios.delete(END_MATCH_URL, {
             params: {email: user.email}
         }).then(res => {
-            if (res.status === 200 && res.data.status == "success") {
+            if (res.status === 200 && res.data.status === "success") {
                 toast.success("Successfully ended interview.");
                 setMatch(null);
             } else {

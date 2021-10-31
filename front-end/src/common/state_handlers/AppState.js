@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL } from "../../Api";
 
 export function useAppStateHelper() {
-    const { user, setUser, userRef, match, setMatch, matchRef } = useContext(AppContext);
+    const { setUser, userRef, setMatch } = useContext(AppContext);
     const checkLogin = () => {
         return axios.get(VALIDATE_LOGIN_URL).then(res => res.data.data).then(data => {
             setUser(data);
@@ -18,7 +18,7 @@ export function useAppStateHelper() {
 
     function redirectToPractice() {
         history.push({ pathname: '/practice' });
-      }
+    }
 
     const checkIfUserInMatch = () => {
         const EndInterViewToastMsg = () => (<p>Interview successfully resumed. Click <b>End Interview</b> to find another match.</p>)
