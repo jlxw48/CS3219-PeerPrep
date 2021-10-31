@@ -24,12 +24,10 @@ const io = new Server(server, {
     }
 });
 
-const pubClient = createClient({
-    host: "localhost",
-    port: 6379
-});
-
-const subClient = pubClient.duplicate();
+const REDIS_HOST = process.env.REDIS_HOST || "redis";
+const REDIS_PORT = process.env.REDIS_PORT || 6379;
+const pubClient = createClient(REDIS_PORT, REDIS_HOST);
+const subClient = createClient(REDIS_PORT, REDIS_HOST);
 io.adapter(createAdapter(pubClient, subClient));
 
 // Event 'connection': Fired upon a connection from client
