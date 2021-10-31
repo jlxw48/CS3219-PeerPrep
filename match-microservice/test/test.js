@@ -4,6 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../index');
 const Match = require('../models/Match');
+const Interview = require('../models/Interview');
 const testData = require('./testData');
 
 chai.use(chaiHttp);
@@ -32,13 +33,13 @@ describe("GET /match/get_interview", () => {
     describe("Get interview of user", () => {
         // mimic user having an interview
         before(async () => {
-            const secondUserInterviewDetails = new Match(testData.secondUserInterviewDetails);
-            await secondUserInterviewDetails.save();
+            const firstInterviewDetails = new Interview(testData.firstInterviewDetails);
+            await firstInterviewDetails.save();
         });
 
         it("should get interview of user", (done) => {
             chai.request(app)
-                .get(`/match/get_interview?email=${testData.secondUserInterviewDetails.email}`)
+                .get(`/match/get_interview?email=${testData.firstInterviewDetails.firstUserEmail}`)
                 .end((err, res) => {
                     if (err) {
                         return done(err);
@@ -52,7 +53,7 @@ describe("GET /match/get_interview", () => {
         });
 
         after(done => {
-            Match.deleteMany({})
+            Interview.deleteMany({})
             .then(result => {
                 done();
             })
@@ -69,11 +70,11 @@ describe("POST /match/start_find", () => {
     describe("Unable to find match for a user due to different difficulties", () => {
         // insert user to mimic queueing
         before(async () => {
-            const firstUserMatchDetails = new Match(testData.firstUserMatchDetails);  // easy difficulty
-            await firstUserMatchDetails.save().catch(err => console.log(err));
+            const firstUserFindDetails = new Match(testData.firstUserFindDetails);  // easy difficulty
+            await firstUserFindDetails.save();
         });
 
-        it("should find match for 2 users queueing with the same difficulty", (done) => {
+        it("should not find match for 2 users queueing with different difficulties", (done) => {
             const thirdUserFindDetails = testData.thirdUserFindDetails;  // medium difficulty
             chai.request(app)
                 .post('/match/start_find')
@@ -102,75 +103,18 @@ describe("POST /match/start_find", () => {
     });
 });
 
-describe("GET /match/get_partner", () => {
-    describe("Get partner of user", () => {
-        describe("Successfully get partner of a user in an interview", () => {
-            // mimic 2 users having an interview
-            before(async () => {
-                const firstUserInterviewDetails = new Match(testData.firstUserInterviewDetails);
-                const secondUserInterviewDetails = new Match(testData.secondUserInterviewDetails);
-                await firstUserInterviewDetails.save();
-                await secondUserInterviewDetails.save();
-            });
-
-            it("should get partner of user1", (done) => {
-                chai.request(app)
-                    .get(`/match/get_partner?email=${testData.firstUserInterviewDetails.email}`)
-                    .end((err, res) => {
-                        if (err) {
-                            return done(err);
-                        }
-                        res.should.have.status(200);
-                        res.body.should.be.a('object');
-                        res.body.status.should.be.eql('success');
-                        res.body.data.partnerEmail.should.be.eql("user2@gmail.com");
-                        done();
-                    });
-            });
-
-            after(done => {
-                Match.deleteMany({})
-                .then(result => {
-                    done();
-                })
-                .catch(err => {
-                    done(err);
-                });
-            });
-        });
-
-        describe("Unable to get partner of a user due to user not in an interview", () => {
-            it("should not return any partner", (done) => {
-                chai.request(app)
-                    .get(`/match/get_partner?email=${testData.firstUserInterviewDetails.email}`)
-                    .end((err, res) => {
-                        if (err) {
-                            return done(err);
-                        }
-                        res.should.have.status(404);
-                        res.body.should.be.a('object');
-                        res.body.status.should.be.eql('failed');
-                        res.body.data.message.should.be.eql("failed to retrieve partner details");
-                        done();
-                    });
-            });
-        });
-    });
-    
-});
-
 describe("DELETE /match/end_interview", () => {
     describe("End interview", () => {
         describe("Successfully delete interview details", () => {
             // mimic user having an interview
             before(async () => {
-                const firstUserInterviewDetails = new Match(testData.firstUserInterviewDetails);
-                await firstUserInterviewDetails.save();
+                const firstInterviewDetails = new Interview(testData.firstInterviewDetails);
+                await firstInterviewDetails.save();
             });
 
             it("should delete interview details for user", (done) => {
                 chai.request(app)
-                    .delete(`/match/end_interview?email=${testData.firstUserInterviewDetails.email}`)
+                    .delete(`/match/end_interview?email=${testData.firstInterviewDetails.firstUserEmail}`)
                     .end((err, res) => {
                         if (err) {
                             return done(err);
@@ -184,7 +128,7 @@ describe("DELETE /match/end_interview", () => {
             });
 
             after(done => {
-                Match.deleteMany({})
+                Interview.deleteMany({})
                 .then(result => {
                     done();
                 })
@@ -197,7 +141,7 @@ describe("DELETE /match/end_interview", () => {
         describe("Unable to delete interview details due to user not having any interviews at the moment", () => {
             it("should not delete any interview details", (done) => {
                 chai.request(app)
-                    .delete(`/match/end_interview?email=${testData.firstUserInterviewDetails.email}`)
+                    .delete(`/match/end_interview?email=${testData.firstUserFindDetails.email}`)
                     .end((err, res) => {
                         if (err) {
                             return done(err);
@@ -216,12 +160,10 @@ describe("DELETE /match/end_interview", () => {
 describe("GET /match/interviews", () => {
     describe("Get total number of interviews", () => {
         describe("Get 1 total interview", () => {
-            // mimic 2 users having an interview
+            // mimic 1 interview
             before(async () => {
-                const firstUserInterviewDetails = new Match(testData.firstUserInterviewDetails);
-                const secondUserInterviewDetails = new Match(testData.secondUserInterviewDetails);
-                await firstUserInterviewDetails.save();
-                await secondUserInterviewDetails.save();
+                const firstInterviewDetails = new Interview(testData.firstInterviewDetails);
+                await firstInterviewDetails.save();
             });
 
             it("should get total number of interviews equals to 1", (done) => {
@@ -240,7 +182,7 @@ describe("GET /match/interviews", () => {
             });
 
             after(done => {
-                Match.deleteMany({})
+                Interview.deleteMany({})
                 .then(result => {
                     done();
                 })
@@ -251,20 +193,14 @@ describe("GET /match/interviews", () => {
         });
 
         describe("Get 3 total interviews", () => {
-            // mimic several users having interviews
+            // mimic 3 ongoing interviews
             before(async () => {
-                const firstUserInterviewDetails = new Match(testData.firstUserInterviewDetails);
-                const secondUserInterviewDetails = new Match(testData.secondUserInterviewDetails);
-                const thirdUserInterviewDetails = new Match(testData.thirdUserInterviewDetails);
-                const fourthUserInterviewDetails = new Match(testData.fourthUserInterviewDetails);
-                const fifthUserInterviewDetails = new Match(testData.fifthUserInterviewDetails);
-                const sixthUserInterviewDetails = new Match(testData.sixthUserInterviewDetails);
-                await firstUserInterviewDetails.save().catch(err => console.log(err));
-                await secondUserInterviewDetails.save().catch(err => console.log(err));
-                await thirdUserInterviewDetails.save().catch(err => console.log(err));
-                await fourthUserInterviewDetails.save().catch(err => console.log(err));
-                await fifthUserInterviewDetails.save().catch(err => console.log(err));
-                await sixthUserInterviewDetails.save().catch(err => console.log(err));
+                const firstInterviewDetails = new Interview(testData.firstInterviewDetails);
+                const secondInterviewDetails = new Interview(testData.secondInterviewDetails);
+                const thirdInterviewDetails = new Interview(testData.thirdInterviewDetails);
+                await firstInterviewDetails.save();
+                await secondInterviewDetails.save();
+                await thirdInterviewDetails.save();
             });
 
             it("should get total number of interviews equals to 3", (done) => {
@@ -274,6 +210,7 @@ describe("GET /match/interviews", () => {
                         if (err) {
                             return done(err);
                         }
+                        console.log(res.body)
                         res.should.have.status(200);
                         res.body.should.be.a('object');
                         res.body.status.should.be.eql('success');
@@ -283,7 +220,7 @@ describe("GET /match/interviews", () => {
             });
 
             after(done => {
-                Match.deleteMany({})
+                Interview.deleteMany({})
                 .then(result => {
                     done();
                 })
