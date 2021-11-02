@@ -11,13 +11,17 @@ const cors = require('cors');
 
 const app = express();
 app.use( express.json() );
-app.use(cors());
+var corsOptions = {
+    origin: 'https://peerprep.ml/',
+    credentials: true 
+};
+app.use(cors(corsOptions));
 const port = 3000;
 
 const setErrorMessage = ( errMessage, code ) => ( req, res ) => {
     res.statusCode = code;
     res.setHeader( 'content-type', 'application/json' );
-    res.setHeader( 'Access-Control-Allow-Origin', '*' );
+    res.setHeader( 'Access-Control-Allow-Origin', 'https://peerprep.ml/' );
     res.json( { 
         status: responseStatus.FAILED,
         data: {
