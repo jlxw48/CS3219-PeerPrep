@@ -2,8 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: external-ingress
-  # annotations:
-  #   kubernetes.io/ingress.global-static-ip-name: peerprep-ip
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: external-ip
+    networking.gke.io/managed-certificates: managed-cert
 spec:
   rules:
   - http:
