@@ -6,7 +6,7 @@ const saveNewMessage = (newMessage) => {
         interviewId: newMessage.interviewId
     })
     .then(result => {
-        const message = { userEmail: newMessage.contents.userEmail, message: newMessage.contents.message };
+        const message = newMessage.contents;
         if (!result) {
             const chat = new Chat({
                 interviewId: newMessage.interviewId,

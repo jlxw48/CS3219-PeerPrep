@@ -7,7 +7,7 @@ const chatSchema = new Schema({
         required: true
     },
     history: {
-        type: [{userEmail : String, message: String}],
+        type: [Object],
         required: true
     },
     createdAt: {
