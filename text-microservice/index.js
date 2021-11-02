@@ -10,11 +10,11 @@ require("dotenv").config();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 const port = process.env.PORT || 3005;
 var server = app.listen(port, () => {
-	console.log(`Text microservice is listening on port ${port} `);
+  console.log(`Text microservice is listening on port ${port} `);
 });
 
 const { Server } = require("socket.io");
@@ -23,8 +23,8 @@ const { createAdapter } = require("@socket.io/redis-adapter");
 const io = new Server(server, {
   path: "/api/editor/create",
   cors: {
-      origin: "*",
-      methods: ["GET", "POST", "DELETE"]
+    origin: "*",
+    methods: ["GET", "POST", "DELETE"]
   }
 });
 
@@ -35,7 +35,7 @@ var redis = require("redis"),
 
   pubClient = redis.createClient({
     host: redis_endpoint,
-    port:6379,
+    port: 6379,
     auth_pass: redis_pw
   });
 
@@ -46,26 +46,26 @@ pubClient.on("error", function (error) {
 });
 
 app.get("/api/editor/get_text", (req, res) => {
-	const sessionId = req.query.interviewId;
+  const sessionId = req.query.interviewId;
 
   pubClient.get(sessionId, (err, response) => {
 
     if (response === null) {
-     pubClient.set(sessionId, '');
-     res.status(404).json({
-      	status: responseStatus.FAILURE,
-      	data: {
-      		message: clientErrorMessages.TEXT_NOT_FOUND
-      	}
+      pubClient.set(sessionId, '');
+      res.status(404).json({
+        status: responseStatus.FAILURE,
+        data: {
+          message: clientErrorMessages.TEXT_NOT_FOUND
+        }
       });
     } else {
       console.log(response);
-    	res.status(200).json({
-    		status: responseStatus.SUCCESS,
-    		data: {
-    			message: response
-    		}
-    	});
+      res.status(200).json({
+        status: responseStatus.SUCCESS,
+        data: {
+          message: response
+        }
+      });
     }
   });
 });
@@ -75,24 +75,24 @@ app.delete("/api/editor/end-session", (req, res) => {
   pubClient.get(sessionId, (err, response) => {
     if (response === null) {
       res.status(404).json({
-      	status: responseStatus.FAILURE,
-      	data: {
-      		message: clientErrorMessages.SESSION_NOT_FOUND
-      	}
+        status: responseStatus.FAILURE,
+        data: {
+          message: clientErrorMessages.SESSION_NOT_FOUND
+        }
 
       });
     } else {
-    	pubClient.del(sessionId, (err, response) => {
-		    console.log("Deleted ", sessionId);
-		    res.status(200).json({
-		    	status: responseStatus.SUCCESS,
-		    	data: {
-		    		message: clientSuccessMessages.DELETE_SESSION + sessionId
-				  }
-		    });
-		});
+      pubClient.del(sessionId, (err, response) => {
+        console.log("Deleted ", sessionId);
+        res.status(200).json({
+          status: responseStatus.SUCCESS,
+          data: {
+            message: clientSuccessMessages.DELETE_SESSION + sessionId
+          }
+        });
+      });
     }
-  });  
+  });
 });
 
 //This function is for testing to populate dummy data
@@ -117,13 +117,14 @@ app.post("/api/editor/save-text", (req, res) => {
         }
       });
     }
-  });  
+  });
 });
 
 const saveText = (newText) => {
   const sessionId = newText.interviewId;
   const text = newText.text;
-  pubClient.set(sessionId, text, redis.print);
+  console.log(JSON.stringify(newText))
+  pubClient.set(sessionId, JSON.stringify(newText), redis.print);
 };
 
 io.sockets.on("connection", socket => {
@@ -131,7 +132,7 @@ io.sockets.on("connection", socket => {
   console.log("Server connected");
   subClient = redis.createClient({
     host: redis_endpoint,
-    port:6379,
+    port: 6379,
     auth_pass: redis_pw
   });
 
@@ -141,18 +142,18 @@ io.sockets.on("connection", socket => {
     console.error(error);
   });
 
-  subClient.on('message', function(channel, message){
+  subClient.on('message', function (channel, message) {
     socket.send(message);
   });
 
-	socket.on("newMessage", message => {
-
+  socket.on("newMessage", message => {
     console.log(message);
     saveText(message);
 
     const interviewId = message.interviewId;
+    console.log(JSON.stringify(message));
     pubClient.publish(interviewId, JSON.stringify(message), redis.print);
-	});
+  });
 
   socket.on('unsubscribe', packet => {
     var interviewId = packet.interviewId;
@@ -183,5 +184,5 @@ app.use((req, res) => {
   });
 });
 
- // Export app for testing purposes
+// Export app for testing purposes
 module.exports = app;

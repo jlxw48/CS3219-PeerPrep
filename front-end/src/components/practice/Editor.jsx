@@ -15,7 +15,12 @@ function Editor() {
     let { matchRef, userRef } = useContext(AppContext);
     let { endMatch } = useAppStateHelper();
     const history = useHistory();
-    var interviewId = null;
+
+    if (matchRef.current === null) {
+        history.push({ pathname: '/' });
+    }
+
+    var interviewId = matchRef.current.interviewId;
     var editorSocket = useRef();
 
     // Current content of the code editor
@@ -32,16 +37,10 @@ function Editor() {
             toast.info("You have been away for more than 10 minutes, ending your interview now.");
             endMatch();
             history.push({ pathname: '/' });
-        }, MINUTES_TO_MICROSECONDS_MULTIPLIER * 1)
+        }, MINUTES_TO_MICROSECONDS_MULTIPLIER * 10)
     }
 
     useEffect(() => {
-        if (matchRef.current === null) {
-            history.push({ pathname: '/' });
-        }
-
-        interviewId = matchRef.current.interviewId;
-
         /**
          * Connect socket and add socket events.
          */
@@ -58,7 +57,8 @@ function Editor() {
             })
             .then(res => res.data.data)
             .then(data => {
-                const textHistory = data.message;
+                const message =  JSON.parse(data.message);
+                const textHistory = message.text;
                 setCode(textHistory);
             })
             .catch(err => setCode(""));
@@ -75,7 +75,6 @@ function Editor() {
                 setCode(data.text)
             }
         });
-
 
         /**
          * Each interview session lasts only 1 hour, after 1 hour close editor socket to conserve resources.
