@@ -3,7 +3,7 @@ import { useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL } from "../../Api";
+import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL, END_MATCH_URL } from "../../Api";
 
 export function useAppStateHelper() {
     const { setUser, userRef, setMatch } = useContext(AppContext);
@@ -30,5 +30,21 @@ export function useAppStateHelper() {
         }).catch(err => false); // Not in match
     }
 
-    return { checkLogin, checkIfUserInMatch };
+    const endMatch = () => {
+        if (userRef.current === null) {
+            return;
+        }
+        
+        axios.delete(END_MATCH_URL, {
+            params: {email: userRef.current.email}
+        }).then(res => {
+            setMatch(null);
+            return true;
+        }).catch(err => {
+            console.error("Error ending interview");
+            return false;
+        });
+    }
+
+    return { checkLogin, checkIfUserInMatch, endMatch };
 }

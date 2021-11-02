@@ -7,15 +7,22 @@ import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"
 import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../Api.js";
 import "../../css/Chat.css"
+import { useHistory } from "react-router-dom";
 
 function Chat() {
     let { user, matchRef } = useContext(AppContext);
+    const history = useHistory();
 
-    const interviewId = matchRef.current.interviewId;
+    var interviewId = null;
     var chatSocket = useRef();
     const [chats, setChats] = useState([]);
 
     useEffect(() => {
+        if (matchRef.current === null) {
+            history.push({ pathname: '/' });
+        }
+
+        interviewId = matchRef.current.interviewId;
 
         chatSocket.current = io.connect(BACKEND_DOMAIN, {
             path: CHAT_SOCKET_PATH
@@ -69,7 +76,7 @@ function Chat() {
             chatSocket.current.disconnect();
             chatSocket.current.close();
         }
-    }, []);
+    }, [matchRef]);
 
 
     /**
