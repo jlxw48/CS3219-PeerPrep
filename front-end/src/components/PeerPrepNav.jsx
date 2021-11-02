@@ -6,7 +6,7 @@ import '../css/PeerPrepNav.css'
 import { NavLink } from 'react-router-dom'
 import {AppContext} from '../App.js';
 import { toast } from 'react-toastify'
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import axios from 'axios'
 import { LOGOUT_URL, END_MATCH_URL } from "../Api.js";
 import { Button } from 'react-bootstrap'
@@ -22,6 +22,7 @@ function PeerPrepNav() {
     const handleLogout = () => {
         axios.post(LOGOUT_URL);
         setUser(null);
+        setMatch(null);
         toast.success("Succesfully logged out")
         history.push({pathname: '/'});
     }
@@ -47,6 +48,9 @@ function PeerPrepNav() {
         history.push({pathname: '/'});
     }
 
+    const currRoute = useLocation().pathname;
+    console.log(currRoute);
+
     return (
         <Navbar bg="dark" variant="dark">
             <Container fluid>
@@ -63,6 +67,7 @@ function PeerPrepNav() {
                         user !== null && <Nav.Link onClick={() => handleLogout()} className="nav-link">Logout</Nav.Link>
                     }
                 </Nav>
+                { matchRef.current !== null && currRoute !== "/practice" && <Nav className="ml-auto resume-interview-button" onClick={() => history.push({pathname: "/practice"})}><Button variant="success"><b>Resume interview</b></Button></Nav> }
                 { matchRef.current !== null && <Nav className="ml-auto" onClick={() => handleEndInterview()}><Button variant="danger"><b>End interview</b></Button></Nav> }
             </Container>
         </Navbar>
