@@ -21,15 +21,18 @@ function Editor() {
     // Current content of the code editor
     const [code, setCode] = useState();
 
-    var inactivityTimer = useRef();
+    var inactivityTimer = useRef(null);
 
     const MINUTES_TO_MICROSECONDS_MULTIPLIER = 60000;
     function resetInactivityTimer() {
-        inactivityTimer = setTimeout(() => {
+        if (inactivityTimer.current !== null) {
+            clearTimeout(inactivityTimer.current);
+        }
+        inactivityTimer.current = setTimeout(() => {
             toast.info("You have been away for more than 10 minutes, ending your interview now.");
             endMatch();
             history.push({ pathname: '/' });
-        }, MINUTES_TO_MICROSECONDS_MULTIPLIER * 10)
+        }, MINUTES_TO_MICROSECONDS_MULTIPLIER * 1)
     }
 
     useEffect(() => {

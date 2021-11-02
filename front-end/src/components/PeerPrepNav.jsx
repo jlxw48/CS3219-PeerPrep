@@ -22,6 +22,9 @@ function PeerPrepNav() {
     const handleLogout = () => {
         axios.post(LOGOUT_URL);
         setUser(null);
+        if (matchRef.current !== null) {
+            toast.info("Your interview has been ended.");
+        }
         setMatch(null);
         toast.success("Succesfully logged out")
         history.push({pathname: '/'});
