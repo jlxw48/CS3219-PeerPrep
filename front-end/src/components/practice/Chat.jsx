@@ -21,12 +21,10 @@ function Chat() {
             path: CHAT_SOCKET_PATH
         });
 
-        /**
-         * Fetch chat history from backend into chats variable.
-         */
         chatSocket.current.on("connect", () => {
-            // Successfully connected/reconnected
+            console.log("Successfully connected to chat socket.");
 
+            // Fetch and populate chat history.
             axios.get(CHAT_HISTORY_URL + interviewId).then(res => {
                 if (res.data.status === "success" && res.data.data) {
                     const chatHistory = res.data.data.history;

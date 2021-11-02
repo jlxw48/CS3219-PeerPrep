@@ -9,7 +9,7 @@ import axios from "axios";
 import { AppContext } from "../../App.js";
 
 function Editor() {
-    let { matchRef } = useContext(AppContext);
+    let { matchRef, userRef } = useContext(AppContext);
     const interviewId = matchRef.current.interviewId;
     var editorSocket = useRef()
 
@@ -40,10 +40,12 @@ function Editor() {
             });
         });
 
-        // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
+        // // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
         editorSocket.current.on('message', data => {
-            console.log(`Receiving: ${data}`);
-            setCode(data);
+            data = JSON.parse(data);
+            if (data.senderEmail !== userRef.current.email) {
+                setCode(data.text)
+            }
         });
 
         const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
@@ -63,7 +65,8 @@ function Editor() {
     const handleCodeChange = (event) => {
         editorSocket.current.emit('newMessage', {
             interviewId,
-            text: event
+            text: event,
+            senderEmail: userRef.current.email
         });
     }
 

@@ -151,7 +151,7 @@ io.sockets.on("connection", socket => {
     saveText(message);
 
     const interviewId = message.interviewId;
-    pubClient.publish(message.interviewId, message.text, redis.print);
+    pubClient.publish(interviewId, JSON.stringify(message), redis.print);
 	});
 
   socket.on('unsubscribe', packet => {
