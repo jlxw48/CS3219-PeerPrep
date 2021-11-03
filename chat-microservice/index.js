@@ -24,7 +24,7 @@ const clientMessages = require('./common/messages/clientMessages')
 const io = new Server(server, {
     path: "/api/chat/create",
     cors: {
-        origin: "*",
+        origin: "https://peerprep.ml",
         methods: ["GET", "POST"]
     }
 });

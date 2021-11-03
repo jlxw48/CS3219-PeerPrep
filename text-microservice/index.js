@@ -14,7 +14,6 @@ var corsOptions = {
     credentials: true 
 };
 app.use(cors(corsOptions));
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -29,7 +28,7 @@ const { createAdapter } = require("@socket.io/redis-adapter");
 const io = new Server(server, {
   path: "/api/editor/create",
   cors: {
-    origin: "*",
+    origin: "https://peerprep.ml",
     methods: ["GET", "POST", "DELETE"]
   }
 });
