@@ -15,7 +15,7 @@ const { createAdapter } = require("@socket.io/redis-adapter");
 const { createClient } = require("redis");
 
 const io = new Server(server, {
-    path: "/chat/create",
+    path: "/api/chat/create",
     cors: {
         origin: "*",
         methods: ["GET", "POST", "DELETE"]

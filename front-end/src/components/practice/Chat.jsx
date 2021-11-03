@@ -1,13 +1,14 @@
-import { useState, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
-import { Widget, addResponseMessage, addUserMessage } from 'react-chat-widget';
+import { Widget, addResponseMessage, addUserMessage, renderCustomComponent } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"
 import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../Api.js";
 import "../../css/Chat.css"
 import { useHistory } from "react-router-dom";
+import useState from 'react-usestateref';
 
 function Chat() {
     let { user, matchRef } = useContext(AppContext);
@@ -15,7 +16,7 @@ function Chat() {
 
     var interviewId = null;
     var chatSocket = useRef();
-    const [chats, setChats] = useState([]);
+    const [chats, setChats, chatsRef] = useState([]);
 
     useEffect(() => {
         if (matchRef.current === null) {
@@ -28,20 +29,27 @@ function Chat() {
             path: CHAT_SOCKET_PATH
         });
 
+        chatSocket.current.emit("joinRoom", interviewId);
+
         chatSocket.current.on("connect", () => {
             console.log("Successfully connected to chat socket.");
+            console.log(chats);
 
             // Fetch and populate chat history.
             axios.get(CHAT_HISTORY_URL + interviewId).then(res => {
+                console.log(res.data);
                 if (res.data.status === "success" && res.data.data) {
+                    console.log("We are here", res.data)
                     const chatHistory = res.data.data.history;
                     setChats(chatHistory);
                 }
+                console.log(chatsRef.current);
 
                 /**
                  * Push chat history from chats variable into chat widget
                  */
-                for (let chat in chats) {
+                for (let chat of chatsRef.current) {
+                    console.log(chat);
                     if (chat.senderEmail === user.email) {
                         addUserMessage(chat.message);
                     } else {
@@ -53,12 +61,23 @@ function Chat() {
             /**
              * Set event upon receiving new message to add to chats variable and to chat widget.
              */
-            chatSocket.current.on(interviewId, newMessage => {
+            chatSocket.current.on("message", newMessage => {
+                console.log("Received msg from chat socket", newMessage);
                 setChats(oldMessages => [...oldMessages, newMessage]);
                 if (newMessage.senderEmail !== user.email) {
                     addResponseMessage(newMessage.message);
                 }
             });
+
+            /**
+             * Receive disconnection message
+             */
+            chatSocket.current.on("end_interview", endInterviewMessage => {
+                setChats(oldMessages => [...oldMessages, endInterviewMessage]);
+                if (endInterviewMessage.senderEmail !== user.email) {
+                    renderCustomComponent(<p>{endInterviewMessage.message}</p>);
+                }
+            })
 
         });
 
@@ -72,6 +91,13 @@ function Chat() {
         // When tearing down Chat component, close the socket.
         return () => {
             console.log("Closing chat socket");
+            chatSocket.current.emit("end_interview", {
+                interviewId: matchRef.current.interviewId,
+                contents: {
+                    senderEmail: user.email,
+                    message: "Your partner has disconnected."
+                }
+            })
             setChats([]);
             chatSocket.current.disconnect();
             chatSocket.current.close();
@@ -87,7 +113,7 @@ function Chat() {
 
         const newChat = { senderEmail: user.email, message: msgString }
         chatSocket.current.emit("message", {
-            interviewId: interviewId,
+            interviewId: matchRef.current.interviewId,
             contents: newChat
         });
     };
