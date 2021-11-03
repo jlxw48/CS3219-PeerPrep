@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import '../../../css/FindMatchModal.css'
-import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationCircle, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Spinner } from "react-bootstrap";
 import { FIND_MATCH_URL } from "../../../Api";
@@ -19,7 +19,7 @@ function FindMatchModal(props) {
     const [finding, setFinding] = useState(false);
     const history = useHistory();
     const cancelTokenSource = axios.CancelToken.source();
-    const { user, setMatch } = useContext(AppContext);
+    const { user, setMatch, matchRef } = useContext(AppContext);
     
     const handleFindMatch = () => {
         setFinding(true);
@@ -54,6 +54,8 @@ function FindMatchModal(props) {
         props.setShowMatchModal(false);
     }
 
+    const inMatch = matchRef.current !== null;
+
     return (
         <Modal show={props.show} difficulty={props.difficulty} onHide={() => handleCancel()} className="find-match-modal" centered>
             <Modal.Body>
@@ -68,8 +70,9 @@ function FindMatchModal(props) {
                     {finding && <Spinner animation="border"/>}
                 </Row><br />
                 <div className="text-center">
-                    {props.enableFindMatch && (finding || <Button variant="dark" onClick={() => handleFindMatch()}>Find Match</Button>)}
-                    {props.enableFindMatch && (finding && <Button variant="danger" onClick={() => handleCancel()}>Cancel</Button>)}
+                    {!inMatch && props.enableFindMatch && (finding || <Button variant="dark" onClick={() => handleFindMatch()}>Find Match</Button>)}
+                    {!inMatch && props.enableFindMatch && (finding && <Button variant="danger" onClick={() => handleCancel()}>Cancel</Button>)}
+                    {inMatch && props.enableFindMatch && <p><FontAwesomeIcon icon={faExclamationCircle} /> Please end your current interview to find another match.</p>}
                     {props.enableFindMatch || "Please login to find a match."}
                 </div>
             </Modal.Body>

@@ -7,16 +7,43 @@ import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH } from "../../Ap
 import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { AppContext } from "../../App.js";
+import { useAppStateHelper } from "../../common/state_handlers/AppState.js";
+import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 function Editor() {
-    let { matchRef } = useContext(AppContext);
-    const interviewId = matchRef.current.interviewId;
-    var editorSocket = useRef()
+    let { matchRef, userRef } = useContext(AppContext);
+    let { endMatch } = useAppStateHelper();
+    const history = useHistory();
+
+    if (matchRef.current === null) {
+        history.push({ pathname: '/' });
+    }
+
+    var interviewId = matchRef.current.interviewId;
+    var editorSocket = useRef();
 
     // Current content of the code editor
     const [code, setCode] = useState();
 
+    var inactivityTimer = useRef(null);
+
+    const MINUTES_TO_MICROSECONDS_MULTIPLIER = 60000;
+    function resetInactivityTimer() {
+        if (inactivityTimer.current !== null) {
+            clearTimeout(inactivityTimer.current);
+        }
+        inactivityTimer.current = setTimeout(() => {
+            toast.info("You have been away for more than 10 minutes, ending your interview now.");
+            endMatch();
+            history.push({ pathname: '/' });
+        }, MINUTES_TO_MICROSECONDS_MULTIPLIER * 10)
+    }
+
     useEffect(() => {
+        /**
+         * Connect socket and add socket events.
+         */
         editorSocket.current = io(BACKEND_DOMAIN, {
             path: EDITOR_SOCKET_PATH,
         });
@@ -30,7 +57,8 @@ function Editor() {
             })
             .then(res => res.data.data)
             .then(data => {
-                const textHistory = data.message;
+                const message =  JSON.parse(data.message);
+                const textHistory = message.text;
                 setCode(textHistory);
             })
             .catch(err => setCode(""));
@@ -40,30 +68,46 @@ function Editor() {
             });
         });
 
-        // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
+        // // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
         editorSocket.current.on('message', data => {
-            console.log(`Receiving: ${data}`);
-            setCode(data);
+            data = JSON.parse(data);
+            if (data.senderEmail !== userRef.current.email) {
+                setCode(data.text)
+            }
         });
 
+        /**
+         * Each interview session lasts only 1 hour, after 1 hour close editor socket to conserve resources.
+         */
         const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
-        // Upon timeout, close socket to conserve resources
         setTimeout(() => {
             editorSocket.current.disconnect();
             editorSocket.current.close();
         }, matchRef.current.durationLeft * SECONDS_TO_MICROSECONDS_MULTIPLIER);
 
+        /**
+         * Inactivity timer of 10 minutes.
+         */
+        
+        resetInactivityTimer();
+
+
+        /**
+         * Close socket when tearing down Editor component
+         */
         return () => {
             editorSocket.current.disconnect();
             setCode("");
         }
-    }, []);
+    }, [matchRef]);
 
-    // When user changes something in the code editor, send the entire text in the code editor over the editor socket.
+    // When user changes something in the code editor, send the entire text in the code editor over the editor socket and reset inactivity timer.
     const handleCodeChange = (event) => {
+        resetInactivityTimer();
         editorSocket.current.emit('newMessage', {
             interviewId,
-            text: event
+            text: event,
+            senderEmail: userRef.current.email
         });
     }
 

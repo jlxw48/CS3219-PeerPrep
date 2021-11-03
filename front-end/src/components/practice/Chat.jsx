@@ -7,26 +7,31 @@ import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"
 import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../Api.js";
 import "../../css/Chat.css"
+import { useHistory } from "react-router-dom";
 
 function Chat() {
     let { user, matchRef } = useContext(AppContext);
+    const history = useHistory();
 
-    const interviewId = matchRef.current.interviewId;
+    var interviewId = null;
     var chatSocket = useRef();
     const [chats, setChats] = useState([]);
 
     useEffect(() => {
+        if (matchRef.current === null) {
+            history.push({ pathname: '/' });
+        }
+
+        interviewId = matchRef.current.interviewId;
 
         chatSocket.current = io.connect(BACKEND_DOMAIN, {
             path: CHAT_SOCKET_PATH
         });
 
-        /**
-         * Fetch chat history from backend into chats variable.
-         */
         chatSocket.current.on("connect", () => {
-            // Successfully connected/reconnected
+            console.log("Successfully connected to chat socket.");
 
+            // Fetch and populate chat history.
             axios.get(CHAT_HISTORY_URL + interviewId).then(res => {
                 if (res.data.status === "success" && res.data.data) {
                     const chatHistory = res.data.data.history;
@@ -71,7 +76,7 @@ function Chat() {
             chatSocket.current.disconnect();
             chatSocket.current.close();
         }
-    }, []);
+    }, [matchRef]);
 
 
     /**
