@@ -4,7 +4,7 @@
 const REACT_APP_BACKEND_URL = 'http://localhost/api/';
 const BACKEND_DOMAIN = "http://localhost"
 
-const QUESTION_URL = "https://peerprep-g5.ml/api/questions/";
+const QUESTION_URL = "https://peerprep-g5.tk/api/questions/";
 
 const USERS_URL = "https://peerprep.ml/api/user/"
 const LOGIN_URL = USERS_URL + "user_login";
@@ -12,18 +12,18 @@ const REGISTER_URL = USERS_URL + "create_account";
 const LOGOUT_URL = USERS_URL + "user_logout"
 const VALIDATE_LOGIN_URL = USERS_URL + "jwt_validate";
 
-const MATCH_URL = "https://peerprep-g5.ml/api/match/"
+const MATCH_URL = "https://peerprep-g5.tk/api/match/"
 const FIND_MATCH_URL = MATCH_URL + "start_find";
 const END_MATCH_URL = MATCH_URL + "end_interview";
 const MATCH_GET_INTERVIEW_URL = MATCH_URL + "get_interview"
 
-const CHAT_URL = "https://peerprep-g5.ml/api/chat/"
+const CHAT_URL = "https://peerprep-g5.tk/api/chat/"
 const CONNECT_MESSENGER_URL = "/chat/create/";
 const CHAT_HISTORY_URL = CHAT_URL + "get_messages/"
 const CHAT_SOCKET_PATH = "/api/chat/create"
 // const CHAT_SOCKET_PATH = "/proxy/api/chat/create"
 
-const EDITOR_URL = "https://peerprep-g5.ml/api/editor/";
+const EDITOR_URL = "https://peerprep-g5.tk/api/editor/";
 const EDITOR_HISTORY_URL = EDITOR_URL + "get_text";
 const EDITOR_SOCKET_PATH = "/api/editor/create"
 // const EDITOR_SOCKET_PATH = "/proxy/api/editor/create"

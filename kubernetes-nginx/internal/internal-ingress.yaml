@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     # nginx.ingress.kubernetes.io/auth-url: https://peerprep.ml/api/user/jwt_validate # need to set this to some external service
-    nginx.ingress.kubernetes.io/enable-cors: "true"
+    # nginx.ingress.kubernetes.io/enable-cors: "true"
     # nginx.ingress.kubernetes.io/cors-allow-origin: "*"
     # nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
     # nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,X-LANG,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Api-Key,X-Device-Id,Access-Control-Allow-Origin,Authorization"
@@ -18,10 +18,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - peerprep-g5.ml
+    - peerprep-g5.tk
     secretName: quickstart-example-tls
   rules:
-  - host: "peerprep-g5.ml"
+  - host: "peerprep-g5.tk"
     http:
       paths:
       - path: /api/questions
