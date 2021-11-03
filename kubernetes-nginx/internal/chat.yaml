@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: chat
-        image: asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5/chat:v1 # change this
+        image: asia-southeast1-docker.pkg.dev/cs3219-g5/g5-repo/chat:v1 # change this
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

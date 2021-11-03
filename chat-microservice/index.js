@@ -1,16 +1,25 @@
 require("dotenv").config();
 
 const express = require('express');
+const mongoose = require('mongoose');
+const { Server } = require('socket.io');
+const cors = require('cors');
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const mongoose = require('mongoose');
+var corsOptions = {
+    origin: 'https://peerprep.ml',
+    credentials: true 
+};
+app.use(cors(corsOptions));
+
 const dbController = require('./controllers/dbController')
 const chatApiRoutes = require('./routes/chatApiRoutes');
 const responseStatus = require('./common/status/responseStatus');
 const clientErrors = require('./common/errors/clientErrors');
 const clientMessages = require('./common/messages/clientMessages')
-const { Server } = require('socket.io');
+
 
 const io = new Server(server, {
     path: "/api/chat/create",

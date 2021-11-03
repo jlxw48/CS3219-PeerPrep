@@ -8,6 +8,12 @@ const app = express();
 const bodyParser = require('body-parser');
 require("dotenv").config();
 
+app.use(express.urlencoded({extended: true}));
+var corsOptions = {
+    origin: 'https://peerprep.ml',
+    credentials: true 
+};
+app.use(cors(corsOptions));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -12,7 +12,7 @@ const cors = require('cors');
 const app = express();
 app.use( express.json() );
 var corsOptions = {
-    origin: 'https://peerprep.ml/',
+    origin: 'https://peerprep.ml',
     credentials: true 
 };
 app.use(cors(corsOptions));

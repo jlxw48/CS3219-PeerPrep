@@ -1,8 +1,15 @@
 const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-const mongoose = require('mongoose');
+var corsOptions = {
+    origin: 'https://peerprep.ml',
+    credentials: true 
+};
+app.use(cors(corsOptions));
 require("dotenv").config();
 
 const matchApiRoutes = require('./routes/matchApiRoutes');

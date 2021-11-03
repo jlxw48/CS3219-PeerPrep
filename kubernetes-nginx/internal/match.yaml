@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: match
-        image: asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5/match:v1 # change this
+        image: asia-southeast1-docker.pkg.dev/cs3219-g5/g5-repo/match:v1 # change this
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:

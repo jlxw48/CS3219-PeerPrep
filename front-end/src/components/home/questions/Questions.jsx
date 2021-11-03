@@ -10,7 +10,7 @@ function Questions(props) {
         <>
             <h3>Questions</h3><br />
             <Tabs defaultActiveKey="easy" className="mb-3 questions-difficulty-tabs">
-                <Tab eventKey="easy" title="Easy" tabClassName="text-success">
+                <Tab eventKey="easy" title="SuperEasy" tabClassName="text-success">
                     <div className="home-questions-wrapper">
                         {props.questions.filter(question => question.difficulty === "easy").map(question => {
                             return (
