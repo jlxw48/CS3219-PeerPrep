@@ -3,7 +3,7 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/ext-language_tools"
 import io from 'socket.io-client';
-import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH } from "../../Api.js";
+import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH, EDITOR_BACKEND_DOMAIN } from "../../Api.js";
 import { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { AppContext } from "../../App.js";
@@ -44,7 +44,7 @@ function Editor() {
         /**
          * Connect socket and add socket events.
          */
-        editorSocket.current = io(BACKEND_DOMAIN, {
+        editorSocket.current = io(EDITOR_BACKEND_DOMAIN, {
             path: EDITOR_SOCKET_PATH,
         });
 

@@ -18,16 +18,16 @@ const END_MATCH_URL = MATCH_URL + "end_interview";
 const MATCH_GET_INTERVIEW_URL = MATCH_URL + "get_interview"
 
 const CHAT_URL = "https://peerprep-g5.tk/api/chat/"
-const CONNECT_MESSENGER_URL = "/chat/create/";
+const CHAT_BACKEND_DOMAIN = "https://peerprep-g5.tk"
+const CONNECT_MESSENGER_URL = "/chat/create";
 const CHAT_HISTORY_URL = CHAT_URL + "get_messages/"
 const CHAT_SOCKET_PATH = "/api/chat/create"
-// const CHAT_SOCKET_PATH = "/proxy/api/chat/create"
 
 const EDITOR_URL = "https://peerprep-g5.tk/api/editor/";
+const EDITOR_BACKEND_DOMAIN = "https://peerprep-g5.tk"
 const EDITOR_HISTORY_URL = EDITOR_URL + "get_text";
 const EDITOR_SOCKET_PATH = "/api/editor/create"
-// const EDITOR_SOCKET_PATH = "/proxy/api/editor/create"
 
-export {BACKEND_DOMAIN, REACT_APP_BACKEND_URL, QUESTION_URL,
+export {BACKEND_DOMAIN, REACT_APP_BACKEND_URL, QUESTION_URL, EDITOR_BACKEND_DOMAIN, CHAT_BACKEND_DOMAIN, 
     LOGIN_URL, REGISTER_URL, LOGOUT_URL, VALIDATE_LOGIN_URL, FIND_MATCH_URL, END_MATCH_URL,
     MATCH_GET_INTERVIEW_URL, CONNECT_MESSENGER_URL, CHAT_URL, CHAT_HISTORY_URL, CHAT_SOCKET_PATH, EDITOR_URL, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH}
