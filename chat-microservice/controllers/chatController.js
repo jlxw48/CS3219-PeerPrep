@@ -87,6 +87,7 @@ const new_message = (req, res) => {
 
 // Gets all messages of an interview
 const get_messages = (req, res) => {
+    console.log("Received get_messages request");
     if (requestHelpers.hasMissingFieldsForGetMessages(req)) {
             res.status(400).json({
                 status: responseStatus.FAILED,

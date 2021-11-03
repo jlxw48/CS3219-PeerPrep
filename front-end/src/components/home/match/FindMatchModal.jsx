@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import Modal from "react-bootstrap/Modal"
 import DifficultyCard from "../difficulties/DifficultyCard";
 import Button from "react-bootstrap/Button";
@@ -18,39 +18,38 @@ import { AppContext } from "../../../App.js"
 function FindMatchModal(props) {
     const [finding, setFinding] = useState(false);
     const history = useHistory();
-    const cancelTokenSource = axios.CancelToken.source();
     const { user, setMatch, matchRef } = useContext(AppContext);
+    let cancelFunct = useRef(null);
     
     const handleFindMatch = () => {
         setFinding(true);
-        axios({
-            method: "post",
-            url: FIND_MATCH_URL,
-            cancelToken: cancelTokenSource.token,
-            data: {
-                email: user.email,
-                difficulty: props.difficulty
-            }
-        }).then(response => response.data.data).then(data => {
+        axios.post(FIND_MATCH_URL, { email: user.email, difficulty: props.difficulty},
+            { cancelToken: new axios.CancelToken(c => cancelFunct.current = c) }
+        ).then(response => response.data.data).then(data => {
             toast.success("Match found, practice session starting now");
             setMatch(data);
             history.push({ pathname: '/practice' });
         }).catch((error) => {
             // If request was cancelled then ignore the error.
             if (axios.isCancel(error)) {
+                console.log("Cancelled", error);
                 return;
             }
+            console.log("Find match error", error);
             if (error.status === 404) {
                 toast.error(error.response.data.data.message);
             } else {
                 console.error(error);
             }
+            setFinding(false);
         })
     }
 
     const handleCancel = () => {
+        if (cancelFunct.current !== null) {
+            cancelFunct.current();
+        }
         setFinding(false);
-        cancelTokenSource.cancel();
         props.setShowMatchModal(false);
     }
 
@@ -59,7 +58,7 @@ function FindMatchModal(props) {
     return (
         <Modal show={props.show} difficulty={props.difficulty} onHide={() => handleCancel()} className="find-match-modal" centered>
             <Modal.Body>
-                <div className="find-match-modal-header">Find match?</div><br />
+                <div className="find-match-modal-header">{ finding ? "Finding match" : "Find match?" }</div><br />
                 <Row className="justify-content-center">
                     <Col md="8">
                         <DifficultyCard difficulty={props.difficulty} />

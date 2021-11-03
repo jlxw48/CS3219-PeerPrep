@@ -302,6 +302,23 @@ const findMatch = async (req, res) => {
     }, 5000);  // Try to find a match every 5s, until 30s is up
 }
 
+const cancelFindMatch = async (req, res) => {
+    if (req.body.email === undefined) {
+        res.status(400).json({
+            status: responseStatus.FAILED,
+            data: {
+                message: clientErrMessages.MISSING_REQUEST_BODY
+            }
+        });
+        return;
+    }
+    const email = req.body.email;
+
+    await Match.findOneAndDelete({ email: email }).exec();
+
+    res.status(204);
+}
+
 // Get number of current ongoing interviews
 const interviewsCount = async (req, res) => {
     try {
@@ -325,5 +342,6 @@ module.exports = {
     getInterview,
     endInterview,
     findMatch,
-    interviewsCount
+    interviewsCount,
+    cancelFindMatch
 };
