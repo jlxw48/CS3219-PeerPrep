@@ -7,6 +7,13 @@
     color: white;
 }
 
+@media screen and (max-width: 800px) {
+    .rcw-conversation-container .rcw-close-button {
+        background-color: #212529 !important;
+        top: 15px !important;
+    }
+}
+
 .rcw-launcher {
     background-color: #212529;
 }

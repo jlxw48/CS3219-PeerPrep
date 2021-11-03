@@ -2,7 +2,8 @@ import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
-import { Widget, addResponseMessage, addUserMessage, renderCustomComponent } from 'react-chat-widget';
+import { Row } from "react-bootstrap";
+import { Widget, addResponseMessage, addUserMessage, renderCustomComponent, dropMessages } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"
 import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../Api.js";
@@ -18,38 +19,48 @@ function Chat() {
     var chatSocket = useRef();
     const [chats, setChats, chatsRef] = useState([]);
 
+    const PartnerDisconnectedMessage = () => (
+    <div className="rcw-message">
+        <div className="rcw-response">
+            <div className="rcw-messages-text">
+                <p><i>Your partner has disconnected from the interview.</i></p>
+            </div>
+        </div>
+    </div>)
+
     useEffect(() => {
         if (matchRef.current === null) {
             history.push({ pathname: '/' });
         }
 
+        // Clears messages from a previous session, if any
+        dropMessages();
+
         interviewId = matchRef.current.interviewId;
 
+        /**
+         * Setup chat socket
+         */
         chatSocket.current = io.connect(BACKEND_DOMAIN, {
-            path: CHAT_SOCKET_PATH
+            path: CHAT_SOCKET_PATH,
+            reconnection: true,
+            reconnectionDelay: 500
         });
 
         chatSocket.current.emit("joinRoom", interviewId);
 
         chatSocket.current.on("connect", () => {
             console.log("Successfully connected to chat socket.");
-            console.log(chats);
 
             // Fetch and populate chat history.
             axios.get(CHAT_HISTORY_URL + interviewId).then(res => {
-                console.log(res.data);
                 if (res.data.status === "success" && res.data.data) {
-                    console.log("We are here", res.data)
                     const chatHistory = res.data.data.history;
                     setChats(chatHistory);
                 }
-                console.log(chatsRef.current);
-
-                /**
-                 * Push chat history from chats variable into chat widget
-                 */
+             
+                // Push chat history from chats variable into chat widget
                 for (let chat of chatsRef.current) {
-                    console.log(chat);
                     if (chat.senderEmail === user.email) {
                         addUserMessage(chat.message);
                     } else {
@@ -58,9 +69,8 @@ function Chat() {
                 }
             }).catch(err => console.log("Error fetching chat history", err));
 
-            /**
-             * Set event upon receiving new message to add to chats variable and to chat widget.
-             */
+            
+            // Set event upon receiving new message to add to chats variable and to chat widget.
             chatSocket.current.on("message", newMessage => {
                 console.log("Received msg from chat socket", newMessage);
                 setChats(oldMessages => [...oldMessages, newMessage]);
@@ -69,20 +79,18 @@ function Chat() {
                 }
             });
 
-            /**
-             * Receive disconnection message
-             */
+
+            // Display disconnection message
             chatSocket.current.on("end_interview", endInterviewMessage => {
-                setChats(oldMessages => [...oldMessages, endInterviewMessage]);
                 if (endInterviewMessage.senderEmail !== user.email) {
-                    renderCustomComponent(<p>{endInterviewMessage.message}</p>);
+                    renderCustomComponent(PartnerDisconnectedMessage);
                 }
             })
 
         });
 
-        const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
         // Upon timeout, close socket to conserve resources
+        const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
         setTimeout(() => {
             chatSocket.current.disconnect();
             chatSocket.current.close();
@@ -98,6 +106,7 @@ function Chat() {
                     message: "Your partner has disconnected."
                 }
             })
+            dropMessages();
             setChats([]);
             chatSocket.current.disconnect();
             chatSocket.current.close();

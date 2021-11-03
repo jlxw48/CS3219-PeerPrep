@@ -1,6 +1,6 @@
 .practice-container-row {
     padding-top: 30px;
-    height: 900px;
+    /* height: 700px; */
 }
 
 .question-editor-col {
@@ -8,7 +8,7 @@
 }
 
 .practice-question-container {
-    height: 45%;
+    /* height: 45%; */
 }
 
 .practice-question-body {
@@ -30,13 +30,8 @@
 }
 
 .editor-section-container {
-    height: 55%;
+    /* height: 55%; */
     padding-top: 20px;
-}
-
-.editor-container-row {
-    padding-top: 10px;
-    height: 90%;
 }
 
 .lang-selector {

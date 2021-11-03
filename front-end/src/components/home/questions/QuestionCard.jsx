@@ -1,5 +1,6 @@
 import React from "react";
 import Card from 'react-bootstrap/Card';
+import ReactMarkdown from "react-markdown";
 import DifficultyBadge from "../../DifficultyBadge";
 
 function QuestionCard(props) {
@@ -8,7 +9,7 @@ function QuestionCard(props) {
         <Card className="home-question-card">
             <Card.Body>
                 <Card.Title>{props.title + " "}<DifficultyBadge difficulty={props.difficulty}/></Card.Title><br/>
-                <Card.Text>{trimmedQuestionBody}</Card.Text>
+                <Card.Text><ReactMarkdown>{trimmedQuestionBody}</ReactMarkdown></Card.Text>
             </Card.Body>
         </Card>
     )
