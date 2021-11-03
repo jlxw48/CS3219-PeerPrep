@@ -77,7 +77,7 @@ function Login(props) {
                 toast.error(`${getResMessage(error.response)}`);
             } else {
                 console.error(error);
-                toast.error("Error logging in, try agian later");
+                toast.error("Error logging in, try again later");
             }
             setIsLoading(false);
         });

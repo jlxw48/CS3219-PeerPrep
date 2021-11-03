@@ -24,8 +24,18 @@ const io = new Server(server, {
 
 const REDIS_HOST = process.env.REDIS_HOST || "redis";
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const pubClient = createClient(REDIS_PORT, REDIS_HOST);
-const subClient = createClient(REDIS_PORT, REDIS_HOST);
+const REDIS_PW = process.env.REDIS_PW;
+const pubClient = createClient({
+    port: REDIS_PORT,
+    host: REDIS_HOST,
+    auth_pass: REDIS_PW
+});
+
+const subClient = createClient({
+    port: REDIS_PORT,
+    host: REDIS_HOST,
+    auth_pass: REDIS_PW
+});
 io.adapter(createAdapter(pubClient, subClient));
 
 // Event 'connection': Fired upon a connection from client
