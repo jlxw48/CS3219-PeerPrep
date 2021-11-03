@@ -29,7 +29,8 @@ const io = new Server(server, {
   path: "/api/editor/create",
   cors: {
     origin: "https://peerprep.ml",
-    methods: ["GET", "POST", "DELETE"]
+    methods: ["GET", "POST", "DELETE"],
+    credentials: true
   }
 });
 

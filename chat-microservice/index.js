@@ -28,7 +28,8 @@ const io = new Server(server, {
     path: "/api/chat/create",
     cors: {
         origin: "https://peerprep.ml",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        credentials: true
     }
 });
 

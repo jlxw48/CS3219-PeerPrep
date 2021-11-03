@@ -197,6 +197,7 @@ exports.user_login = (req, res) => {
 
 exports.jwt_validate = (req, res) => {
 	const token = req.cookies["cs3219_jwt"];
+	console.log(token, req.headers.origin)
     try {
         if (token == null || token.length === 0) {
             return res
@@ -256,7 +257,7 @@ exports.statusCheck = (req, res) => {
     res.json({
         status: responseStatus.SUCCESS,
         data: {
-            message: clientSuccessMessages.STATUS_WORKING + "!!!!!!!!"
+            message: clientSuccessMessages.STATUS_WORKING + "!!!"
         }
     });
 };

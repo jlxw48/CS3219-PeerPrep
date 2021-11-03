@@ -26,7 +26,11 @@ function Chat() {
         interviewId = matchRef.current.interviewId;
 
         chatSocket.current = io.connect(CHAT_BACKEND_DOMAIN, {
-            path: CHAT_SOCKET_PATH
+            transports: ["websocket"],
+            path: CHAT_SOCKET_PATH,
+            withCredentials: true,
+            reconnection: true,
+            reconnectionDelay: 500
         });
 
         chatSocket.current.emit("joinRoom", interviewId);

@@ -42,17 +42,17 @@ spec:
             name: match
             port: 
               number: 3000
-      # - path: /api/chat
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: chat
-      #       port: 
-      #         number: 3000
-      # - path: /api/editor
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: text
-      #       port: 
-      #         number: 3000
+      - path: /api/chat
+        pathType: Prefix
+        backend:
+          service:
+            name: chat
+            port: 
+              number: 3000
+      - path: /api/editor
+        pathType: Prefix
+        backend:
+          service:
+            name: text
+            port: 
+              number: 3000
