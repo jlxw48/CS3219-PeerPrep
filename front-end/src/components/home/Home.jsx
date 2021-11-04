@@ -14,7 +14,14 @@ function Home() {
     const { user } = useContext(AppContext);
     const [questions, setQuestions] = useState([]);
     useEffect(() => {
-        axios.get(QUESTION_URL).then(res => {
+        const headers = {
+            headers: {
+                Authorization: localStorage.getItem('cs3219-jwt-auth'),
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        }
+        axios.get(QUESTION_URL, headers).then(res => {
             if (res.status !== 200 || res.data.status !== "success") {
                 console.error("Error fetching questions for home page.");
             }

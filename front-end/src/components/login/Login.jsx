@@ -65,6 +65,7 @@ function Login(props) {
             password
         }).then(res => res.data.data).then(data => {
             setUser(data);
+            localStorage.setItem("cs3219-jwt-auth", data.token);
             toast.success("Login successful");
             // Checks Match microservice to see if user is in match, if so, redirect to practice page, else redirect to home.
             checkIfUserInMatch().then(hasMatch => {
