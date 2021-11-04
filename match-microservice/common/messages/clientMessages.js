@@ -1,9 +1,9 @@
 const STATUS_WORKING = "match component is working";
 const INTERVIEW_ENDED = "interview ended for user";
-const INVALID_API_ENDPOINT = "invalid API endpoint";
+const CANCELLED_FIND_MATCH = "cancelled find match successfully";
 
 module.exports = {
     STATUS_WORKING,
     INTERVIEW_ENDED,
-    INVALID_API_ENDPOINT
+    CANCELLED_FIND_MATCH
 };
