@@ -1,11 +1,4 @@
-import { Col, Container, Row } from "react-bootstrap";
-import '../css/Tutorial.css'
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from 'rehype-raw'
-
-const markdown = `
-# How to use PeerPrep 😀
-  
+const md = `# How to use PeerPrep 😀
 
 <br/>
 
@@ -58,9 +51,10 @@ The chat window can be expanded and collapsed with a click of a button. It allow
 
 ![image](https://user-images.githubusercontent.com/52824657/140269900-2906e76d-96cc-4f6f-9c26-fc6f65a0619d.png)
 
-<div className="alert alert-info"><b>Note</b>: Due to our limited compute resources as a start up, we have a concurrent interview limit of 5 (10 users can interview at any time).
- To ensure that all users have an equal chance to use our awesome application, we enforce a 1 hour time limit for all interviews.
-  Your interview will also be ended if you remain inactive for more than 10 minutes.</div>
+<div className="alert alert-info">
+    <b>Note</b>: Due to our limited compute resources as a start up, we have a concurrent interview limit of 5 (10 users can interview at any time.
+    To ensure that all users have an equal chance to use our awesome application, we enforce a 1 hour time limit for all interviews. Your interview will also be ended if you remain inactive for more than 10 minutes.
+</div>
  
 <hr/>
 
@@ -83,16 +77,4 @@ If you visit another page in our website while in an interview, you will be able
 <br/>
 `
 
-function Tutorial() {
-    return (
-        <Container className="tutorial-container">
-            <Row className="align-items-centre justify-content-center">
-                <Col md={12}>
-                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>{markdown}</ReactMarkdown>
-                </Col>
-            </Row>
-        </Container>
-    );
-}
-
-export default Tutorial;
+export default md;

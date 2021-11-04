@@ -15,7 +15,7 @@ import Home from './components/home/Home';
 import Login from './components/login/Login';
 import LoadingScreen from './components/LoadingScreen';
 import Practice from './components/practice/Practice';
-import Tutorial from "./components/Tutorial";
+import Tutorial from "./components/tutorial/Tutorial";
 
 
 export const AppContext = React.createContext();
