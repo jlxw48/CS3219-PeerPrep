@@ -8,6 +8,8 @@ import Skeleton from 'react-loading-skeleton';
 import Chat from "./Chat";
 import Editor from "./Editor";
 import LoadingScreen from "../LoadingScreen";
+import ReactMarkdown from 'react-markdown'
+import rehypeRaw from "rehype-raw";
 
 import "../../css/Practice.css"
 import DifficultyBadge from "../DifficultyBadge.jsx";
@@ -50,16 +52,16 @@ function Practice() {
                         <div className="practice-question-body">
                             {
                                 practiceQuestion ? <><h2>{practiceQuestion.title}&nbsp;<DifficultyBadge difficulty={practiceQuestion.difficulty}/></h2><br />
-                                    {practiceQuestion.description}</> : <Skeleton height={"100%"} />
+                                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>{practiceQuestion.description}</ReactMarkdown></> : <Skeleton height={"100%"} />
                             }
                         </div>
                     </div>
                     <div className="editor-section-container">
                         <Editor />
                     </div>
-                    <Chat />
                 </Col>
             </Row>
+            <Chat />
         </Container>
     )
 }

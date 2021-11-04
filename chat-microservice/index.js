@@ -62,6 +62,12 @@ io.on("connection", socket => {
 
     socket.on("joinRoom", interviewId => {
         socket.join(interviewId);
+        if (io.sockets.adapter.rooms.get(interviewId).size === 2) {
+            io.to(interviewId).emit("notification", {
+                senderEmail: "server",
+                message: PARTNER_CONNECTED
+            })
+        }
     });
 
     socket.on("message", newMessage => {
@@ -70,10 +76,14 @@ io.on("connection", socket => {
         io.to(newMessage.interviewId).emit("message", newMessage.contents);
     });
 
+    socket.on("notification", newMessage => {
+        io.to(newMessage.interviewId).emit("notification", newMessage.contents);
+    })
+
     socket.on("end_interview", endInterviewMessage => {
         socket.leave(endInterviewMessage.interviewId);
         // If partner has ended interview, send a message to inform the other buddy
-        io.to(endInterviewMessage.interviewId).emit("end_interview", endInterviewMessage.contents);
+        io.to(endInterviewMessage.interviewId).emit("notification", endInterviewMessage.contents);
     });
 });
 
@@ -98,6 +108,15 @@ app.use(auth.jwt_validate);
 
 // Use the chat API routes
 app.use('/api/chat', chatApiRoutes);
+
+app.use((req, res) => {
+    res.status(404).json({
+        status: responseStatus.FAILED,
+        data: {
+            message: clientErrors.INVALID_API_ENDPOINT
+        }
+    });
+});
 
 // Export app for testing purposes
 module.exports = app;

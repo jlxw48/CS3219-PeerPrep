@@ -101,6 +101,10 @@ function Editor() {
          */
         return () => {
             editorSocket.current.disconnect();
+            editorSocket.current.close();
+            if (inactivityTimer.current !== null) {
+                clearTimeout(inactivityTimer.current);
+            }
             setCode("");
         }
     }, [matchRef]);

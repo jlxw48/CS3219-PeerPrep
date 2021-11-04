@@ -208,6 +208,17 @@ const findMatch = async (req, res) => {
         }
 
         try {
+            const matchRecord = await Match.findOne({ email: email }).exec();
+            if (!matchRecord) {
+                res.status(404).json({
+                    status: responseStatus.FAILED,
+                    data: {
+                        message: clientErrMessages.CANCELLED_FIND_MATCH
+                    }
+                });
+                return;
+            }
+
             const interviewExists = await Interview.findOne({
                 $or: [
                     { firstUserEmail: email },
@@ -303,7 +314,7 @@ const findMatch = async (req, res) => {
 }
 
 const cancelFindMatch = async (req, res) => {
-    if (req.body.email === undefined) {
+    if (requestHelpers.hasMissingFieldsForCancelFindMatch(req)) {
         res.status(400).json({
             status: responseStatus.FAILED,
             data: {
@@ -312,11 +323,16 @@ const cancelFindMatch = async (req, res) => {
         });
         return;
     }
+    
     const email = req.body.email;
+    Match.findOneAndDelete({ email: email }).exec();
 
-    await Match.findOneAndDelete({ email: email }).exec();
-
-    res.status(204);
+    res.status(204).json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: clientMessages.CANCELLED_FIND_MATCH
+        }
+    });
 }
 
 // Get number of current ongoing interviews

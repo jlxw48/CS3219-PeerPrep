@@ -2,7 +2,8 @@ import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
-import { Widget, addResponseMessage, addUserMessage, renderCustomComponent } from 'react-chat-widget';
+import { Row } from "react-bootstrap";
+import { Widget, addResponseMessage, addUserMessage, renderCustomComponent, dropMessages } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"
 import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH, CHAT_BACKEND_DOMAIN } from "../../Api.js";
@@ -18,10 +19,28 @@ function Chat() {
     var chatSocket = useRef();
     const [chats, setChats, chatsRef] = useState([]);
 
+    const PARTNER_CONNECTED_NOTIFICATION = "Your partner has connected to the chat."
+    const PARTNER_DISCONNECT_NOTIFICATION = "Your partner has disconnected from the interview."
+    const NOTIFICATION_TYPE_CONNECTION = 0;
+    const NOTIFICATION_TYPE_END = 1;
+
+
+    const PartnerDisconnectedMessage = (props) => (
+    <div className="rcw-message">
+        <div className="rcw-response">
+            <div className="rcw-messages-text">
+                <p><i>{props.message}</i></p>
+            </div>
+        </div>
+    </div>)
+
     useEffect(() => {
         if (matchRef.current === null) {
             history.push({ pathname: '/' });
         }
+
+        // Clears messages from a previous session, if any
+        dropMessages();
 
         interviewId = matchRef.current.interviewId;
 
@@ -37,23 +56,14 @@ function Chat() {
 
         chatSocket.current.on("connect", () => {
             console.log("Successfully connected to chat socket.");
-            console.log(chats);
 
             // Fetch and populate chat history.
-            axios.get(CHAT_HISTORY_URL + interviewId).then(res => {
-                console.log(res.data);
-                if (res.data.status === "success" && res.data.data) {
-                    console.log("We are here", res.data)
-                    const chatHistory = res.data.data.history;
-                    setChats(chatHistory);
-                }
-                console.log(chatsRef.current);
-
-                /**
-                 * Push chat history from chats variable into chat widget
-                 */
+            axios.get(CHAT_HISTORY_URL + interviewId).then(res => res.data.data).then(data => {
+                const chatHistory = data.history;
+                setChats(chatHistory);
+            
+                // Push chat history from chats variable into chat widget
                 for (let chat of chatsRef.current) {
-                    console.log(chat);
                     if (chat.senderEmail === user.email) {
                         addUserMessage(chat.message);
                     } else {
@@ -62,9 +72,8 @@ function Chat() {
                 }
             }).catch(err => console.log("Error fetching chat history", err));
 
-            /**
-             * Set event upon receiving new message to add to chats variable and to chat widget.
-             */
+            
+            // Set event upon receiving new message to add to chats variable and to chat widget.
             chatSocket.current.on("message", newMessage => {
                 console.log("Received msg from chat socket", newMessage);
                 setChats(oldMessages => [...oldMessages, newMessage]);
@@ -73,36 +82,38 @@ function Chat() {
                 }
             });
 
-            /**
-             * Receive disconnection message
-             */
-            chatSocket.current.on("end_interview", endInterviewMessage => {
-                setChats(oldMessages => [...oldMessages, endInterviewMessage]);
+
+            // Display notification in chat widget
+            chatSocket.current.on("notification", endInterviewMessage => {
                 if (endInterviewMessage.senderEmail !== user.email) {
-                    renderCustomComponent(<p>{endInterviewMessage.message}</p>);
+                    renderCustomComponent(PartnerDisconnectedMessage, {message: endInterviewMessage.message});
                 }
             })
 
         });
 
-        const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
         // Upon timeout, close socket to conserve resources
+        const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
         setTimeout(() => {
             chatSocket.current.disconnect();
             chatSocket.current.close();
         }, matchRef.current.durationLeft * SECONDS_TO_MICROSECONDS_MULTIPLIER);
 
-        // When tearing down Chat component, close the socket.
+        // Clean up
         return () => {
             console.log("Closing chat socket");
+            // Broadcast to interview partner that the user is disconnecting.
             chatSocket.current.emit("end_interview", {
-                interviewId: matchRef.current.interviewId,
+                interviewId,
                 contents: {
                     senderEmail: user.email,
-                    message: "Your partner has disconnected."
+                    message: "Your partner has disconnected from the interview."
                 }
             })
+            // Delete all messages from chat widget
+            dropMessages();
             setChats([]);
+            // Clean up socket
             chatSocket.current.disconnect();
             chatSocket.current.close();
         }

@@ -1,19 +1,22 @@
 import React from 'react';
 import { useEffect } from 'react';
-import PeerPrepNav from './components/PeerPrepNav';
-import Home from './components/home/Home';
-import Login from './components/login/Login';
+import useState from 'react-usestateref';
 import { Switch, Route } from 'react-router-dom';
-import Practice from './components/practice/Practice';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
-import useState from 'react-usestateref';
-import LoadingScreen from './components/LoadingScreen';
-import './css/App.css';
 import axios from 'axios';
-import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL } from './Api';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import './css/App.css';
+import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL } from './constants';
+
+import PeerPrepNav from './components/PeerPrepNav';
+import Home from './components/home/Home';
+import Login from './components/login/Login';
+import LoadingScreen from './components/LoadingScreen';
+import Practice from './components/practice/Practice';
+import Tutorial from "./components/Tutorial";
+
 
 export const AppContext = React.createContext();
 
@@ -41,7 +44,7 @@ function App() {
     return axios.get(VALIDATE_LOGIN_URL).then(res => res.data.data).then(data => {
       setUser(data);
       return true;
-    }).catch(err => false); // No JWT cookie or invalid JWT cookie
+    }).catch(err => false); // No JWT token or invalid JWT token.
   }
 
   function redirectToPractice() {
@@ -83,6 +86,7 @@ function App() {
           <Route path='/login' render={props => isLoading ? <LoadingScreen /> : <Login />} />
           <Route path="/practice" render={props => isLoading ? <LoadingScreen /> : <Practice />} />
           <Route path="/register" render={props => <Login isRegister={true} />} />
+          <Route path="/tutorial"><Tutorial /></Route>
           <Route path="/*" render={props => {
             toast.error("You have entered an invalid route.");
             return <Home />
