@@ -9,13 +9,13 @@ import { faLock } from "@fortawesome/free-solid-svg-icons";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { toast } from 'react-toastify'
-import { REGISTER_URL, LOGIN_URL } from "../../Api.js"
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AppContext } from "../../App.js"
 import Spinner from 'react-bootstrap/Spinner'
 import { resHasMessage, getResMessage } from "../../Helpers.js";
 import { useAppStateHelper } from "../../common/state_handlers/AppState.js";
+import { REGISTER_URL, LOGIN_URL, JWT_TOKEN_NAME } from "../../constants.js"
 
 
 function Login(props) {
@@ -65,6 +65,7 @@ function Login(props) {
             password
         }).then(res => res.data.data).then(data => {
             setUser(data);
+            localStorage.setItem(JWT_TOKEN_NAME, data.token);
             toast.success("Login successful");
             // Checks Match microservice to see if user is in match, if so, redirect to practice page, else redirect to home.
             checkIfUserInMatch().then(hasMatch => {

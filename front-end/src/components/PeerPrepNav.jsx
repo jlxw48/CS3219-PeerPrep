@@ -8,7 +8,7 @@ import { AppContext } from '../App.js';
 import { toast } from 'react-toastify'
 import { useHistory, useLocation } from "react-router-dom";
 import axios from 'axios'
-import { LOGOUT_URL, END_MATCH_URL } from "../Api.js";
+import { LOGOUT_URL, END_MATCH_URL, JWT_TOKEN_NAME } from "../constants.js";
 import { Button } from 'react-bootstrap'
 import { confirm } from 'react-bootstrap-confirmation';
 
@@ -21,7 +21,7 @@ function PeerPrepNav() {
 
     // Calls user API to delete JWT cookie
     const handleLogout = () => {
-        axios.post(LOGOUT_URL);
+        localStorage.removeItem(JWT_TOKEN_NAME);
         setUser(null);
         if (matchRef.current !== null) {
             toast.info("Your interview has been ended.");

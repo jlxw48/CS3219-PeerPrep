@@ -3,7 +3,7 @@ import { useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL, END_MATCH_URL } from "../../Api";
+import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL, END_MATCH_URL } from "../../constants";
 
 export function useAppStateHelper() {
     const { setUser, userRef, setMatch } = useContext(AppContext);
@@ -11,7 +11,7 @@ export function useAppStateHelper() {
         return axios.get(VALIDATE_LOGIN_URL).then(res => res.data.data).then(data => {
             setUser(data);
             return true;
-        }).catch(err => false); // No JWT cookie or invalid JWT cookie
+        }).catch(err => false); // No JWT token or invalid JWT token
     }
 
     const history = useHistory();

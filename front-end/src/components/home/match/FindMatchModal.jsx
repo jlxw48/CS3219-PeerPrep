@@ -9,7 +9,7 @@ import '../../../css/FindMatchModal.css'
 import { faExclamationCircle, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Spinner } from "react-bootstrap";
-import { FIND_MATCH_URL, STOP_FIND_MATCH_URL } from "../../../Api";
+import { FIND_MATCH_URL, STOP_FIND_MATCH_URL } from "../../../constants";
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { toast } from 'react-toastify'
