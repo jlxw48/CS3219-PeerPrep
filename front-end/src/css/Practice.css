@@ -3,6 +3,12 @@
     /* height: 700px; */
 }
 
+@media screen and (max-width: 800px) {
+    .practice-container-row {
+        padding-top: 70px;
+    }
+}
+
 .question-editor-col {
     /* height: 100% */
 }
@@ -32,6 +38,12 @@
 .editor-section-container {
     height: 500px;
     padding-top: 20px;
+}
+
+@media screen and (max-width: 800px) {
+    .editor-section-container {
+        height: 400px;
+    }
 }
 
 .lang-selector {
