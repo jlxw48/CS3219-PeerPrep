@@ -52,7 +52,6 @@ function PeerPrepNav() {
     }
 
     const currRoute = useLocation().pathname;
-    console.log(currRoute);
 
     return (
         <Navbar bg="dark" variant="dark">
@@ -69,6 +68,7 @@ function PeerPrepNav() {
                     {
                         user !== null && <Nav.Link onClick={() => handleLogout()} className="nav-link">Logout</Nav.Link>
                     }
+                    <NavLink to="/tutorial" exact className="nav-link">Tutorial</NavLink>
                 </Nav>
                 { matchRef.current !== null && currRoute !== "/practice" && <Nav className="ml-auto resume-interview-button" onClick={() => history.push({pathname: "/practice"})}><Button variant="success"><b>Resume interview</b></Button></Nav> }
                 { matchRef.current !== null && <Nav className="ml-auto" onClick={() => handleEndInterview()}><Button variant="danger"><b>End interview</b></Button></Nav> }

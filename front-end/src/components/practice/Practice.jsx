@@ -58,9 +58,9 @@ function Practice() {
                     <div className="editor-section-container">
                         <Editor />
                     </div>
-                    <Chat />
                 </Col>
             </Row>
+            <Chat />
         </Container>
     )
 }

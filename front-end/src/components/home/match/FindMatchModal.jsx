@@ -39,13 +39,14 @@ function FindMatchModal(props) {
                 console.log("Cancelled", error);
                 return;
             }
-            console.log("Find match error", error);
-            if (error.status === 404) {
+            console.log("Find match error", error.response);
+            props.setShowMatchModal(false);
+            setFinding(false);
+            if (error.response.status === 404) {
                 toast.error(error.response.data.data.message);
             } else {
                 console.error(error);
-            }
-            setFinding(false);
+            }  
         })
     }
 

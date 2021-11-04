@@ -16,7 +16,7 @@
     /* height: 100%; */
     padding: 20px;
     border-radius: 10px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     overflow-y: auto;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .editor-section-container {
-    /* height: 55%; */
+    height: 500px;
     padding-top: 20px;
 }
 
@@ -40,7 +40,7 @@
 
 .ace_editor {
     width: 99% !important;
-    margin-left: 1% !important;
+    /* margin-left: 1% !important; */
     overflow-y: auto;
     border-radius: 5px;
     border: 2px solid grey;
