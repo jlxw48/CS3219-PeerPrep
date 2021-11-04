@@ -6,6 +6,13 @@
     height: 100%;
 }
 
+@media screen and (max-width: 800px) {
+    .difficulty-card-container {
+        margin-bottom: 10px !important;
+    }
+}
+
+
 .difficulty-card .card-title {
     text-transform: capitalize !important;
 }
@@ -21,4 +28,3 @@
 .difficulty-card.hard {
     border-top-color: #DC3545 !important;
 }
-

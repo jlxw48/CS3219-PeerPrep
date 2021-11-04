@@ -3,6 +3,17 @@
     font-weight: 800;
 }
 
-.resume-interview-button {
-    margin-right: 10px;
+
+@media screen and (min-width: 800px) {
+    .resume-interview-button {
+        margin-right: 10px;
+    }
 }
+
+@media screen and (max-width: 800px) {
+    .resume-interview-button {
+        padding-bottom: 10px;
+    }
+}
+
+

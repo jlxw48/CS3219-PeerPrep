@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container'
 import Questions from './questions/Questions';
 import FindMatchModal from './match/FindMatchModal';
 import { AppContext } from "../../App.js"
-import { QUESTION_URL } from '../../Api';
+import { QUESTION_URL } from '../../constants';
 import axios from 'axios';
 
 function Home() {

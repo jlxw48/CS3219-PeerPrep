@@ -1,12 +1,4 @@
-import { Col, Container, Row } from "react-bootstrap";
-import '../css/Tutorial.css'
-import Emoji from "react-emoji-render";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from 'rehype-raw'
-
-const markdown = `
-# How to use PeerPrep 😀
-  
+const md = `# How to use PeerPrep 😀
 
 <br/>
 
@@ -14,13 +6,13 @@ const markdown = `
 
 <br/>
 
-Signing up is easy, simple visit the [register](/register) page.
+Signing up is easy, simple visit the <a href="/register" target="_blank">register</a> page.
+
+Enter your information and click \`Register\`. You will be redirected to the home page. You can now login by visiting the <a href="/login" target="_blank">login</a> page.
 
 
 ![image](https://user-images.githubusercontent.com/52824657/140275247-bbe10f69-35c5-4346-bb54-461096dd3667.png)
 
-
-Enter your information and click \`Register\`. You will be redirected to the home page. You can now login by visiting the [login](/login) page.
 
 <hr/>
 
@@ -59,9 +51,10 @@ The chat window can be expanded and collapsed with a click of a button. It allow
 
 ![image](https://user-images.githubusercontent.com/52824657/140269900-2906e76d-96cc-4f6f-9c26-fc6f65a0619d.png)
 
-<div className="alert alert-info"><b>Note</b>: Due to our limited compute resources as a start up, we have a concurrent interview limit of 5 (10 users can interview at any time).
- To ensure that all users have an equal chance to use our awesome application, we enforce a 1 hour time limit for all interviews.
-  Your interview will also be ended if you remain inactive for more than 10 minutes.</div>
+<div className="alert alert-info">
+    <b>Note</b>: Due to our limited compute resources as a start up, we have a concurrent interview limit of 5 (10 users can interview at any time.
+    To ensure that all users have an equal chance to use our awesome application, we enforce a 1 hour time limit for all interviews. Your interview will also be ended if you remain inactive for more than 10 minutes.
+</div>
  
 <hr/>
 
@@ -74,7 +67,7 @@ If you visit another page in our website while in an interview, you will be able
 
 ![image](https://user-images.githubusercontent.com/52824657/140270814-9f799af2-1a9f-40b9-98a2-aa9cd072c048.png)
 
-If you are in an interview and you experience a network issue or you refresh the page, you will be safely brought back to the interview page 👍.
+<div className="alert alert-info"><b>Note: </b>If you are in an interview and you experience a network issue or you refresh the page, you will be safely brought back to the interview page 👍.</div>
 
 <br/>
 
@@ -84,16 +77,4 @@ If you are in an interview and you experience a network issue or you refresh the
 <br/>
 `
 
-function Tutorial() {
-    return (
-        <Container className="tutorial-container">
-            <Row className="align-items-centre justify-content-center">
-                <Col md={12}>
-                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>{markdown}</ReactMarkdown>
-                </Col>
-            </Row>
-        </Container>
-    );
-}
-
-export default Tutorial;
+export default md;

@@ -13,7 +13,7 @@ function Difficulties(props) {
             <h3>Difficulties</h3><br/>
             <Row>
                 {difficulties.map(difficulty => {
-                    return (<Col md={4} key={difficulty}>
+                    return (<Col md={4} key={difficulty} className="difficulty-card-container">
                         <DifficultyCard difficulty={difficulty} onClick={() => {
                             props.setMatchDifficulty(difficulty);
                             props.setShowMatchModal(true);
