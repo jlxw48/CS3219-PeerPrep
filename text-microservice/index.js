@@ -2,6 +2,7 @@ const responseStatus = require('./common/responseStatus');
 const clientSuccessMessages = require('./common/clientSuccess');
 const clientErrorMessages = require('./common/clientErrors');
 const dbErrorMessages = require('./common/dbErrors');
+const auth = require('./auth');
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -50,6 +51,8 @@ pubClient.on("connect", () => console.log("pubClient connected to Redis"));
 pubClient.on("error", function (error) {
   console.error(error);
 });
+
+app.use(auth.jwt_validate);
 
 app.get("/api/editor/get_text", (req, res) => {
   const sessionId = req.query.interviewId;

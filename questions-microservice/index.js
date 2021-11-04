@@ -1,5 +1,6 @@
 const express = require( 'express' );
 const mongoose = require( "mongoose" );
+const cors = require( 'cors' );
 
 const qnController = require( "./db/question_controller" );
 const configs = require( "./configs/configs" );
@@ -7,36 +8,36 @@ const clientErr = require( "./common/error_msgs/client_errors" );
 const dbErr = require( "./common/error_msgs/db_errors" );
 const msg = require( "./common/msgs" );
 const responseStatus = require( "./common/status" );
-const cors = require('cors');
+const auth = require( "./auth" );
 
 const app = express();
 app.use( express.json() );
 var corsOptions = {
     origin: 'https://peerprep.ml',
-    credentials: true 
+    credentials: true
 };
-app.use(cors(corsOptions));
+app.use( cors( corsOptions ) );
 const port = 3000;
 
 const setErrorMessage = ( errMessage, code ) => ( req, res ) => {
     res.statusCode = code;
     res.setHeader( 'content-type', 'application/json' );
     res.setHeader( 'Access-Control-Allow-Origin', 'https://peerprep.ml/' );
-    res.json( { 
+    res.json( {
         status: responseStatus.FAILED,
         data: {
             message: errMessage
-        } 
+        }
     } );
 }
 
-const statusCheck = (req, res) => {
-    res.json({
+const statusCheck = ( req, res ) => {
+    res.json( {
         status: responseStatus.SUCCESS,
         data: {
             message: msg.STATUS_HEALTHY
         }
-    });
+    } );
 };
 
 // for matching
@@ -45,16 +46,18 @@ app.route( "/api/questions/get_random_question" )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
 app.route( "/api/questions/status" )
-    .get(statusCheck)
+    .get( statusCheck )
     .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
 
 app.route( "/api/questions/:id" )
+    .all( auth.jwt_validate )
     .put( qnController.updateQuestion )
     .delete( qnController.deleteQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
 app.route( "/api/questions/" ) // TODO fix routing prefix issue 
     .get( qnController.getAllQuestions )
+    .post( auth.jwt_validate )
     .post( qnController.createQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 

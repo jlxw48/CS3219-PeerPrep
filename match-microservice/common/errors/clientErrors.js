@@ -10,6 +10,7 @@ const INCONSISTENT_PARTNERS = "inconsistent partners detected";
 const NO_INTERVIEW = "failed to retrieve interview details";
 const DELETE_INTERVIEW_FAILED = "failed to end interview for user";
 const INVALID_API_ENDPOINT = "invalid API endpoint";
+const JWT_AUTH_FAILED = "you are not authorised!";
 
 module.exports = {
     MISSING_REQUEST_BODY,
@@ -23,5 +24,6 @@ module.exports = {
     INCONSISTENT_PARTNERS,
     NO_INTERVIEW,
     DELETE_INTERVIEW_FAILED,
-    INVALID_API_ENDPOINT
+    INVALID_API_ENDPOINT,
+    JWT_AUTH_FAILED
 };

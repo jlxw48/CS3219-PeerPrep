@@ -48,21 +48,21 @@ const isPasswordAndUserMatch = (req, res) => {
 						email: email,
 						name: data.name
 					},
-					'CS3219_SECRET_KEY',
+					process.env.SECRET_KEY,
 					{
 						expiresIn: "1h",
 					}
 				); 
 
-        		res.status(200).cookie("cs3219_jwt", token, {
-            			httpOnly: true
-            		}).json({
-   					status: responseStatus.SUCCESS, 
-    				data: {
-    					email: email,
-        				message: clientSuccessMessages.VALID_LOGIN
-    				}
-  				  });
+        		res.status(200)
+					.json({
+						status: responseStatus.SUCCESS, 
+						data: {
+							email: email,
+							message: clientSuccessMessages.VALID_LOGIN,
+							token: token
+						}
+  				  	});
    				return;
    			} else {
            		res.status(400).send({
@@ -196,8 +196,9 @@ exports.user_login = (req, res) => {
 };
 
 exports.jwt_validate = (req, res) => {
-	const token = req.cookies["cs3219_jwt"];
-	console.log(token, req.headers.origin)
+	const token = req.header('authorization');
+	console.log("auth header token", token);
+
     try {
         if (token == null || token.length === 0) {
             return res
@@ -210,7 +211,7 @@ exports.jwt_validate = (req, res) => {
                 });
         }
     
-        jwt.verify(token, 'CS3219_SECRET_KEY', (err, user) => {
+        jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
             if (err) {
 				console.log("1");
                 console.log(err);
@@ -243,7 +244,7 @@ exports.jwt_validate = (req, res) => {
     }
 }
 
-exports.user_logout = (req, res) => {
+exports.user_logout = (req, res) => { // todo delete
 	res.status(200).clearCookie("cs3219_jwt")
 	.json({
 		status: responseStatus.SUCCESS, 
