@@ -208,16 +208,6 @@ const findMatch = async (req, res) => {
         }
 
         try {
-            const matchRecord = await Match.findOne({ email: email }).exec();
-            if (!matchRecord) {
-                res.status(404).json({
-                    status: responseStatus.FAILED,
-                    data: {
-                        message: clientErrMessages.CANCELLED_FIND_MATCH
-                    }
-                });
-                return;
-            }
 
             const interviewExists = await Interview.findOne({
                 $or: [
@@ -241,6 +231,17 @@ const findMatch = async (req, res) => {
                         interviewId: interviewExists.interviewId,
                         question: interviewExists.question,
                         durationLeft: ONE_HOUR
+                    }
+                });
+                return;
+            }
+
+            const matchRecord = await Match.findOne({ email: email }).exec();
+            if (!matchRecord) {
+                res.status(404).json({
+                    status: responseStatus.FAILED,
+                    data: {
+                        message: clientErrMessages.CANCELLED_FIND_MATCH
                     }
                 });
                 return;

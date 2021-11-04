@@ -11,7 +11,7 @@ require("dotenv").config();
 
 app.use(express.urlencoded({extended: true}));
 var corsOptions = {
-    origin: 'https://peerprep.ml',
+    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
     credentials: true 
 };
 app.use(cors(corsOptions));

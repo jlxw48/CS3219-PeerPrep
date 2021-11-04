@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 var corsOptions = {
-    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk'],
+    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
     credentials: true 
 };
 app.use(cors(corsOptions));

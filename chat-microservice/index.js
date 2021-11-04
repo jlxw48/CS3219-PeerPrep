@@ -22,12 +22,12 @@ const dbController = require('./controllers/dbController')
 const chatApiRoutes = require('./routes/chatApiRoutes');
 const responseStatus = require('./common/status/responseStatus');
 const clientErrors = require('./common/errors/clientErrors');
-const clientMessages = require('./common/messages/clientMessages')
+const clientMessages = require('./common/messages/clientMessages');
 
 const io = new Server(server, {
     path: "/api/chat/create",
     cors: {
-        origin: ['https://peerprep.ml', 'https://peerprep-g5.tk'],
+        origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
         methods: ["GET", "POST"],
         credentials: true
     }
