@@ -49,7 +49,7 @@ const isPasswordAndUserMatch = (req, res) => {
 					},
 					'CS3219_SECRET_KEY',
 					{
-						expiresIn: "1h",
+						expiresIn: "7d",
 					}
 				); 
 
