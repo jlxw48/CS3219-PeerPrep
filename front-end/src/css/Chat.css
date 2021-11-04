@@ -18,3 +18,28 @@
     background-color: #212529;
 }
 
+.rcw-widget-container {
+    height: auto !important;
+    width: auto !important;
+}
+
+.rcw-widget-container.conversation-container {
+    width: 370px !important;
+    margin-bottom: 10px !important;
+}
+
+.rcw-widget-container .launcher {
+    margin-top: 5px !important;
+}
+
+@media screen and (max-width: 800px) {
+    .rcw-widget-container {
+        height: auto !important;
+        width: auto !important;
+    }
+    .rcw-widget-container .rcw-conversation-container {
+        height: 100vh !important;
+        width: 100vw !important;
+        margin-bottom:0 !important;
+    }
+}
