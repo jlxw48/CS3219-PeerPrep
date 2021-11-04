@@ -5,13 +5,23 @@
 .tutorial-container img {
     max-width: 100%;
     height: auto;
+    border-radius: 5px;
+    border: 2px solid black;
 }
 
 .tutorial-container a {
     text-decoration: none;
 }
 
-.tutorial-container h1,.tutorial-section-separator {
+.tutorial-container h1 {
     border-bottom: 1px solid lightgray;
     padding-bottom: 5px;
+}
+
+.tutorial-container h2 {
+    color: darkblue;
+}
+
+.tutorial-container h4 {
+    color: peru;
 }

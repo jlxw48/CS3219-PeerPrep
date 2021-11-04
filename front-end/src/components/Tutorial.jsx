@@ -1,6 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
 import '../css/Tutorial.css'
-import Emoji from "react-emoji-render";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw'
 
@@ -14,13 +13,13 @@ const markdown = `
 
 <br/>
 
-Signing up is easy, simple visit the [register](/register) page.
+Signing up is easy, simple visit the <a href="/register" target="_blank">register</a> page.
+
+Enter your information and click \`Register\`. You will be redirected to the home page. You can now login by visiting the <a href="/login" target="_blank">login</a> page.
 
 
 ![image](https://user-images.githubusercontent.com/52824657/140275247-bbe10f69-35c5-4346-bb54-461096dd3667.png)
 
-
-Enter your information and click \`Register\`. You will be redirected to the home page. You can now login by visiting the [login](/login) page.
 
 <hr/>
 
@@ -74,7 +73,7 @@ If you visit another page in our website while in an interview, you will be able
 
 ![image](https://user-images.githubusercontent.com/52824657/140270814-9f799af2-1a9f-40b9-98a2-aa9cd072c048.png)
 
-If you are in an interview and you experience a network issue or you refresh the page, you will be safely brought back to the interview page 👍.
+<div className="alert alert-info"><b>Note: </b>If you are in an interview and you experience a network issue or you refresh the page, you will be safely brought back to the interview page 👍.</div>
 
 <br/>
 
