@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: asia-southeast1-docker.pkg.dev/cs3219-g5/g5-repo/front-end:v3
+        image: asia-southeast1-docker.pkg.dev/cs3219-g5/g5-repo/front-end:v2
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:
             memory: "500Mi"
-            cpu: "200m"
+            cpu: "300m"
         ports:
         - containerPort: 3000
 ---

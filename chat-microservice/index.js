@@ -23,7 +23,6 @@ const chatApiRoutes = require('./routes/chatApiRoutes');
 const responseStatus = require('./common/status/responseStatus');
 const clientErrors = require('./common/errors/clientErrors');
 const clientMessages = require('./common/messages/clientMessages')
-const auth = require('./auth')
 
 const io = new Server(server, {
     path: "/api/chat/create",
@@ -103,8 +102,6 @@ server.listen(port, async () => {
         console.log(err)
     }
 });
-
-app.use(auth.jwt_validate);
 
 // Use the chat API routes
 app.use('/api/chat', chatApiRoutes);

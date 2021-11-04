@@ -6,7 +6,7 @@ import { Row } from "react-bootstrap";
 import { Widget, addResponseMessage, addUserMessage, renderCustomComponent, dropMessages } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"
-import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH, CHAT_BACKEND_DOMAIN } from "../../Api.js";
+import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH, CHAT_BACKEND_DOMAIN } from "../../constants";
 import "../../css/Chat.css"
 import { useHistory } from "react-router-dom";
 import useState from 'react-usestateref';

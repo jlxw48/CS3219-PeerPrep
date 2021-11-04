@@ -15,7 +15,6 @@ require("dotenv").config();
 const matchApiRoutes = require('./routes/matchApiRoutes');
 const responseStatus = require('./common/status/responseStatus');
 const clientErrors = require('./common/errors/clientErrors');
-const auth = require('./auth');
 
 // Connect to mongodb
 var dbURI = process.env.MONGODB_URI;
@@ -33,8 +32,6 @@ app.listen(port, async () => {
         console.log(err)
     }
 });
-
-app.use(auth.jwt_validate);
 
 // Use the match API routes
 app.use('/api/match', matchApiRoutes);

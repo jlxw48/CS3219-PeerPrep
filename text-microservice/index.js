@@ -34,6 +34,16 @@ const io = new Server(server, {
   }
 });
 
+app.all("/api/editor/status", (req, res) => {
+  res.status(200).json({
+    status: responseStatus.SUCCESS,
+    data: {
+      message: clientSuccessMessages.STATUS_HEALTHY
+    }
+  });
+});
+
+
 var redis_endpoint = process.env.REDIS_ENDPOINT;
 var redis_pw = process.env.REDIS_PASSWORD;
 
@@ -178,15 +188,6 @@ io.sockets.on("connection", socket => {
 
   socket.on('disconnect', socket => {
     delete subClient;
-  });
-});
-
-app.all("/api/editor/status", (req, res) => {
-  res.status(200).json({
-    status: responseStatus.SUCCESS,
-    data: {
-      message: clientSuccessMessages.STATUS_HEALTHY
-    }
   });
 });
 

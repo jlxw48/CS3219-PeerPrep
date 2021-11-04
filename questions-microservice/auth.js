@@ -6,6 +6,19 @@ const clientErr = require( "./common/error_msgs/client_errors" );
 exports.jwt_validate = (req, res, next) => {
     const jwt = req.header("Authorization");
     console.log("questions jwt", jwt);
+
+    if (jwt === undefined || jwt === null) {
+        res
+            .status(401)
+            .json({
+                status: responseStatus.FAILED,
+                data: {
+                    message: clientErr.JWT_AUTH_FAILED
+                }
+            });
+        return;
+    }
+
     const headers = {
         headers: {
             Authorization: jwt,
