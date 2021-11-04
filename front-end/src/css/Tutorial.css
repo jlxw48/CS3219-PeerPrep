@@ -1,3 +1,17 @@
 .tutorial-container {
     padding-top: 50px;
 }
+
+.tutorial-container img {
+    max-width: 100%;
+    height: auto;
+}
+
+.tutorial-container a {
+    text-decoration: none;
+}
+
+.tutorial-container h1,.tutorial-section-separator {
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 5px;
+}
