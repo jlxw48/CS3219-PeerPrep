@@ -20,8 +20,8 @@ spec:
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:
-            memory: "800Mi"
-            cpu: "500m"
+            memory: "500Mi"
+            cpu: "200m"
         ports:
         - containerPort: 3000
 ---

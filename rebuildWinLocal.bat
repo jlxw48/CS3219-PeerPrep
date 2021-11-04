@@ -11,4 +11,5 @@ cd ../chat-microservice
 docker build -t cs3219-g5/chat .
 cd ../text-microservice
 docker build -t cs3219-g5/text .
-cd ..
+cd ../kubernetes-local
+kubectl apply -f .
