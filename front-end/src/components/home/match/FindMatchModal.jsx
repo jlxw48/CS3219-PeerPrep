@@ -9,7 +9,7 @@ import '../../../css/FindMatchModal.css'
 import { faExclamationCircle, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Spinner } from "react-bootstrap";
-import { FIND_MATCH_URL } from "../../../Api";
+import { FIND_MATCH_URL, STOP_FIND_MATCH_URL } from "../../../Api";
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
 import { toast } from 'react-toastify'
@@ -20,6 +20,10 @@ function FindMatchModal(props) {
     const history = useHistory();
     const { user, setMatch, matchRef } = useContext(AppContext);
     let cancelFunct = useRef(null);
+
+    const callStopFind = () => {
+        return axios.delete(STOP_FIND_MATCH_URL, { data: { email : user.email }}).then(res => true).catch(err => false);
+    }
     
     const handleFindMatch = () => {
         setFinding(true);
@@ -46,11 +50,17 @@ function FindMatchModal(props) {
     }
 
     const handleCancel = () => {
+        props.setShowMatchModal(false);
+        if (!finding) {
+            return;
+        }
+
         if (cancelFunct.current !== null) {
             cancelFunct.current();
         }
+        callStopFind();
         setFinding(false);
-        props.setShowMatchModal(false);
+        
     }
 
     const inMatch = matchRef.current !== null;

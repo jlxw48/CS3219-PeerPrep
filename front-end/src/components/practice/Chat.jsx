@@ -19,11 +19,17 @@ function Chat() {
     var chatSocket = useRef();
     const [chats, setChats, chatsRef] = useState([]);
 
-    const PartnerDisconnectedMessage = () => (
+    const PARTNER_CONNECTED_NOTIFICATION = "Your partner has connected to the chat."
+    const PARTNER_DISCONNECT_NOTIFICATION = "Your partner has disconnected from the interview."
+    const NOTIFICATION_TYPE_CONNECTION = 0;
+    const NOTIFICATION_TYPE_END = 1;
+
+
+    const PartnerDisconnectedMessage = (props) => (
     <div className="rcw-message">
         <div className="rcw-response">
             <div className="rcw-messages-text">
-                <p><i>Your partner has disconnected from the interview.</i></p>
+                <p><i>{props.message}</i></p>
             </div>
         </div>
     </div>)
@@ -42,7 +48,9 @@ function Chat() {
          * Setup chat socket
          */
         chatSocket.current = io.connect(BACKEND_DOMAIN, {
+            transports: [ "websocket" ],
             path: CHAT_SOCKET_PATH,
+            withCredentials: true,
             reconnection: true,
             reconnectionDelay: 500
         });
@@ -53,12 +61,10 @@ function Chat() {
             console.log("Successfully connected to chat socket.");
 
             // Fetch and populate chat history.
-            axios.get(CHAT_HISTORY_URL + interviewId).then(res => {
-                if (res.data.status === "success" && res.data.data) {
-                    const chatHistory = res.data.data.history;
-                    setChats(chatHistory);
-                }
-             
+            axios.get(CHAT_HISTORY_URL + interviewId).then(res => res.data.data).then(data => {
+                const chatHistory = data.history;
+                setChats(chatHistory);
+            
                 // Push chat history from chats variable into chat widget
                 for (let chat of chatsRef.current) {
                     if (chat.senderEmail === user.email) {
@@ -80,10 +86,10 @@ function Chat() {
             });
 
 
-            // Display disconnection message
-            chatSocket.current.on("end_interview", endInterviewMessage => {
+            // Display notification in chat widget
+            chatSocket.current.on("notification", endInterviewMessage => {
                 if (endInterviewMessage.senderEmail !== user.email) {
-                    renderCustomComponent(PartnerDisconnectedMessage);
+                    renderCustomComponent(PartnerDisconnectedMessage, {message: endInterviewMessage.message});
                 }
             })
 
@@ -96,18 +102,21 @@ function Chat() {
             chatSocket.current.close();
         }, matchRef.current.durationLeft * SECONDS_TO_MICROSECONDS_MULTIPLIER);
 
-        // When tearing down Chat component, close the socket.
+        // Clean up
         return () => {
             console.log("Closing chat socket");
+            // Broadcast to interview partner that the user is disconnecting.
             chatSocket.current.emit("end_interview", {
-                interviewId: matchRef.current.interviewId,
+                interviewId,
                 contents: {
                     senderEmail: user.email,
-                    message: "Your partner has disconnected."
+                    message: "Your partner has disconnected from the interview."
                 }
             })
+            // Delete all messages from chat widget
             dropMessages();
             setChats([]);
+            // Clean up socket
             chatSocket.current.disconnect();
             chatSocket.current.close();
         }

@@ -8,7 +8,10 @@ const app = express();
 const bodyParser = require('body-parser');
 require("dotenv").config();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -23,8 +26,9 @@ const { createAdapter } = require("@socket.io/redis-adapter");
 const io = new Server(server, {
   path: "/api/editor/create",
   cors: {
-    origin: "*",
-    methods: ["GET", "POST", "DELETE"]
+    origin: "http://localhost",
+    methods: ["GET", "POST", "DELETE"],
+    credentials: true
   }
 });
 

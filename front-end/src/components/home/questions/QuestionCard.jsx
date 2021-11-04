@@ -9,7 +9,7 @@ function QuestionCard(props) {
         <Card className="home-question-card">
             <Card.Body>
                 <Card.Title>{props.title + " "}<DifficultyBadge difficulty={props.difficulty}/></Card.Title><br/>
-                <Card.Text><ReactMarkdown>{trimmedQuestionBody}</ReactMarkdown></Card.Text>
+                <ReactMarkdown>{trimmedQuestionBody}</ReactMarkdown>
             </Card.Body>
         </Card>
     )

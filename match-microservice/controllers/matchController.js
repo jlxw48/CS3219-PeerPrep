@@ -314,9 +314,9 @@ const cancelFindMatch = async (req, res) => {
     }
     const email = req.body.email;
 
-    await Match.findOneAndDelete({ email: email }).exec();
+    Match.findOneAndDelete({ email: email }).exec();
 
-    res.status(204);
+    res.status(204).json({ status: responseStatus.success });
 }
 
 // Get number of current ongoing interviews

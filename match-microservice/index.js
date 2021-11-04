@@ -1,9 +1,15 @@
 const express = require('express');
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+var cors = require('cors');
 const mongoose = require('mongoose');
 require("dotenv").config();
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+  }));
 
 const matchApiRoutes = require('./routes/matchApiRoutes');
 const responseStatus = require('./common/status/responseStatus');

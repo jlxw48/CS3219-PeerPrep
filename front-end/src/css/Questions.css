@@ -1,6 +1,10 @@
 .home-question-card {
     margin-bottom: 15px;
-    border-radius: 10px;
+    border-radius: 10px !important;
+}
+
+.home-question-card .card-title {
+    font-weight: 600 !important;
 }
 
 .home-questions-wrapper {

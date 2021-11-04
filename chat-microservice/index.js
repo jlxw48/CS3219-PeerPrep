@@ -1,24 +1,32 @@
 require("dotenv").config();
 
 const express = require('express');
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+var cors = require('cors');
 const mongoose = require('mongoose');
 const dbController = require('./controllers/dbController')
 const chatApiRoutes = require('./routes/chatApiRoutes');
-
 const http = require('http');
-const server = http.createServer(app);
 const { Server } = require('socket.io');
 const { createAdapter } = require("@socket.io/redis-adapter");
 const { createClient } = require("redis");
+const { PARTNER_CONNECTED } = require("./common/messages/clientMessages");
+
+const app = express();
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
+const server = http.createServer(app);
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
 
 const io = new Server(server, {
     path: "/api/chat/create",
     cors: {
-        origin: "*",
-        methods: ["GET", "POST", "DELETE"]
+        origin: "http://localhost",
+        methods: ["GET", "POST", "DELETE"],
+        credentials: true
     }
 });
 
@@ -44,6 +52,12 @@ io.on("connection", socket => {
 
     socket.on("joinRoom", interviewId => {
         socket.join(interviewId);
+        if (io.sockets.adapter.rooms.get(interviewId).size === 2) {
+            io.to(interviewId).emit("notification", {
+                senderEmail: "server",
+                message: PARTNER_CONNECTED
+            })
+        }
     });
 
     socket.on("message", newMessage => {
@@ -52,10 +66,14 @@ io.on("connection", socket => {
         io.to(newMessage.interviewId).emit("message", newMessage.contents);
     });
 
+    socket.on("notification", newMessage => {
+        io.to(newMessage.interviewId).emit("notification", newMessage.contents);
+    })
+
     socket.on("end_interview", endInterviewMessage => {
         socket.leave(endInterviewMessage.interviewId);
         // If partner has ended interview, send a message to inform the other buddy
-        io.to(endInterviewMessage.interviewId).emit("end_interview", endInterviewMessage.contents);
+        io.to(endInterviewMessage.interviewId).emit("notification", endInterviewMessage.contents);
     });
 });
 

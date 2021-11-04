@@ -45,7 +45,11 @@ function Editor() {
          * Connect socket and add socket events.
          */
         editorSocket.current = io(BACKEND_DOMAIN, {
+            transports: [ "websocket" ],
             path: EDITOR_SOCKET_PATH,
+            withCredentials: true,
+            reconnection: true,
+            reconnectionDelay: 500
         });
 
         editorSocket.current.on("connect", () => {
@@ -97,6 +101,10 @@ function Editor() {
          */
         return () => {
             editorSocket.current.disconnect();
+            editorSocket.current.close();
+            if (inactivityTimer.current !== null) {
+                clearTimeout(inactivityTimer.current);
+            }
             setCode("");
         }
     }, [matchRef]);
