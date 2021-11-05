@@ -113,7 +113,7 @@ exports.createQuestion = ( req, res ) => {
         return;
     }
 
-    if ( req.body.difficulty && !helpers.checkEnumDifficulty( req.body.difficulty ) ) {
+    if ( req.body.difficulty && !helpers.isValidEnumDifficulty( req.body.difficulty ) ) {
         res.statusCode = 400;
         res.json( {
             status: responseStatus.FAILED,
@@ -185,7 +185,7 @@ exports.updateQuestion = ( req, res ) => {
         return;
     }
 
-    if ( req.body.difficulty && !helpers.checkEnumDifficulty( req.body.difficulty ) ) {
+    if ( req.body.difficulty && !helpers.isValidEnumDifficulty( req.body.difficulty ) ) {
         res.statusCode = 400;
         res.json( {
             status: responseStatus.FAILED,

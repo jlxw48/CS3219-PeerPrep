@@ -11,6 +11,7 @@ const isInvalidTitle = ( req ) => {
 }
 
 const isInvalidDescription = ( req ) => {
+    console.log( req.body.description == undefined )
     return req.body.description == null || req.body.description == undefined || req.body.description.length == 0;
 }
 
@@ -37,7 +38,8 @@ exports.isValidPostReq = ( req ) => {
 }
 
 exports.isValidPutReq = ( req ) => {
-    if ( isInvalidDescription( req ) && isInvalidDescription( req ) && isInvalidTitle( req ) && isInvalidId( req ) ) {
+    console.log( isInvalidDescription( req ), isInvalidTitle( req ), isInvalidId( req ) )
+    if ( ( isInvalidDescription( req ) && isInvalidTitle( req ) ) ) {
         return false;
     }
 
@@ -56,6 +58,6 @@ exports.parsePositiveInt = ( input, defaultInt ) => {
     return parseInt( input );
 }
 
-exports.checkEnumDifficulty = (difficulty) => {
+exports.isValidEnumDifficulty = ( difficulty ) => {
     return difficulty === "easy" || difficulty === "medium" || difficulty === "hard";
 }
