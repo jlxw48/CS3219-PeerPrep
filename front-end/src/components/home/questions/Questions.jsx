@@ -15,7 +15,9 @@ function Questions(props) {
                         {props.questions.filter(question => question.difficulty === "easy").map(question => {
                             return (
                                 <Row key={question._id}>
-                                    <QuestionCard {...question} />
+                                    <QuestionCard question={question} onClickFunct={() => {
+                                        props.setQuestionToShow(question);
+                                    }}/>
                                 </Row>
                             )
                         })}
@@ -26,7 +28,9 @@ function Questions(props) {
                         {props.questions.filter(question => question.difficulty === "medium").map(question => {
                             return (
                                 <Row key={question._id}>
-                                    <QuestionCard {...question} />
+                                    <QuestionCard question={question} onClickFunct={() => {
+                                        props.setQuestionToShow(question);
+                                    }}/>
                                 </Row>
                             )
                         })}
@@ -37,7 +41,9 @@ function Questions(props) {
                         {props.questions.filter(question => question.difficulty === "hard").map(question => {
                             return (
                                 <Row key={question._id}>
-                                    <QuestionCard {...question} />
+                                    <QuestionCard question={question} onClickFunct={() => {
+                                        props.setQuestionToShow(question);
+                                    }}/>
                                 </Row>
                             )
                         })}

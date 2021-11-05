@@ -89,7 +89,7 @@ function App() {
           <Route path="/practice" render={props => isLoading ? <LoadingScreen /> : <Practice />} />
           <Route path="/register" render={props => <Login isRegister={true} />} />
           <Route path="/tutorial"><Tutorial /></Route>
-          <Route path="/manage_questions" render={props => isLoading ? <LoadingScreen /> : <ManageQuestions />}/>
+          <Route path="/manage_questions" render={props => isLoading ? <LoadingScreen /> : user === null ? <InvalidRoute/> : <ManageQuestions />}/>
           <Route path="/*"><InvalidRoute /></Route>
         </Switch>
       </AppContext.Provider>

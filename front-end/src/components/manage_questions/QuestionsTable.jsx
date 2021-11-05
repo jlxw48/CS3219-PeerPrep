@@ -27,7 +27,7 @@ function QuestionsTable(props) {
                             return <tr key={qn._id} onClick={() => {
                                 props.setEditedQn(qn)}}>
                                 <td>{qn._id}</td>
-                                <td>{qn.difficulty}</td>
+                                <td>{qn.difficulty.charAt(0).toUpperCase() + qn.difficulty.substring(1)}</td>
                                 <td>{qn.title}</td>
                                 <td>{descToTrimmedMd(qn.description)}</td>
                             </tr>

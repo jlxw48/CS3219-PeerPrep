@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 function QuestionEditor(props) {
     const question = props.question;
-    const [id, setId] = useState(question.id);
+    const [id, setId] = useState(question._id);
     const [desc, setDesc] = useState(question.desc);
     const [title, setTitle] = useState(question.title);
     const [difficulty, setDifficulty] = useState(question.difficulty);
@@ -79,8 +79,11 @@ function QuestionEditor(props) {
             <Col md={6}>
                 <Form.Group>
                     <Form.Label><strong>Difficulty</strong></Form.Label>
-                    <Form.Control type="text" name="difficulty" placeholder="Select a difficulty" 
-                        value={difficulty} onChange={(e) => setDifficulty(e.target.value)}/>
+                    <Form.Select name="difficulty" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </Form.Select>
                 </Form.Group>
             </Col>
         </Row>
