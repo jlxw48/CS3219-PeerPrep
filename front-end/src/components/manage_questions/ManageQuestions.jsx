@@ -1,0 +1,40 @@
+import { Container, Row, Col, Button } from "react-bootstrap";
+import QuestionsTable from "./QuestionsTable";
+import QuestionEditor from "./QuestionEditor";
+import "../../css/ManageQuestions.css";
+import axios from "axios";
+import { QUESTION_URL } from "../../constants.js";
+import { useEffect, useState } from "react";
+
+function ManageQuestions() {
+    const [questions, setQuestions] = useState([]);
+    // Question that is currently being edited;
+    const [editedQn, setEditedQn] = useState(null);
+    
+    useEffect(() => {
+        axios.get(QUESTION_URL)
+        .then(res => {
+            setQuestions(res.data.data.questions);
+        })
+        .catch(err => console.log("Error fetching questions", err));
+    }, []);
+
+    return (
+        <Container className="manage-questions-container">
+            <h1 style={{"display": "inline-block"}}>Questions</h1>{' '}<Button variant="info" className="add-question-button">Add question</Button>
+            <Row className="questions-table-row">
+                <Col md={12}>
+                    { questions.length !== 0 ? <QuestionsTable data={questions} setEditedQn={setEditedQn}/> : <></> } 
+                </Col>
+            </Row>
+            <br/>
+            <Row>
+                <Col md={12}>
+                    { editedQn !== null ? <QuestionEditor /> : <></> }
+                </Col>
+            </Row>
+        </Container>
+    )
+}
+
+export default ManageQuestions;

@@ -16,6 +16,8 @@ import Login from './components/login/Login';
 import LoadingScreen from './components/LoadingScreen';
 import Practice from './components/practice/Practice';
 import Tutorial from "./components/tutorial/Tutorial";
+import InvalidRoute from './components/InvalidRoute';
+import ManageQuestions from './components/manage_questions/ManageQuestions';
 
 
 export const AppContext = React.createContext();
@@ -87,10 +89,8 @@ function App() {
           <Route path="/practice" render={props => isLoading ? <LoadingScreen /> : <Practice />} />
           <Route path="/register" render={props => <Login isRegister={true} />} />
           <Route path="/tutorial"><Tutorial /></Route>
-          <Route path="/*" render={props => {
-            toast.error("You have entered an invalid route.");
-            return <Home />
-          }}></Route>
+          <Route path="/manage_questions" render={props => isLoading ? <LoadingScreen /> : <ManageQuestions />}/>
+          <Route path="/*"><InvalidRoute /></Route>
         </Switch>
       </AppContext.Provider>
     </>

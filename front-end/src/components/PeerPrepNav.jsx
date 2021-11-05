@@ -57,7 +57,7 @@ function PeerPrepNav() {
     const currRoute = useLocation().pathname;
 
     return (
-        <Navbar collapseOnSelect fixed="top" expanded={expanded} expand="sm" bg="dark" variant="dark">
+        <Navbar collapseOnSelect expanded={expanded} expand="sm" bg="dark" variant="dark">
             <Container fluid>
                 <NavLink to="/" exact className="navbar-brand NavbarBrand" onClick={closeNavbarOnClick}>PeerPrep</NavLink>
                 <Navbar.Toggle onClick={() => setExpanded(expanded ? false : "expanded")} />
@@ -82,7 +82,14 @@ function PeerPrepNav() {
                                 closeNavbarOnClick();
                             }} className="nav-link">Logout</Nav.Link>
                         }
+                        {/* Manage questions button */}
+                        {
+                            <NavLink to="/manage_questions" className="nav-link">Manage Questions</NavLink>
+                        }
+                        {/* Todo: Hide tutorial button for admin user */}
+                        {
                         <NavLink to="/tutorial" exact className="nav-link" onClick={closeNavbarOnClick}>Tutorial</NavLink>
+                        }
                     </Nav>
 
                     {/* Resume interview button */}
