@@ -6,15 +6,31 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import 'github-markdown-css'
 import { QUESTION_URL } from "../../constants";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 function QuestionEditor(props) {
-    const question = props.question ? props.question : { "id": "", "title": "", "difficulty": "", "description": "" };
-    const [desc, setDesc] = useState(question.description);
+    const question = props.question;
+    const [id, setId] = useState(question.id);
+    const [desc, setDesc] = useState(question.desc);
+    const [title, setTitle] = useState(question.title);
+    const [difficulty, setDifficulty] = useState(question.difficulty);
+
+    useEffect(() => {
+        const newQuestion = props.question
+        setDesc(newQuestion.description);
+        setId(newQuestion["_id"]);
+        setTitle(newQuestion.title);
+        setDifficulty(newQuestion.difficulty);
+    }, [props])
     
     // This block of code is used to autoscroll preview as the description grows longer
     const descEndRef = useRef(null);
     const scrollToBottom = () => {
+        if (descEndRef.current === null) {
+            return;
+        }
         descEndRef.current.scrollIntoView({
             behavior: "smooth",
         });
@@ -24,50 +40,68 @@ function QuestionEditor(props) {
     // When form is submitted.
     const handleSubmit = (event) => {
         event.preventDefault();
-        const id = event.target.id.value;
-        const title = event.target.title.value;
-        const difficulty = event.target.difficulty.value;
-        const description = event.target.description.value;
-
         // New question or existing question
-        const submitUrl = id === "" ? QUESTION_URL : QUESTION_URL + "id";
+        const isNewNotUpdate = id === "";
+        const submitUrl = isNewNotUpdate ? QUESTION_URL : QUESTION_URL + id;
+        const httpReqMethod = isNewNotUpdate ? "post" : "put";
+
+        axios({
+            method: httpReqMethod,
+            url: submitUrl,
+            data: {
+                title,
+                description: desc,
+                difficulty
+            }
+        }).then(res => {
+            props.setEditedQn(null);
+            props.fetchQuestions();
+            if (isNewNotUpdate) {
+                toast.success("Successfully created new question.");
+            } else {
+                toast.success("Successfully updated question");
+            }
+        }).catch(err => console.log("Failed to submit question details"));
     }
 
 
-    return <Form onSubmit={handleSubmit}>
-        <input type="hidden" value={question.id}/>
+    return (
+    <>
+    <Form onSubmit={handleSubmit}>
+        <input type="hidden" name="_id" value={id}/>
         <Row>
             <Col md={6}>
                 <Form.Group>
                     <Form.Label><strong>Title</strong></Form.Label>
-                    <Form.Control type="text" name="title" placeholder="Enter a question title" />
+                    <Form.Control name="title" placeholder="Enter a question title" type="text"
+                        value={title} onChange={(e) => setTitle(e.target.value)} />
                 </Form.Group>
             </Col>
             <Col md={6}>
                 <Form.Group>
                     <Form.Label><strong>Difficulty</strong></Form.Label>
-                    <Form.Control type="text" name="difficulty" placeholder="Select a difficulty" />
+                    <Form.Control type="text" name="difficulty" placeholder="Select a difficulty" 
+                        value={difficulty} onChange={(e) => setDifficulty(e.target.value)}/>
                 </Form.Group>
             </Col>
         </Row>
         <br/>
         <Row>
-            <Col md={6}><Form.Label><strong>Description</strong></Form.Label></Col>
-            <Col md={6}><Form.Label><strong>Preview</strong></Form.Label></Col>
-        </Row>
-        <Row>
             <Col md={6}>
                 <Form.Group>
+                <Form.Label><strong>Description</strong></Form.Label>
                     <Form.Control
                         as="textarea"
-                        placeholder="Leave a comment here"
+                        placeholder="Enter a description for the question"
                         name="description"
                         style={{ height: '200px' }}
+                        value={desc}
                         onChange={(e) => setDesc(e.target.value)}
                     />
                 </Form.Group>
             </Col>
             <Col md={6}>
+            <Form.Label><strong>Preview</strong></Form.Label>
                 <div className="desc-preview-container markdown-body" >
                     <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} style={{"width": "100%"}}>{desc}</ReactMarkdown>
                     <div className="scroll-dummy" ref={descEndRef}/>
@@ -75,10 +109,12 @@ function QuestionEditor(props) {
             </Col>
         </Row>
         <br/>
-        <Button variant="dark" type="submit">
+        <Button variant="dark" type="submit" className="submit-btn">
             Submit
         </Button>
-    </Form>;
+        <Button variant="light" onClick={() => props.setEditedQn(null)}>Cancel</Button>
+    </Form>
+    </>);
 }
 
 export default QuestionEditor;

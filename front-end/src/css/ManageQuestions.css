@@ -5,7 +5,7 @@
 
 @media screen and (max-width: 800px) {
     .manage-questions-container {
-        padding-top: 70px;
+        padding-top: 30px;
     }
 }
 
@@ -49,3 +49,6 @@
     padding: .375rem .75rem;
 }
 
+.submit-btn {
+    margin-right: 10px;
+}

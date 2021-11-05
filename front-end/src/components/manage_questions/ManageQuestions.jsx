@@ -10,18 +10,23 @@ function ManageQuestions() {
     const [questions, setQuestions] = useState([]);
     // Question that is currently being edited;
     const [editedQn, setEditedQn] = useState(null);
-    
-    useEffect(() => {
+    const emptyQn = { "_id": "", description: "", title: "", difficulty: ""};
+    const fetchQuestions = () => {
         axios.get(QUESTION_URL)
         .then(res => {
             setQuestions(res.data.data.questions);
         })
         .catch(err => console.log("Error fetching questions", err));
+    }
+    
+    useEffect(() => {
+        fetchQuestions();
     }, []);
 
     return (
         <Container className="manage-questions-container">
-            <h1 style={{"display": "inline-block"}}>Questions</h1>{' '}<Button variant="info" className="add-question-button">Add question</Button>
+            <h1 style={{"display": "inline-block"}}>Questions</h1>{' '}
+            <Button variant="info" className="add-question-button" onClick={() => setEditedQn(emptyQn)}>Add question</Button>
             <Row className="questions-table-row">
                 <Col md={12}>
                     { questions.length !== 0 ? <QuestionsTable data={questions} setEditedQn={setEditedQn}/> : <></> } 
@@ -30,7 +35,7 @@ function ManageQuestions() {
             <br/>
             <Row>
                 <Col md={12}>
-                    { editedQn !== null ? <QuestionEditor /> : <></> }
+                    { editedQn !== null ? <QuestionEditor question={editedQn} setEditedQn={setEditedQn} fetchQuestions={fetchQuestions}/> : <></> }
                 </Col>
             </Row>
         </Container>

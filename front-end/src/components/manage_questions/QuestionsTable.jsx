@@ -12,7 +12,7 @@ function descToTrimmedMd(desc) {
 function QuestionsTable(props) {
     return <>
         <div className="manage-questions-table-container">
-            <Table striped bordered hover className="manage-questions-table">
+            <Table bordered hover className="manage-questions-table">
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -24,7 +24,8 @@ function QuestionsTable(props) {
                 <tbody>
                     {
                         props.data.map(qn => {
-                            return <tr key={qn._id} onClick={() => props.setEditedQn(qn)}>
+                            return <tr key={qn._id} onClick={() => {
+                                props.setEditedQn(qn)}}>
                                 <td>{qn._id}</td>
                                 <td>{qn.difficulty}</td>
                                 <td>{qn.title}</td>
