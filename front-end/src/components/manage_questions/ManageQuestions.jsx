@@ -30,6 +30,7 @@ function ManageQuestions() {
             <Row className="questions-table-row">
                 <Col md={12}>
                     { questions.length !== 0 ? <QuestionsTable data={questions} setEditedQn={setEditedQn}/> : <></> } 
+                    <div style={{"text-align": "center"}} className="text-muted"><i>Click a row to edit a question.</i></div>
                 </Col>
             </Row>
             <br/>
