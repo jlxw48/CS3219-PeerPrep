@@ -23,6 +23,62 @@ const hasMissingAuthFields = (req) => {
 	return Object.keys(req.body).length == 0; 
 };
 
+const checkMissingEmailAndPassword = (req, res) => {
+	if (hasMissingEmailField(req)) {
+		res.status(400).send({
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_EMAIL
+			}
+		});
+		return;
+	}
+	if (hasMissingPasswordField(req)) {
+		res.status(400).send({
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_PASSWORD
+			}
+		});
+		return;
+	}
+}
+
+const checkMissingFieldsForAccountCreation = (req, res) => {
+	if (hasMissingAuthFields(req)) {
+		return res.status(400).send({
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_NAME_EMAIL_PASSWORD
+			}
+		});
+	}
+
+	if (hasMissingNameField(req)) {
+		return res.status(400).send({
+			status: responseStatus.FAILURE,
+			data: {
+				message: clientErrorMessages.MISSING_NAME
+			}
+		});
+	}
+	return checkMissingEmailAndPassword(req, res);
+};
+
+const checkMissingToken = (token, res) => {
+	if (!token) {
+        res.status(401)
+            .json({
+                status: responseStatus.FAILURE,
+                data: {
+					message: clientErrorMessages.JWT_AUTH_FAILED
+				}
+        	});
+       	return;
+    }
+};
+
+
 const isPasswordAndUserMatch = (req, res) => {
 	const email = req.body.email;
 	User.find({email: email})
@@ -45,7 +101,8 @@ const isPasswordAndUserMatch = (req, res) => {
 				const token = jwt.sign(
 					{
 						email: email,
-						name: data.name
+						name: data.name,
+						permissionLevel: data.permissionLevel
 					},
 					'CS3219_SECRET_KEY',
 					{
@@ -77,45 +134,8 @@ const isPasswordAndUserMatch = (req, res) => {
 };
 
 exports.create_account = (req, res) => {
+	checkMissingFieldsForAccountCreation(req, res);
 
-	if (hasMissingAuthFields(req)) {
-		res.status(400).send({
-			status: responseStatus.FAILURE,
-			data: {
-				message: clientErrorMessages.MISSING_NAME_EMAIL_PASSWORD
-			}
-		});
-		return;
-	}
-
-	if (hasMissingNameField(req)) {
-		res.status(400).send({
-			status: responseStatus.FAILURE,
-			data: {
-				message: clientErrorMessages.MISSING_NAME
-			}
-		});
-		return;
-
-	}
-	if (hasMissingEmailField(req)) {
-		res.status(400).send({
-			status: responseStatus.FAILURE,
-			data: {
-				message: clientErrorMessages.MISSING_EMAIL
-			}
-		});
-		return;
-	}
-	if (hasMissingPasswordField(req)) {
-		res.status(400).send({
-			status: responseStatus.FAILURE,
-			data: {
-				message: clientErrorMessages.MISSING_PASSWORD
-			}
-		});
-		return;
-	}
 	const email = req.body.email;
 	User.find({email: email})
 		.then((result) => {
@@ -171,25 +191,7 @@ exports.user_login = (req, res) => {
 		return;
 	}
 
-	if (hasMissingEmailField(req)) {
-		res.status(400).send({
-			status: responseStatus.FAILURE,
-			data: {
-				message: clientErrorMessages.MISSING_EMAIL
-			}
-		});
-		return;
-	}
-
-	if (hasMissingPasswordField(req)) {
-		res.status(400).send({
-			status: responseStatus.FAILURE,
-			data: {
-				message: clientErrorMessages.MISSING_PASSWORD
-			}
-		});
-		return;
-	}
+	checkMissingEmailAndPassword(req, res);
 
 	return isPasswordAndUserMatch(req, res);
 };
@@ -206,21 +208,10 @@ exports.user_logout = (req, res) => {
 exports.jwt_validate = (req, res) => {
     const token = req.cookies.cs3219_jwt;
     try {
-        if (!token) {
-			console.log("4");
-            return res
-                .status(401)
-                .json({
-                    status: responseStatus.FAILURE,
-                    data: {
-						message: clientErrorMessages.JWT_AUTH_FAILED
-					}
-                });
-        }
+        checkMissingToken(token, res);
     
         jwt.verify(token, 'CS3219_SECRET_KEY', (err, user) => {
             if (err) {
-				console.log("1");
                 console.log(err);
                 return res
                 .status(401)
@@ -229,7 +220,6 @@ exports.jwt_validate = (req, res) => {
                     message: clientErrorMessages.JWT_AUTH_FAILED
                 });
             }
-			console.log("2");
             req.user = user;
 			res.status(200).send({
 				status: responseStatus.SUCCESS,
@@ -238,10 +228,104 @@ exports.jwt_validate = (req, res) => {
 					name: user.name
 				}
 			});
-			return;
+			return;	
         });
     } catch (error) {
 		console.log("3");
+        res.status(500).send({
+			status: responseStatus.ERROR,
+			data: {
+				message: JWT_ERROR(error)
+			}
+		});
+    }
+}
+
+exports.create_admin = (req, res) => {
+	console.log(res);
+	checkMissingFieldsForAccountCreation(req, res);
+
+	const email = req.body.email;
+	User.find({email: email})
+		.then((result) => {
+			if (Object.keys(result).length == 0) {
+				let salt = crypto.randomBytes(16).toString('base64');
+				let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
+				const password = salt + "$" + hash;
+				req.body.permissionLevel = 2;
+				const name = req.body.name;
+				const permissionLevel = req.body.permissionLevel;
+
+				const user = new User({
+					name : name,
+					email : email,
+					password : password,
+					permissionLevel : permissionLevel
+				});
+				user.save().then((result) => {
+					res.status(201).send({
+						status: responseStatus.SUCCESS,
+						data: {
+							message: clientSuccessMessages.CREATE_ADMIN
+						}
+					});
+					return;    
+					});  		
+        	} else {
+				res.status(404).send({
+            		status: responseStatus.FAILURE,
+            		data: {
+                		message: clientErrorMessages.USER_EXISTS + email
+            		}
+        		});
+        		return;
+			}
+		}).catch((err) => {
+             res.status(500).json({
+                 status: responseStatus.ERROR,
+                 error_message: dbErrorMessages.writeError(err)
+             });
+         });
+         return;
+}
+
+exports.validate_admin = (req, res) => {
+    const token = req.cookies.cs3219_jwt;
+    try {
+        checkMissingToken(token, res);
+    
+        jwt.verify(token, 'CS3219_SECRET_KEY', (err, user) => {
+            if (err) {
+                console.log(err);
+                return res
+                .status(401)
+                .json({
+                    status: responseStatus.FAILURE,
+                    message: clientErrorMessages.JWT_AUTH_FAILED
+                });
+            }
+            req.user = user;
+            const role = user.permissionLevel === 1 ? "user" : "admin";
+            console.log(user.permissionLevel);
+            if (role === "admin") {
+            	res.status(200).send({
+					status: responseStatus.SUCCESS,
+					data: {
+						message: clientSuccessMessages.VALID_ADMIN
+					}
+				});
+				return;
+            } else {
+            	res.status(403).send({
+            		status: responseStatus.FAILURE,
+            		data: {
+            			message: clientErrorMessages.INVALID_ADMIN
+            		}
+            	})
+            	return;
+            }
+        });
+    } catch (error) {
         res.status(500).send({
 			status: responseStatus.ERROR,
 			data: {
