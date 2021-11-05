@@ -26,7 +26,7 @@ function QuestionModal(props) {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="dark" onClick={props.onHide}>Close</Button>
+                <Button variant="dark" onClick={() => props.setQuestionToShow(null)}>Close</Button>
             </Modal.Footer>
         </Modal>
     );
