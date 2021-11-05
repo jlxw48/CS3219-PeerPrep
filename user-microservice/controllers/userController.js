@@ -6,6 +6,7 @@ const dbErrorMessages = require('../common/dbErrors');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const generalErrors = require('../common/generalErrors');
 
 const hasMissingNameField = (req) => {
 	return req.body.name == undefined || req.body.name.length == 0;
@@ -47,21 +48,21 @@ const isPasswordAndUserMatch = (req, res) => {
 						email: email,
 						name: data.name
 					},
-					'CS3219_SECRET_KEY',
+					process.env.SECRET_KEY,
 					{
 						expiresIn: "7d",
 					}
 				); 
 
-        		res.status(200).cookie("cs3219_jwt", token, {
-            			httpOnly: true
-            		}).json({
-   					status: responseStatus.SUCCESS, 
-    				data: {
-    					email: email,
-        				message: clientSuccessMessages.VALID_LOGIN
-    				}
-  				  });
+        		res.status(200)
+					.json({
+						status: responseStatus.SUCCESS, 
+						data: {
+							email: email,
+							message: clientSuccessMessages.VALID_LOGIN,
+							token: token
+						}
+  				  	});
    				return;
    			} else {
            		res.status(400).send({
@@ -194,20 +195,12 @@ exports.user_login = (req, res) => {
 	return isPasswordAndUserMatch(req, res);
 };
 
-exports.user_logout = (req, res) => {
-	res.status(200).clearCookie("cs3219_jwt")
-	.json({
-		status: responseStatus.SUCCESS, 
-    	data: {
-        	message: clientSuccessMessages.USER_LOGOUT
-    	}
-    });
-};
 exports.jwt_validate = (req, res) => {
-    const token = req.cookies.cs3219_jwt;
+	const token = req.header('authorization');
+	console.log("auth header token", token);
+
     try {
-        if (!token) {
-			console.log("4");
+        if (token == null || token.length === 0) {
             return res
                 .status(401)
                 .json({
@@ -218,7 +211,7 @@ exports.jwt_validate = (req, res) => {
                 });
         }
     
-        jwt.verify(token, 'CS3219_SECRET_KEY', (err, user) => {
+        jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
             if (err) {
 				console.log("1");
                 console.log(err);
@@ -245,8 +238,39 @@ exports.jwt_validate = (req, res) => {
         res.status(500).send({
 			status: responseStatus.ERROR,
 			data: {
-				message: JWT_ERROR(error)
+				message: generalErrors.JWT_ERROR(error)
 			}
 		});
     }
 }
+
+exports.user_logout = (req, res) => { // todo delete
+	res.status(200).clearCookie("cs3219_jwt")
+	.json({
+		status: responseStatus.SUCCESS, 
+    	data: {
+        	message: clientSuccessMessages.USER_LOGOUT
+    	}
+    });
+};
+
+exports.statusCheck = (req, res) => {
+    res.json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: clientSuccessMessages.STATUS_WORKING + "!!!"
+        }
+    });
+};
+
+exports.load = (req, res) => {
+	for (var i = 0; i < 1000000000; i++)  {
+		Math.sqrt(i);
+	}
+    res.json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: clientSuccessMessages.STATUS_WORKING
+        }
+    });
+};

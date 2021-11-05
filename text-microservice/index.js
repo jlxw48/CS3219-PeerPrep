@@ -2,18 +2,20 @@ const responseStatus = require('./common/responseStatus');
 const clientSuccessMessages = require('./common/clientSuccess');
 const clientErrorMessages = require('./common/clientErrors');
 const dbErrorMessages = require('./common/dbErrors');
+const auth = require('./auth');
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const bodyParser = require('body-parser');
 require("dotenv").config();
 
-app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true
-}));
+app.use(express.urlencoded({extended: true}));
+var corsOptions = {
+    origin: ['https://peerprep.ml', "http://localhost:3000"],
+    credentials: true 
+};
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 const port = process.env.PORT || 3005;
 var server = app.listen(port, () => {
@@ -26,11 +28,21 @@ const { createAdapter } = require("@socket.io/redis-adapter");
 const io = new Server(server, {
   path: "/api/editor/create",
   cors: {
-    origin: "http://localhost",
+    origin: ["https://peerprep.ml", "http://localhost:3000"],
     methods: ["GET", "POST", "DELETE"],
     credentials: true
   }
 });
+
+app.all("/api/editor/status", (req, res) => {
+  res.status(200).json({
+    status: responseStatus.SUCCESS,
+    data: {
+      message: clientSuccessMessages.STATUS_HEALTHY
+    }
+  });
+});
+
 
 var redis_endpoint = process.env.REDIS_ENDPOINT;
 var redis_pw = process.env.REDIS_PASSWORD;
@@ -48,6 +60,8 @@ pubClient.on("connect", () => console.log("pubClient connected to Redis"));
 pubClient.on("error", function (error) {
   console.error(error);
 });
+
+app.use(auth.jwt_validate);
 
 app.get("/api/editor/get_text", (req, res) => {
   const sessionId = req.query.interviewId;
@@ -176,8 +190,6 @@ io.sockets.on("connection", socket => {
     delete subClient;
   });
 });
-
-
 
 app.use((req, res) => {
   res.status(404).json({
