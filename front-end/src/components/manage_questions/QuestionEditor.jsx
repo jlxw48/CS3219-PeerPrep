@@ -105,7 +105,7 @@ function QuestionEditor(props) {
             <Col md={6}>
             <Form.Label><strong>Preview</strong></Form.Label>
                 <div className="desc-preview-container markdown-body" >
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} style={{"width": "100%"}}>{desc}</ReactMarkdown>
+                    <ReactMarkdown linkTarget="_blank" remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} style={{"width": "100%"}}>{desc}</ReactMarkdown>
                     <div className="scroll-dummy" ref={descEndRef}/>
                 </div>
             </Col>

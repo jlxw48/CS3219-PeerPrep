@@ -6,7 +6,7 @@ import rehypeRaw from "rehype-raw";
 function descToTrimmedMd(desc) {
     // Limit max length displayed
     const trimmedQuestionBody = desc.length > 100 ? desc.substring(0, 100) + "..." : desc;
-    return <ReactMarkdown rehypePlugins={[rehypeRaw]}>{trimmedQuestionBody}</ReactMarkdown>
+    return <ReactMarkdown linkTarget="_blank" rehypePlugins={[rehypeRaw]}>{trimmedQuestionBody}</ReactMarkdown>
 }
 
 function QuestionsTable(props) {

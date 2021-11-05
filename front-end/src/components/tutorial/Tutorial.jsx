@@ -12,7 +12,7 @@ function Tutorial() {
             <Row className="align-items-centre justify-content-center">
                 <Col md={12}>
                     <div className="markdown-body">
-                        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{markdownText}</ReactMarkdown>
+                        <ReactMarkdown linkTarget="_blank" rehypePlugins={[rehypeRaw]}>{markdownText}</ReactMarkdown>
                     </div>
                 </Col>
             </Row>

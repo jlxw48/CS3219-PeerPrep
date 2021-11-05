@@ -22,7 +22,7 @@ function QuestionModal(props) {
             </Modal.Header>
             <Modal.Body>
                 <div className="markdown-body">
-                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>{question.description}</ReactMarkdown>
+                    <ReactMarkdown linkTarget="_blank" rehypePlugins={[rehypeRaw]}>{question.description}</ReactMarkdown>
                 </div>
             </Modal.Body>
             <Modal.Footer>

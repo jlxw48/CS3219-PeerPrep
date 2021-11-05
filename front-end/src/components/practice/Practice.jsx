@@ -57,7 +57,7 @@ function Practice() {
                                     ? <>
                                         <h2>{practiceQuestion.title}&nbsp;<DifficultyBadge difficulty={practiceQuestion.difficulty}/></h2><br />
                                         <div className="markdown-body">
-                                            <ReactMarkdown rehypePlugins={[rehypeRaw]}>{practiceQuestion.description}</ReactMarkdown>
+                                            <ReactMarkdown linkTarget="_blank" rehypePlugins={[rehypeRaw]}>{practiceQuestion.description}</ReactMarkdown>
                                         </div>
                                       </> 
                                     : <Skeleton height={"100%"} />
