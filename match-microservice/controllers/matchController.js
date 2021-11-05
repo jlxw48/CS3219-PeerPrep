@@ -13,7 +13,7 @@ const statusCheck = (req, res) => {
     res.json({
         status: responseStatus.SUCCESS,
         data: {
-            message: clientMessages.STATUS_WORKING + "!!!!!!!!!!!!!!!!!!!!!!"
+            message: clientMessages.STATUS_WORKING
         }
     });
 };
