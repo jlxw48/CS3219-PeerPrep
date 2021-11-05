@@ -1,5 +1,11 @@
-*/node_modules/
-*/*/node_modules/
-*/*/*/node_modules/
-*/*/*/*/node_modules/
-*/__pycache__/
+node_modules/
+.env
+text-microservice
+chat-microservice
+questions-microservice
+match-microservice
+kubernetes
+load-testing
+load-testing-2
+rebuild.sh
+rebuildWin.bat
