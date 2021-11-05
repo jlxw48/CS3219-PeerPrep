@@ -5,4 +5,5 @@ exports.QUESTION_DOES_NOT_EXIST = "invalid question id, question does not exist"
 exports.INVALID_DIFFICULTY = "invalid difficulty, not of 'easy', 'medium' or 'hard'";
 exports.INVALID_HTTP_METHOD = "invalid HTTP Method";
 exports.INVALID_API_ENDPOINT = "invalid api endpoint";
-exports.JWT_AUTH_FAILED = "you are not authorisd!";
+exports.JWT_AUTH_FAILED = "you are not authenticated!";
+exports.AUTHORIZATION_FAILED = "you are not authorized!";
