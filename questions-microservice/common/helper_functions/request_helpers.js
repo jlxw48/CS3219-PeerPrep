@@ -38,7 +38,6 @@ exports.isValidPostReq = ( req ) => {
 }
 
 exports.isValidPutReq = ( req ) => {
-    console.log( isInvalidDescription( req ), isInvalidTitle( req ), isInvalidId( req ) )
     if ( ( isInvalidDescription( req ) && isInvalidTitle( req ) ) ) {
         return false;
     }
