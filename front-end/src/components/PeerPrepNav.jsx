@@ -84,6 +84,7 @@ function PeerPrepNav() {
                         }
                         {/* Manage questions button */}
                         {
+                            user !== null &&
                             <NavLink to="/manage_questions" className="nav-link">Manage Questions</NavLink>
                         }
                         {/* Todo: Hide tutorial button for admin user */}
