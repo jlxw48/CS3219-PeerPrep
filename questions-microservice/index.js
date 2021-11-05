@@ -50,16 +50,16 @@ app.route( "/api/questions/status" )
     .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
 
 app.route( "/api/questions/:id" )
-    .all( authentication.jwt_validate )
-    .all( authorization.validate_admin )
+    // .all( authentication.jwt_validate )
+    // .all( authorization.validate_admin )
     .put( qnController.updateQuestion )
     .delete( qnController.deleteQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
 app.route( "/api/questions/" ) 
     .get( qnController.getAllQuestions )
-    .post( authentication.jwt_validate )
-    .post( authorization.validate_admin )
+    // .post( authentication.jwt_validate )
+    // .post( authorization.validate_admin )
     .post( qnController.createQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 

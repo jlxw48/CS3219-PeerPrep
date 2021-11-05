@@ -256,28 +256,6 @@ exports.deleteQuestion = ( req, res ) => {
         return;
     }
 
-    if ( !helpers.isReqBodyNonEmpty( req ) ) {
-        res.statusCode = 400;
-        res.json( {
-            status: responseStatus.FAILED,
-            data: {
-                error_message: clientErr.MISSING_REQ_BODY
-            }
-        } );
-        return;
-    }
-
-    if ( !helpers.isValidDeleteReq( req ) ) {
-        res.statusCode = 400;
-        res.json( {
-            status: responseStatus.FAILED,
-            data: {
-                error_message: clientErr.MISSING_SOME_INPUT
-            }
-        } );
-        return;
-    }
-
     Question.findById( req.params.id, ( err, question ) => {
         if ( err || req.params.id.length != 24 ) {
             if ( ( err !== null && typeof err === "object" && err.name === "CastError" ) || req.params.id.length != 24 ) {

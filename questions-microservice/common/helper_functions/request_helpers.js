@@ -11,7 +11,6 @@ const isInvalidTitle = ( req ) => {
 }
 
 const isInvalidDescription = ( req ) => {
-    console.log( req.body.description == undefined )
     return req.body.description == null || req.body.description == undefined || req.body.description.length == 0;
 }
 
@@ -38,7 +37,7 @@ exports.isValidPostReq = ( req ) => {
 }
 
 exports.isValidPutReq = ( req ) => {
-    if ( ( isInvalidDescription( req ) && isInvalidTitle( req ) ) ) {
+    if ( ( isInvalidDescription( req ) && isInvalidTitle( req ) && isInvalidDifficulty(req)) ) {
         return false;
     }
 
