@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
-import { DEVICE_SIZES } from "react-bootstrap/esm/createUtilityClasses";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";

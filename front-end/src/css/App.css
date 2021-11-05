@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.markdown-body code {
+  background-color: #f2f5f7 !important
+}

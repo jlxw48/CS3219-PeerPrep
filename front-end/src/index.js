@@ -16,7 +16,6 @@ if (authToken) {
   axios.defaults.headers.common['Authorization'] = authToken;
 }
 
-
 TimeAgo.addDefaultLocale(en)
 const WithRouterApp = withRouter(App);
 ReactDOM.render(
