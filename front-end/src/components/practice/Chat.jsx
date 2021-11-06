@@ -14,6 +14,7 @@ import useState from 'react-usestateref';
 function Chat() {
     let { user, matchRef } = useContext(AppContext);
     const history = useHistory();
+    console.log("Rendered chat");
 
     var interviewId = null;
     var chatSocket = useRef();
