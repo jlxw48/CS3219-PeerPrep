@@ -34,7 +34,6 @@ mongoose.connect(uri)
 
 app.use('/api/user', userApiRoutes);
 
-<<<<<<< HEAD
 app.use((req, res) => {
     res.status(404).json({
         status: "failed",
@@ -43,18 +42,6 @@ app.use((req, res) => {
         }
     });
 });
-=======
- app.use('/api/user', userApiRoutes);
-
- app.use((req, res) => {
-     res.status(404).json({
-         status: "failed",
-         data: {
-             message: "invalid API endpoint"
-         }
-     });
- });
->>>>>>> front-end
 
  // Export app for testing purposes
 module.exports = app;

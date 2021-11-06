@@ -18,7 +18,7 @@ import { useAppStateHelper } from "../../common/state_handlers/AppState.js";
 import { REGISTER_URL, LOGIN_URL, JWT_TOKEN_NAME } from "../../constants.js"
 
 
-function Login(props) {
+function LoginRegister(props) {
     const history = useHistory();
     const { setUser, userRef } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
@@ -37,13 +37,8 @@ function Login(props) {
             name,
             password
         }).then(res => {
-            if (res.status === 201 && res.data.status === "success") {
-                toast.success("Registration is successful, please login");
-                history.push({ pathname: '/' });
-            } else {
-                toast.error(`Registration has failed, ${res.data.data.message}`)
-                setIsLoading(false);
-            }
+            toast.success("Registration is successful, please login");
+            history.push({ pathname: '/' });
         }).catch(error => {
             if (error.response && resHasMessage(error.response)) {
                 toast.error(`${getResMessage(error.response)}`);
@@ -148,4 +143,4 @@ function Login(props) {
 
 }
 
-export default Login;
+export default LoginRegister;

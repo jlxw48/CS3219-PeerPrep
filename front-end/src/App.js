@@ -12,7 +12,7 @@ import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL, JWT_TOKEN_NAME } from './c
 
 import PeerPrepNav from './components/PeerPrepNav';
 import Home from './components/home/Home';
-import Login from './components/login/Login';
+import LoginRegister from './components/login/LoginRegister';
 import LoadingScreen from './components/LoadingScreen';
 import Practice from './components/practice/Practice';
 import Tutorial from "./components/tutorial/Tutorial";
@@ -93,11 +93,11 @@ function App() {
         <ToastContainer pauseOnFocusLoss={false} />
         <Switch>
           <Route exact path='/' render={props => <Home />} />
-          <Route path='/login' render={props => isLoading ? <LoadingScreen /> : <Login />} />
-          <Route path="/practice" render={props => isLoading ? <LoadingScreen /> : <Practice />} />
-          <Route path="/register" render={props => <Login isRegister={true} />} />
-          <Route path="/tutorial"><Tutorial /></Route>
-          <Route path="/manage_questions" render={props => isLoading ? <LoadingScreen /> : user === null ? <InvalidRoute/> : <ManageQuestions />}/>
+          <Route exact path="/tutorial"><Tutorial /></Route>
+          <Route exact path='/login' render={props => isLoading ? <LoadingScreen /> : <LoginRegister />} />
+          <Route exact path="/practice" render={props => isLoading ? <LoadingScreen /> : <Practice />} />
+          <Route exact path="/register" render={props => isLoading ? <LoadingScreen /> : <LoginRegister isRegister={true} />} />
+          <Route exact path="/manage_questions" render={props => isLoading ? <LoadingScreen /> : user === null ? <InvalidRoute/> : <ManageQuestions />}/>
           <Route path="/*"><InvalidRoute /></Route>
         </Switch>
       </AppContext.Provider>

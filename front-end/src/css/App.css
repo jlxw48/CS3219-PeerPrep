@@ -40,3 +40,7 @@
 .markdown-body code {
   background-color: #f2f5f7 !important
 }
+
+.markdown-body {
+  background-color: transparent !important;
+}

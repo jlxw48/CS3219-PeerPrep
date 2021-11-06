@@ -1,11 +1,8 @@
 {
   "dependencies": {
-<<<<<<< HEAD
     "axios": "^0.24.0",
-=======
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
->>>>>>> front-end
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
