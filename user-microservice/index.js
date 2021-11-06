@@ -1,11 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
-var cookieParser = require('cookie-parser')
 const userApiRoutes = require('./routes/userApiRoutes');
+var cors = require('cors');
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
 
 const app = express();
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -29,6 +34,7 @@ mongoose.connect(uri)
 
 app.use('/api/user', userApiRoutes);
 
+<<<<<<< HEAD
 app.use((req, res) => {
     res.status(404).json({
         status: "failed",
@@ -37,6 +43,18 @@ app.use((req, res) => {
         }
     });
 });
+=======
+ app.use('/api/user', userApiRoutes);
+
+ app.use((req, res) => {
+     res.status(404).json({
+         status: "failed",
+         data: {
+             message: "invalid API endpoint"
+         }
+     });
+ });
+>>>>>>> front-end
 
  // Export app for testing purposes
 module.exports = app;

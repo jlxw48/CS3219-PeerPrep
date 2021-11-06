@@ -1,6 +1,11 @@
 {
   "dependencies": {
+<<<<<<< HEAD
     "axios": "^0.24.0",
+=======
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+>>>>>>> front-end
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -8,8 +13,8 @@
     "is-admin": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^9.1.3",
-    "mongodb": "^4.1.3",
-    "mongoose": "^6.0.9"
+    "mongodb": "^4.1.4",
+    "mongoose": "^6.0.12"
   },
   "name": "user-microservice",
   "version": "1.0.0",
@@ -20,5 +25,9 @@
   },
   "author": "",
   "license": "ISC",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [],
   "description": ""
 }
