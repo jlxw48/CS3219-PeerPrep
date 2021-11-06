@@ -237,6 +237,7 @@ const findMatch = async (req, res) => {
 
             const matchRecord = await Match.findOne({ email: email }).exec();
             if (!matchRecord) {
+                clearInterval(intervalId);
                 res.status(404).json({
                     status: responseStatus.FAILED,
                     data: {
