@@ -10,7 +10,8 @@ function Difficulties(props) {
     return (
         <>
             <br/>
-            <h3>Difficulties</h3><br/>
+            <h3>Difficulties</h3>
+            <br/>
             <Row>
                 {difficulties.map(difficulty => {
                     return (<Col md={4} key={difficulty} className="difficulty-card-container">

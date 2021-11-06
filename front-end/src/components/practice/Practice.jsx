@@ -10,7 +10,7 @@ import Editor from "./Editor";
 import LoadingScreen from "../LoadingScreen";
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from "rehype-raw";
-import 'github-markdown-css'
+import 'github-markdown-css/github-markdown-light.css'
 
 
 import "../../css/Practice.css"

@@ -3,7 +3,7 @@ import { Form, Button, Row, Col } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import 'github-markdown-css'
+import 'github-markdown-css/github-markdown-light.css'
 import { QUESTION_URL } from "../../constants";
 import axios from "axios";
 import { toast } from "react-toastify";

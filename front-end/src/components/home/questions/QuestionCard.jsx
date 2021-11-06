@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw'
 import DifficultyBadge from "../../DifficultyBadge";
-import 'github-markdown-css'
+import 'github-markdown-css/github-markdown-light.css'
 
 function QuestionCard(props) {
     const question = props.question;
