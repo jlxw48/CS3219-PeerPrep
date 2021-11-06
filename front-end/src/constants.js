@@ -6,7 +6,7 @@ const BACKEND_DOMAIN = "http://localhost"
 
 const QUESTION_URL = "https://peerprep-g5.tk/api/questions/";
 
-const USERS_URL = "http://user:3000/api/user/" // try this
+const USERS_URL = "https://peerprep.ml/api/user/"
 const LOGIN_URL = USERS_URL + "user_login";
 const REGISTER_URL = USERS_URL + "create_account";
 const LOGOUT_URL = USERS_URL + "user_logout"

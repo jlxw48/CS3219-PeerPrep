@@ -64,7 +64,7 @@ io.on("connection", socket => {
         if (io.sockets.adapter.rooms.get(interviewId).size === 2) {
             io.to(interviewId).emit("notification", {
                 senderEmail: "server",
-                message: PARTNER_CONNECTED
+                message: clientMessages.PARTNER_CONNECTED
             })
         }
     });
