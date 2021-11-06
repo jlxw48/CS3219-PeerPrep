@@ -3,7 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import '../../css/Tutorial.css'
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw'
-import 'github-markdown-css'
+import 'github-markdown-css/github-markdown-light.css'
 import markdownText from "./TutorialMd";
 
 function Tutorial() {

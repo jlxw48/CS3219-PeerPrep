@@ -3,11 +3,11 @@ import { Form, Button, Row, Col } from "react-bootstrap";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import 'github-markdown-css'
+import 'github-markdown-css/github-markdown-light.css'
 import { QUESTION_URL } from "../../constants";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
 function QuestionEditor(props) {
     const question = props.question;
@@ -34,7 +34,7 @@ function QuestionEditor(props) {
             behavior: "smooth",
         });
     }
-    useEffect(() => scrollToBottom, [desc]);
+    // useEffect(() => scrollToBottom, [desc]);
 
     // When form is submitted.
     const handleSubmit = (event) => {
@@ -88,10 +88,13 @@ function QuestionEditor(props) {
             </Col>
         </Row>
         <br/>
+        <ScrollSync>
         <Row>
+           
             <Col md={6}>
                 <Form.Group>
                 <Form.Label><strong>Description</strong></Form.Label>
+                <ScrollSyncPane>
                     <Form.Control
                         as="textarea"
                         placeholder="Enter a description for the question"
@@ -100,16 +103,22 @@ function QuestionEditor(props) {
                         value={desc}
                         onChange={(e) => setDesc(e.target.value)}
                     />
+                    </ScrollSyncPane>
                 </Form.Group>
+                
             </Col>
             <Col md={6}>
             <Form.Label><strong>Preview</strong></Form.Label>
+            <ScrollSyncPane>
                 <div className="desc-preview-container markdown-body" >
                     <ReactMarkdown linkTarget="_blank" remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} style={{"width": "100%"}}>{desc}</ReactMarkdown>
                     <div className="scroll-dummy" ref={descEndRef}/>
                 </div>
+                </ScrollSyncPane>
             </Col>
+           
         </Row>
+        </ScrollSync>
         <br/>
         <Button variant="dark" type="submit" className="submit-btn">
             Submit
