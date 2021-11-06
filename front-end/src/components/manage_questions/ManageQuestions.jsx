@@ -5,11 +5,13 @@ import "../../css/ManageQuestions.css";
 import axios from "axios";
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { QUESTION_URL, VALIDATE_ADMIN_URL } from "../../constants.js";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoadingScreen from "../LoadingScreen";
 import { toast } from "react-toastify";
+import { AppContext } from "../../App.js"
 
 function ManageQuestions() {
+    const { isAdminRef } = useContext(AppContext);
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [questions, setQuestions] = useState([]);
@@ -23,20 +25,16 @@ function ManageQuestions() {
         })
         .catch(err => console.log("Error fetching questions", err));
     }
-    const isUserAdmin = () => {
-        return axios.get(VALIDATE_ADMIN_URL).then(res => true).catch(err => false);
-    }
     
     // Check if user is admin then fetch questions
     useEffect(() => {
-        isUserAdmin(isAdmin => {
-            if (!isAdmin) {
-                history.push({ state: "/" });
-                toast.error("You have entered an invalid route.");
-            }
-            fetchQuestions();
-            setIsLoading(false);
-        });
+        console.log("hi");
+        if (!isAdminRef.current) {
+            history.push({ pathname: "/" });
+            toast.error("You have entered an invalid route.");
+        }
+        fetchQuestions();
+        setIsLoading(false);
     }, []);
 
     return (

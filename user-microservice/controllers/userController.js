@@ -195,7 +195,7 @@ exports.validate_admin = (req, res) => {
 	try {
 		checkMissingToken(token, res);
 
-		jwt.verify(token, 'CS3219_SECRET_KEY', (err, user) => {
+		jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
 			if (err) {
 				console.log(err);
 				sendFailureRes(res, 401, clientErrorMessages.JWT_AUTH_FAILED);

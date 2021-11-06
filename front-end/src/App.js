@@ -8,8 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import './css/App.css';
-import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL, JWT_TOKEN_NAME } from './constants';
-
+import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL, JWT_TOKEN_NAME, VALIDATE_ADMIN_URL } from './constants';
 import PeerPrepNav from './components/PeerPrepNav';
 import Home from './components/home/Home';
 import LoginRegister from './components/login/LoginRegister';
@@ -19,11 +18,6 @@ import Tutorial from "./components/tutorial/Tutorial";
 import InvalidRoute from './components/InvalidRoute';
 import ManageQuestions from './components/manage_questions/ManageQuestions';
 
-// Attach jwt token to all request headers, if it exists.
-const authToken = localStorage.getItem('cs3219-jwt-auth');
-
-
-
 export const AppContext = React.createContext();
 
 function App() {
@@ -31,6 +25,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   // Maintains state of user details
   const [user, setUser, userRef] = useState(null);
+  // Maintains a state of whether user is an admin
+  const [isAdmin, setIsAdmin, isAdminRef] = useState(false);
   // Maintains state of user's ongoing match, if any.
   const [match, setMatch, matchRef] = useState(null);
 
@@ -42,12 +38,15 @@ function App() {
 
   // These are passed around throughout the different components
   let context = {
-    user: user,
-    setUser: setUser,
-    userRef: userRef,
-    match: match,
-    matchRef: matchRef,
-    setMatch: setMatch
+    user,
+    setUser,
+    userRef,
+    isAdmin,
+    setIsAdmin,
+    isAdminRef,
+    match,
+    matchRef,
+    setMatch
   }
 
   const checkLogin = () => {
@@ -55,6 +54,10 @@ function App() {
       setUser(data);
       return true;
     }).catch(err => false); // No JWT token or invalid JWT token.
+  }
+
+  const checkIsAdmin = () => {
+    return axios.get(VALIDATE_ADMIN_URL).then(res => setIsAdmin(true)).catch(err => setIsAdmin(false));
   }
 
   function redirectToPractice() {
@@ -73,17 +76,19 @@ function App() {
 
   // Upon page load, check if user is logged in then check if user is already in a match.
   useEffect(() => {
+    // Check if user is logged in
     checkLogin().then(isLoggedIn => {
       if (!isLoggedIn) {
         setIsLoading(false);
         return
       }
 
-      checkIfUserInMatch().then(isInMatch => {
-        setIsLoading(false);
-      });
+      checkIsAdmin();
       
-    }).catch(err => { });
+      checkIfUserInMatch().then(isInMatch => {
+          setIsLoading(false);
+      });
+    }).catch(err => {});
   }, []);
 
   return (

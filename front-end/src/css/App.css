@@ -38,7 +38,12 @@
 }
 
 .markdown-body code {
-  background-color: #f2f5f7 !important
+  background-color: #f5f5f5 !important;
+  border: 1px solid #e0e0e0;
+}
+
+.markdown-body pre {
+  border: 1px solid #e0e0e0; 
 }
 
 .markdown-body {

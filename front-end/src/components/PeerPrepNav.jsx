@@ -16,7 +16,7 @@ import { confirm } from 'react-bootstrap-confirmation';
 
 function PeerPrepNav() {
     const history = useHistory();
-    let { user, setUser, matchRef, setMatch } = useContext(AppContext);
+    let { user, setUser, matchRef, setMatch, isAdminRef } = useContext(AppContext);
     const [expanded, setExpanded] = useState(false);
 
     // Calls user API to delete JWT cookie
@@ -84,7 +84,7 @@ function PeerPrepNav() {
                         }
                         {/* Manage questions button */}
                         {
-                            user !== null &&
+                            isAdminRef.current &&
                             <NavLink to="/manage_questions" className="nav-link">Manage Questions</NavLink>
                         }
                         {/* Todo: Hide tutorial button for admin user */}
