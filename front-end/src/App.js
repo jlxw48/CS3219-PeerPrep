@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import './css/App.css';
-import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL } from './constants';
+import { VALIDATE_LOGIN_URL, MATCH_GET_INTERVIEW_URL, JWT_TOKEN_NAME } from './constants';
 
 import PeerPrepNav from './components/PeerPrepNav';
 import Home from './components/home/Home';
@@ -18,6 +18,10 @@ import Practice from './components/practice/Practice';
 import Tutorial from "./components/tutorial/Tutorial";
 import InvalidRoute from './components/InvalidRoute';
 import ManageQuestions from './components/manage_questions/ManageQuestions';
+
+// Attach jwt token to all request headers, if it exists.
+const authToken = localStorage.getItem('cs3219-jwt-auth');
+
 
 
 export const AppContext = React.createContext();
@@ -31,6 +35,10 @@ function App() {
   const [match, setMatch, matchRef] = useState(null);
 
   const history = useHistory();
+
+  // The existing token in storage, if any.
+  let token = localStorage.getItem(JWT_TOKEN_NAME);
+  axios.defaults.headers.common['Authorization'] = token;
 
   // These are passed around throughout the different components
   let context = {

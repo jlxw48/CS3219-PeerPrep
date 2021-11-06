@@ -96,7 +96,7 @@ function QuestionEditor(props) {
                         as="textarea"
                         placeholder="Enter a description for the question"
                         name="description"
-                        style={{ height: '200px' }}
+                        style={{ height: '300px' }}
                         value={desc}
                         onChange={(e) => setDesc(e.target.value)}
                     />

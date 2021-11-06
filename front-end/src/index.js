@@ -5,16 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TimeAgo from 'javascript-time-ago'
-import axios from 'axios';
-
 import en from 'javascript-time-ago/locale/en.json'
 import { BrowserRouter, withRouter } from "react-router-dom";
-
-// Attach jwt token to all request headers, if it exists.
-const authToken = localStorage.getItem('cs3219-jwt-auth');
-if (authToken) {
-  axios.defaults.headers.common['Authorization'] = authToken;
-}
 
 TimeAgo.addDefaultLocale(en)
 const WithRouterApp = withRouter(App);
