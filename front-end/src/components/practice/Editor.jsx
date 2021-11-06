@@ -15,12 +15,6 @@ function Editor() {
     let { matchRef, userRef } = useContext(AppContext);
     let { endMatch } = useAppStateHelper();
     const history = useHistory();
-
-    if (matchRef.current === null) {
-        history.push({ pathname: '/' });
-    }
-
-    var interviewId = matchRef.current.interviewId;
     var editorSocket = useRef();
 
     // Current content of the code editor
@@ -41,6 +35,13 @@ function Editor() {
     }
 
     useEffect(() => {
+        if (matchRef.current === null) {
+            history.push({ pathname: '/' });
+            return;
+        }
+    
+        var interviewId = matchRef.current.interviewId;
+
         /**
          * Connect socket and add socket events.
          */
@@ -52,20 +53,20 @@ function Editor() {
             reconnectionDelay: 500
         });
 
+        // Fetch text history
+        axios.get(EDITOR_HISTORY_URL, {
+            params: { interviewId }
+        })
+        .then(res => res.data.data)
+        .then(data => {
+            const message =  JSON.parse(data.message);
+            const textHistory = message.text;
+            setCode(textHistory);
+        })
+        .catch(err => setCode(""));
+
         editorSocket.current.on("connect", () => {
             console.log("Successfully connected to editor socket");
-
-            // Fetch text history
-            axios.get(EDITOR_HISTORY_URL, {
-                params: { interviewId }
-            })
-            .then(res => res.data.data)
-            .then(data => {
-                const message =  JSON.parse(data.message);
-                const textHistory = message.text;
-                setCode(textHistory);
-            })
-            .catch(err => setCode(""));
 
             editorSocket.current.emit('subscribe', {
                 interviewId
@@ -113,7 +114,7 @@ function Editor() {
     const handleCodeChange = (event) => {
         resetInactivityTimer();
         editorSocket.current.emit('newMessage', {
-            interviewId,
+            interviewId: matchRef.current.interviewId,
             text: event,
             senderEmail: userRef.current.email
         });
