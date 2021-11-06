@@ -52,7 +52,7 @@ The chat window can be expanded and collapsed with a click of a button. It allow
 ![image](https://user-images.githubusercontent.com/52824657/140269900-2906e76d-96cc-4f6f-9c26-fc6f65a0619d.png)
 
 <div className="alert alert-info">
-    <b>Note</b>: Due to our limited compute resources as a start up, we have a concurrent interview limit of 5 (10 users can interview at any time.
+    <b>Note</b>: Due to our limited compute resources as a start up, we have a concurrent interview limit of 5 (10 users can interview at any time).
     To ensure that all users have an equal chance to use our awesome application, we enforce a 1 hour time limit for all interviews. Your interview will also be ended if you remain inactive for more than 10 minutes.
 </div>
  
