@@ -10,6 +10,8 @@ import Editor from "./Editor";
 import LoadingScreen from "../LoadingScreen";
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from "rehype-raw";
+import 'github-markdown-css'
+
 
 import "../../css/Practice.css"
 import DifficultyBadge from "../DifficultyBadge.jsx";
@@ -51,8 +53,14 @@ function Practice() {
 
                         <div className="practice-question-body">
                             {
-                                practiceQuestion ? <><h2>{practiceQuestion.title}&nbsp;<DifficultyBadge difficulty={practiceQuestion.difficulty}/></h2><br />
-                                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>{practiceQuestion.description}</ReactMarkdown></> : <Skeleton height={"100%"} />
+                                practiceQuestion 
+                                    ? <>
+                                        <h2>{practiceQuestion.title}&nbsp;<DifficultyBadge difficulty={practiceQuestion.difficulty}/></h2><br />
+                                        <div className="markdown-body">
+                                            <ReactMarkdown linkTarget="_blank" rehypePlugins={[rehypeRaw]}>{practiceQuestion.description}</ReactMarkdown>
+                                        </div>
+                                      </> 
+                                    : <Skeleton height={"100%"} />
                             }
                         </div>
                     </div>

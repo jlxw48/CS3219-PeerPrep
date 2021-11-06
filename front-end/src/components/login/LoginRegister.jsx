@@ -15,12 +15,12 @@ import { AppContext } from "../../App.js"
 import Spinner from 'react-bootstrap/Spinner'
 import { resHasMessage, getResMessage } from "../../Helpers.js";
 import { useAppStateHelper } from "../../common/state_handlers/AppState.js";
-import { REGISTER_URL, LOGIN_URL, JWT_TOKEN_NAME } from "../../constants.js"
+import { REGISTER_URL, LOGIN_URL, JWT_TOKEN_NAME, VALIDATE_ADMIN_URL } from "../../constants.js"
 
 
-function Login(props) {
+function LoginRegister(props) {
     const history = useHistory();
-    const { setUser, userRef } = useContext(AppContext);
+    const { setUser, userRef, setIsAdmin } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
     const { checkIfUserInMatch } = useAppStateHelper();
 
@@ -37,13 +37,8 @@ function Login(props) {
             name,
             password
         }).then(res => {
-            if (res.status === 201 && res.data.status === "success") {
-                toast.success("Registration is successful, please login");
-                history.push({ pathname: '/' });
-            } else {
-                toast.error(`Registration has failed, ${res.data.data.message}`)
-                setIsLoading(false);
-            }
+            toast.success("Registration is successful, please login");
+            history.push({ pathname: '/' });
         }).catch(error => {
             if (error.response && resHasMessage(error.response)) {
                 toast.error(`${getResMessage(error.response)}`);
@@ -52,6 +47,14 @@ function Login(props) {
             }
             setIsLoading(false);
         });
+    }
+
+    const checkIsAdmin = (token) => {
+        return axios.get(VALIDATE_ADMIN_URL, {
+            headers: {
+                'Authorization': token
+            }
+        }).then(res => setIsAdmin(true)).catch(err => setIsAdmin(false));
     }
 
     // When login form is submitted.
@@ -66,7 +69,9 @@ function Login(props) {
         }).then(res => res.data.data).then(data => {
             setUser(data);
             localStorage.setItem(JWT_TOKEN_NAME, data.token);
+            console.log(data.token);
             toast.success("Login successful");
+            checkIsAdmin(data.token);
             // Checks Match microservice to see if user is in match, if so, redirect to practice page, else redirect to home.
             checkIfUserInMatch().then(hasMatch => {
                 if (!hasMatch) {
@@ -148,4 +153,4 @@ function Login(props) {
 
 }
 
-export default Login;
+export default LoginRegister;

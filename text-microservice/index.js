@@ -28,7 +28,7 @@ const { createAdapter } = require("@socket.io/redis-adapter");
 const io = new Server(server, {
   path: "/api/editor/create",
   cors: {
-    origin: "https://peerprep.ml",
+    origin: ["https://peerprep.ml", "http://localhost:3000"],
     methods: ["GET", "POST", "DELETE"],
     credentials: true
   }

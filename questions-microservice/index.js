@@ -41,6 +41,10 @@ const statusCheck = ( req, res ) => {
     } );
 };
 
+<<<<<<< HEAD
+=======
+// for matching
+>>>>>>> 60efee7a4573a04a3959dc845ff13878fe3e2a75
 app.route( "/api/questions/get_random_question" )
     .get( qnController.getRandomQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
@@ -50,16 +54,26 @@ app.route( "/api/questions/status" )
     .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
 
 app.route( "/api/questions/:id" )
+<<<<<<< HEAD
     // .all( authentication.jwt_validate )
     // .all( authorization.validate_admin )
+=======
+    .all( auth.jwt_validate )
+>>>>>>> 60efee7a4573a04a3959dc845ff13878fe3e2a75
     .put( qnController.updateQuestion )
     .delete( qnController.deleteQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
+<<<<<<< HEAD
 app.route( "/api/questions/" ) 
     .get( qnController.getAllQuestions )
     // .post( authentication.jwt_validate )
     // .post( authorization.validate_admin )
+=======
+app.route( "/api/questions/" ) // TODO fix routing prefix issue 
+    .get( qnController.getAllQuestions )
+    .post( auth.jwt_validate )
+>>>>>>> 60efee7a4573a04a3959dc845ff13878fe3e2a75
     .post( qnController.createQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 

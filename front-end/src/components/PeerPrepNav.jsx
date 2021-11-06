@@ -16,12 +16,13 @@ import { confirm } from 'react-bootstrap-confirmation';
 
 function PeerPrepNav() {
     const history = useHistory();
-    let { user, setUser, matchRef, setMatch } = useContext(AppContext);
+    let { user, setUser, matchRef, setMatch, isAdminRef, setIsAdmin } = useContext(AppContext);
     const [expanded, setExpanded] = useState(false);
 
     // Calls user API to delete JWT cookie
     const handleLogout = () => {
         localStorage.removeItem(JWT_TOKEN_NAME);
+        setIsAdmin(false);
         setUser(null);
         if (matchRef.current !== null) {
             toast.info("Your interview has been ended.");
@@ -57,7 +58,7 @@ function PeerPrepNav() {
     const currRoute = useLocation().pathname;
 
     return (
-        <Navbar collapseOnSelect fixed="top" expanded={expanded} expand="sm" bg="dark" variant="dark">
+        <Navbar collapseOnSelect expanded={expanded} expand="sm" bg="dark" variant="dark">
             <Container fluid>
                 <NavLink to="/" exact className="navbar-brand NavbarBrand" onClick={closeNavbarOnClick}>PeerPrep</NavLink>
                 <Navbar.Toggle onClick={() => setExpanded(expanded ? false : "expanded")} />
@@ -82,7 +83,15 @@ function PeerPrepNav() {
                                 closeNavbarOnClick();
                             }} className="nav-link">Logout</Nav.Link>
                         }
+                        {/* Manage questions button */}
+                        {
+                            isAdminRef.current &&
+                            <NavLink to="/manage_questions" className="nav-link">Manage Questions</NavLink>
+                        }
+                        {/* Todo: Hide tutorial button for admin user */}
+                        {
                         <NavLink to="/tutorial" exact className="nav-link" onClick={closeNavbarOnClick}>Tutorial</NavLink>
+                        }
                     </Nav>
 
                     {/* Resume interview button */}

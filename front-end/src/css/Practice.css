@@ -1,19 +1,24 @@
 .practice-container-row {
-    padding-top: 8%;
+    padding-top: 2%;
     /* height: 700px; */
 }
 
 @media screen and (max-width: 800px) {
     .practice-container-row {
-        padding-top: 70px;
+        padding-top: 30px;
+    }
+    
+    .practice-question-body {
+        max-height: 400px !important;
     }
 }
 
 .practice-question-body {
-    background: #EFEFEF;
-    /* height: 100%; */
+    background: #fafafa;
+    max-height: 500px;
     padding: 20px;
     border-radius: 10px;
+    border: 1px solid #e6e6e6;
     padding-bottom: 10px;
     overflow-y: auto;
 }
@@ -43,7 +48,7 @@
 }
 
 .ace_editor {
-    width: 99% !important;
+    width: 100% !important;
     overflow-y: auto;
     border-radius: 5px;
     border: 2px solid grey;

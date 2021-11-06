@@ -3,14 +3,18 @@ import Card from 'react-bootstrap/Card';
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw'
 import DifficultyBadge from "../../DifficultyBadge";
+import 'github-markdown-css'
 
 function QuestionCard(props) {
-    const trimmedQuestionBody = props.description.length > 300 ? props.description.substring(0, 300) + "..." : props.description 
+    const question = props.question;
+    const trimmedQuestionBody = question.description.length > 300 ? question.description.substring(0, 300) + "..." : question.description 
     return (
-        <Card className="home-question-card">
+        <Card className="home-question-card" onClick={props.onClickFunct}>
             <Card.Body>
-                <Card.Title>{props.title + " "}<DifficultyBadge difficulty={props.difficulty}/></Card.Title><br/>
-                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{trimmedQuestionBody}</ReactMarkdown>
+                <Card.Title>{question.title + " "}<DifficultyBadge difficulty={question.difficulty}/></Card.Title><br/>
+                <div className="markdown-body">
+                    <ReactMarkdown linkTarget="_blank" rehypePlugins={[rehypeRaw]}>{trimmedQuestionBody}</ReactMarkdown>
+                </div>
             </Card.Body>
         </Card>
     )

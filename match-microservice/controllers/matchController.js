@@ -208,7 +208,6 @@ const findMatch = async (req, res) => {
         }
 
         try {
-
             const interviewExists = await Interview.findOne({
                 $or: [
                     { firstUserEmail: email },
