@@ -6,6 +6,8 @@ const MISSING_NAME_EMAIL_PASSWORD = "Missing name, email and password fields";
 const INVALID_EMAIL = "Invalid email";
 const INVALID_PASSWORD = "Invalid password";
 const USER_EXISTS = "A user with this email already exists: ";
+const JWT_AUTH_FAILED = "Missing or invalid JWT!";
+const INVALID_ADMIN = "Invalid admin";
 
 
 module.exports = {
@@ -16,5 +18,7 @@ module.exports = {
 	MISSING_NAME_EMAIL_PASSWORD,
 	INVALID_EMAIL,
 	INVALID_PASSWORD,
-	USER_EXISTS
+	USER_EXISTS,
+	JWT_AUTH_FAILED,
+	INVALID_ADMIN
 };
