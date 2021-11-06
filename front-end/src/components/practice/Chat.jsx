@@ -19,21 +19,31 @@ function Chat() {
     var interviewId = null;
     var chatSocket = useRef();
     const [chats, setChats, chatsRef] = useState([]);
-
-    const PARTNER_CONNECTED_NOTIFICATION = "Your partner has connected to the chat."
     const PARTNER_DISCONNECT_NOTIFICATION = "Your partner has disconnected from the interview."
-    const NOTIFICATION_TYPE_CONNECTION = 0;
-    const NOTIFICATION_TYPE_END = 1;
 
+    // Fetch and populate chat history.
+    axios.get(CHAT_HISTORY_URL + interviewId).then(res => res.data.data).then(data => {
+        const chatHistory = data.history;
+        setChats(chatHistory);
 
-    const PartnerDisconnectedMessage = (props) => (
-    <div className="rcw-message">
-        <div className="rcw-response">
-            <div className="rcw-messages-text">
-                <p><i>{props.message}</i></p>
+        // Push chat history from chats variable into chat widget
+        for (let chat of chatsRef.current) {
+            if (chat.senderEmail === user.email) {
+                addUserMessage(chat.message);
+            } else {
+                addResponseMessage(chat.message);
+            }
+        }
+    }).catch(err => console.log("Error fetching chat history", err));
+
+    const ChatWidgetNotificationMessage = (props) => (
+        <div className="rcw-message">
+            <div className="rcw-response">
+                <div className="rcw-messages-text">
+                    <p><i>{props.message}</i></p>
+                </div>
             </div>
-        </div>
-    </div>)
+        </div>)
 
     useEffect(() => {
         if (matchRef.current === null) {
@@ -58,22 +68,6 @@ function Chat() {
         chatSocket.current.on("connect", () => {
             console.log("Successfully connected to chat socket.");
 
-            // Fetch and populate chat history.
-            axios.get(CHAT_HISTORY_URL + interviewId).then(res => res.data.data).then(data => {
-                const chatHistory = data.history;
-                setChats(chatHistory);
-            
-                // Push chat history from chats variable into chat widget
-                for (let chat of chatsRef.current) {
-                    if (chat.senderEmail === user.email) {
-                        addUserMessage(chat.message);
-                    } else {
-                        addResponseMessage(chat.message);
-                    }
-                }
-            }).catch(err => console.log("Error fetching chat history", err));
-
-            
             // Set event upon receiving new message to add to chats variable and to chat widget.
             chatSocket.current.on("message", newMessage => {
                 console.log("Received msg from chat socket", newMessage);
@@ -83,11 +77,10 @@ function Chat() {
                 }
             });
 
-
             // Display notification in chat widget
             chatSocket.current.on("notification", endInterviewMessage => {
                 if (endInterviewMessage.senderEmail !== user.email) {
-                    renderCustomComponent(PartnerDisconnectedMessage, {message: endInterviewMessage.message});
+                    renderCustomComponent(ChatWidgetNotificationMessage, { message: endInterviewMessage.message });
                 }
             })
 
@@ -108,7 +101,7 @@ function Chat() {
                 interviewId,
                 contents: {
                     senderEmail: user.email,
-                    message: "Your partner has disconnected from the interview."
+                    message: PARTNER_DISCONNECT_NOTIFICATION
                 }
             })
             // Delete all messages from chat widget
