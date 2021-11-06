@@ -21,7 +21,7 @@ describe( "add 2 users", () => {
     describe( "POST /user/create_account/", () => {
         it( "should add 1 user", ( done ) => {
             chai.request( app )
-                .post( '/user/create_account')
+                .post( '/api/user/create_account')
                 .send({
                     name: testData.validUser1.name,
                     email: testData.validUser1.email,
@@ -42,7 +42,7 @@ describe( "add 2 users", () => {
 
         it( "should add another user", ( done ) => {
             chai.request( app )
-                .post( '/user/create_account')
+                .post( '/api/user/create_account')
                 .send({
                     name: testData.validUser2.name,
                     email: testData.validUser2.email,
@@ -67,7 +67,7 @@ describe( "login 2 users", () => {
     describe( "POST /user/user_login/", () => {
         it( "should login 1 user", ( done ) => {
             chai.request( app )
-                .post( '/user/user_login')
+                .post( '/api/user/user_login')
                 .send({
                     email: testData.validUser1.email,
                     password: testData.validUser1.password
@@ -85,7 +85,7 @@ describe( "login 2 users", () => {
 
         it( "should login another user", ( done ) => {
             chai.request( app )
-                .post( '/user/user_login')
+                .post( '/api/user/user_login')
                 .send({
                     email: testData.validUser2.email,
                     password: testData.validUser2.password
@@ -107,7 +107,7 @@ describe( "logout 2 users", () => {
     describe( "POST /user/user_logout/", () => {
         it( "should logout 1 user", ( done ) => {
             chai.request( app )
-                .post( '/user/user_logout')
+                .post( '/api/user/user_logout')
                 .send({
                     email: testData.validUser1.email,
                 })
@@ -124,7 +124,7 @@ describe( "logout 2 users", () => {
 
         it( "should login another user", ( done ) => {
             chai.request( app )
-                .post( '/user/user_logout')
+                .post( '/api/user/user_logout')
                 .send({
                     email: testData.validUser2.email,
                 })
