@@ -31,7 +31,7 @@ function App() {
   const [match, setMatch, matchRef] = useState(null);
 
   const history = useHistory();
-
+  
   // The existing token in storage, if any.
   let token = localStorage.getItem(JWT_TOKEN_NAME);
   axios.defaults.headers.common['Authorization'] = token;

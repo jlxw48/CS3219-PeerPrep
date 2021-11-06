@@ -15,12 +15,12 @@ import { AppContext } from "../../App.js"
 import Spinner from 'react-bootstrap/Spinner'
 import { resHasMessage, getResMessage } from "../../Helpers.js";
 import { useAppStateHelper } from "../../common/state_handlers/AppState.js";
-import { REGISTER_URL, LOGIN_URL, JWT_TOKEN_NAME } from "../../constants.js"
+import { REGISTER_URL, LOGIN_URL, JWT_TOKEN_NAME, VALIDATE_ADMIN_URL } from "../../constants.js"
 
 
 function LoginRegister(props) {
     const history = useHistory();
-    const { setUser, userRef } = useContext(AppContext);
+    const { setUser, userRef, setIsAdmin } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(false);
     const { checkIfUserInMatch } = useAppStateHelper();
 
@@ -49,6 +49,14 @@ function LoginRegister(props) {
         });
     }
 
+    const checkIsAdmin = (token) => {
+        return axios.get(VALIDATE_ADMIN_URL, {
+            headers: {
+                'Authorization': token
+            }
+        }).then(res => setIsAdmin(true)).catch(err => setIsAdmin(false));
+    }
+
     // When login form is submitted.
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -61,7 +69,9 @@ function LoginRegister(props) {
         }).then(res => res.data.data).then(data => {
             setUser(data);
             localStorage.setItem(JWT_TOKEN_NAME, data.token);
+            console.log(data.token);
             toast.success("Login successful");
+            checkIsAdmin(data.token);
             // Checks Match microservice to see if user is in match, if so, redirect to practice page, else redirect to home.
             checkIfUserInMatch().then(hasMatch => {
                 if (!hasMatch) {

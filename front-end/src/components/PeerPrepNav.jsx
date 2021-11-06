@@ -16,12 +16,13 @@ import { confirm } from 'react-bootstrap-confirmation';
 
 function PeerPrepNav() {
     const history = useHistory();
-    let { user, setUser, matchRef, setMatch, isAdminRef } = useContext(AppContext);
+    let { user, setUser, matchRef, setMatch, isAdminRef, setIsAdmin } = useContext(AppContext);
     const [expanded, setExpanded] = useState(false);
 
     // Calls user API to delete JWT cookie
     const handleLogout = () => {
         localStorage.removeItem(JWT_TOKEN_NAME);
+        setIsAdmin(false);
         setUser(null);
         if (matchRef.current !== null) {
             toast.info("Your interview has been ended.");

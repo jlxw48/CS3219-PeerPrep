@@ -201,7 +201,6 @@ exports.validate_admin = (req, res) => {
 				sendFailureRes(res, 401, clientErrorMessages.JWT_AUTH_FAILED);
 				return;
 			}
-			req.user = user;
 			const role = user.permissionLevel;
 			console.log(user.permissionLevel);
 			if (role === permissionLevels.ADMIN) {
