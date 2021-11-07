@@ -31,10 +31,6 @@ function App() {
   const [match, setMatch, matchRef] = useState(null);
 
   const history = useHistory();
-  
-  // The existing token in storage, if any.
-  let token = localStorage.getItem(JWT_TOKEN_NAME);
-  axios.defaults.headers.common['Authorization'] = token;
 
   // These are passed around throughout the different components
   let context = {
@@ -76,6 +72,10 @@ function App() {
 
   // Upon page load, check if user is logged in then check if user is already in a match.
   useEffect(() => {
+    // The existing token in storage, if any.
+    let token = localStorage.getItem(JWT_TOKEN_NAME);
+    axios.defaults.headers.common['Authorization'] = token;
+
     // Check if user is logged in
     checkLogin().then(isLoggedIn => {
       if (!isLoggedIn) {
@@ -84,11 +84,23 @@ function App() {
       }
 
       checkIsAdmin();
-      
+
       checkIfUserInMatch().then(isInMatch => {
-          setIsLoading(false);
+        setIsLoading(false);
       });
-    }).catch(err => {});
+
+      // Remind user that he is in match if he leave website while in a match.
+      return () => {
+        window.addEventListener("beforeunload", function (e) {
+          console.log('hi');
+          e.preventDefault();
+          let confirmationMessage = "You are current in a match, leave PeerPrep?";
+          (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+          return confirmationMessage; //Webkit, Safari, Chrome
+        });
+      }
+
+    }).catch(err => { });
   }, []);
 
   return (
@@ -102,7 +114,7 @@ function App() {
           <Route exact path='/login' render={props => isLoading ? <LoadingScreen /> : <LoginRegister />} />
           <Route exact path="/practice" render={props => isLoading ? <LoadingScreen /> : <Practice />} />
           <Route exact path="/register" render={props => isLoading ? <LoadingScreen /> : <LoginRegister isRegister={true} />} />
-          <Route exact path="/manage_questions" render={props => isLoading ? <LoadingScreen /> : user === null ? <InvalidRoute/> : <ManageQuestions />}/>
+          <Route exact path="/manage_questions" render={props => isLoading ? <LoadingScreen /> : user === null ? <InvalidRoute /> : <ManageQuestions />} />
           <Route path="/*"><InvalidRoute /></Route>
         </Switch>
       </AppContext.Provider>
