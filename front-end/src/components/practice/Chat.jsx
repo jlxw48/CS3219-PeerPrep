@@ -15,26 +15,10 @@ function Chat() {
     let { user, matchRef } = useContext(AppContext);
     const history = useHistory();
     console.log("Rendered chat");
-
-    var interviewId = null;
+    
     var chatSocket = useRef();
     const [chats, setChats, chatsRef] = useState([]);
     const PARTNER_DISCONNECT_NOTIFICATION = "Your partner has disconnected from the interview."
-
-    // Fetch and populate chat history.
-    axios.get(CHAT_HISTORY_URL + interviewId).then(res => res.data.data).then(data => {
-        const chatHistory = data.history;
-        setChats(chatHistory);
-
-        // Push chat history from chats variable into chat widget
-        for (let chat of chatsRef.current) {
-            if (chat.senderEmail === user.email) {
-                addUserMessage(chat.message);
-            } else {
-                addResponseMessage(chat.message);
-            }
-        }
-    }).catch(err => console.log("Error fetching chat history", err));
 
     const ChatWidgetNotificationMessage = (props) => (
         <div className="rcw-message">
@@ -53,7 +37,22 @@ function Chat() {
         // Clears messages from a previous session, if any
         dropMessages();
 
-        interviewId = matchRef.current.interviewId;
+        const interviewId = matchRef.current.interviewId;
+
+        // Fetch and populate chat history.
+        axios.get(CHAT_HISTORY_URL + interviewId).then(res => res.data.data).then(data => {
+            const chatHistory = data.history;
+            setChats(chatHistory);
+
+            // Push chat history from chats variable into chat widget
+            for (let chat of chatsRef.current) {
+                if (chat.senderEmail === user.email) {
+                    addUserMessage(chat.message);
+                } else {
+                    addResponseMessage(chat.message);
+                }
+            }
+        }).catch(err => console.log("Error fetching chat history", err));
 
         chatSocket.current = io.connect(CHAT_BACKEND_DOMAIN, {
             transports: ["websocket"],
@@ -63,11 +62,9 @@ function Chat() {
             reconnectionDelay: 500
         });
 
-        chatSocket.current.emit("joinRoom", interviewId);
-
         chatSocket.current.on("connect", () => {
             console.log("Successfully connected to chat socket.");
-
+            chatSocket.current.emit("joinRoom", interviewId);
             // Set event upon receiving new message to add to chats variable and to chat widget.
             chatSocket.current.on("message", newMessage => {
                 console.log("Received msg from chat socket", newMessage);
