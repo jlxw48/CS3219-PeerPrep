@@ -1,15 +1,20 @@
 import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/theme-github";
-import "ace-builds/src-noconflict/mode-python";
-import "ace-builds/src-noconflict/ext-language_tools"
+import "ace-builds/src-min-noconflict/theme-github";
+import "ace-builds/src-min-noconflict/mode-python";
+// import "ace-builds/src-min-noconflict/mode-javascript";
+import "ace-builds/src-min-noconflict/mode-java";
+import "ace-builds/src-min-noconflict/mode-c_cpp";
+import "ace-builds/src-min-noconflict/ext-language_tools"
 import io from 'socket.io-client';
 import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH } from "../../constants.js";
-import { useState, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { AppContext } from "../../App.js";
 import { useAppStateHelper } from "../../common/state_handlers/AppState.js";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
+import useState from "react-usestateref";
+import { Col } from "react-bootstrap";
 
 function Editor() {
     let { matchRef, userRef } = useContext(AppContext);
@@ -18,7 +23,17 @@ function Editor() {
     var editorSocket = useRef();
 
     // Current content of the code editor
-    const [code, setCode] = useState();
+    const [code, setCode, codeRef] = useState("");
+    // Selected programming language of code editor
+    const [lang, setLang] = useState("python");
+    const langChoices =  ["python", "java", "c_cpp"];
+    // Need to cache current code as Ace Editor re-renders when lang is changed.
+    const changeLang = (newLang) => {
+        const currCode = codeRef.current;
+        setLang(newLang);
+        setCode(currCode);
+        console.log("Curr code",codeRef.current);
+    }
 
     var inactivityTimer = useRef(null);
 
@@ -33,6 +48,20 @@ function Editor() {
             history.push({ pathname: '/' });
         }, MINUTES_TO_MICROSECONDS_MULTIPLIER * 10)
     }
+
+    const capitalizeFirstChar = (str) => str.charAt(0).toUpperCase() + str.substring(1)
+
+    // Fetch text history
+    const fetchTextHistory = () => axios.get(EDITOR_HISTORY_URL, {
+        params: { interviewId: matchRef.current.interviewId }
+    })
+    .then(res => res.data.data)
+    .then(data => {
+        const message =  JSON.parse(data.message);
+        const textHistory = message.text;
+        setCode(textHistory);
+    })
+    .catch(err => setCode(""));
 
     useEffect(() => {
         if (matchRef.current === null) {
@@ -53,17 +82,7 @@ function Editor() {
             reconnectionDelay: 500
         });
 
-        // Fetch text history
-        axios.get(EDITOR_HISTORY_URL, {
-            params: { interviewId }
-        })
-        .then(res => res.data.data)
-        .then(data => {
-            const message =  JSON.parse(data.message);
-            const textHistory = message.text;
-            setCode(textHistory);
-        })
-        .catch(err => setCode(""));
+        fetchTextHistory();
 
         editorSocket.current.on("connect", () => {
             console.log("Successfully connected to editor socket");
@@ -93,7 +112,6 @@ function Editor() {
         /**
          * Inactivity timer of 10 minutes.
          */
-        
         resetInactivityTimer();
 
 
@@ -113,6 +131,7 @@ function Editor() {
     // When user changes something in the code editor, send the entire text in the code editor over the editor socket and reset inactivity timer.
     const handleCodeChange = (event) => {
         resetInactivityTimer();
+        setCode(event);
         editorSocket.current.emit('newMessage', {
             interviewId: matchRef.current.interviewId,
             text: event,
@@ -120,10 +139,20 @@ function Editor() {
         });
     }
 
-    return (
+    return (<>
+    <Col md={1}>
+    <select className="form-select editor-lang-selector" onChange={e => changeLang(e.target.value)}>
+            {
+                langChoices.map(choice => {
+                    return <option value={choice}>{choice === "c_cpp" ? "C++" : capitalizeFirstChar(choice)}</option>
+                })
+            }
+        </select>
+    </Col>
+
         <AceEditor
             placeholder=""
-            mode="python"
+            mode={lang}
             theme="github"
             name="editor"
             fontSize={14}
@@ -131,7 +160,7 @@ function Editor() {
             showGutter={true}
             height="100%"
             highlightActiveLine={false}
-            value={code}
+            value={codeRef.current}
             setOptions={{
                 enableBasicAutocompletion: true,
                 enableLiveAutocompletion: true,
@@ -140,7 +169,7 @@ function Editor() {
                 tabSize: 4,
             }}
             onChange={(e) => handleCodeChange(e)} />
-    )
+    </>)
 }
 
 export default Editor;

@@ -55,6 +55,10 @@
     resize: none;
 }
 
+.editor-lang-selector {
+    margin-bottom: 5px;
+}
+
 .container-fluid.practice-container {
     padding-left: 0;
 }
