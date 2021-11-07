@@ -140,7 +140,7 @@ function Editor() {
     }
 
     return (<>
-    <Col md={1}>
+    <Col md={2}>
     <select className="form-select editor-lang-selector" onChange={e => changeLang(e.target.value)}>
             {
                 langChoices.map(choice => {
