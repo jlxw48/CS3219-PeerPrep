@@ -28,7 +28,6 @@ describe( "add 2 users", () => {
                     password: testData.validUser1.password
                 })
                 .end( ( err, res ) => {
-                    console.log(res);
                     if (err) {
                         return done(err);
                     }
@@ -49,7 +48,6 @@ describe( "add 2 users", () => {
                     password: testData.validUser2.password
                 })
                 .end( ( err, res ) => {
-                    console.log(res);
                     if (err) {
                         return done(err);
                     }
@@ -73,7 +71,6 @@ describe( "login 2 users", () => {
                     password: testData.validUser1.password
                 })
                 .end( ( err, res ) => {
-                    console.log(res);
                     if (err) {
                         return done(err);
                     }
@@ -91,7 +88,6 @@ describe( "login 2 users", () => {
                     password: testData.validUser2.password
                 })
                 .end( ( err, res ) => {
-                    console.log(res);
                     if (err) {
                         return done(err);
                     }
@@ -112,7 +108,6 @@ describe( "logout 2 users", () => {
                     email: testData.validUser1.email,
                 })
                 .end( ( err, res ) => {
-                    console.log(res);
                     if (err) {
                         return done(err);
                     }
@@ -129,7 +124,6 @@ describe( "logout 2 users", () => {
                     email: testData.validUser2.email,
                 })
                 .end( ( err, res ) => {
-                    console.log(res);
                     if (err) {
                         return done(err);
                     }
