@@ -30,7 +30,9 @@ const io = new Server(server, {
         origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
         methods: ["GET", "POST"],
         credentials: true
-    }
+    },
+    pingInterval: 3000,
+    pingTimeout: 8000
 });
 
 // Connect to mongodb
@@ -78,6 +80,11 @@ io.on("connection", socket => {
     socket.on("notification", newMessage => {
         io.to(newMessage.interviewId).emit("notification", newMessage.contents);
     })
+
+    socket.on('disconnect', function(reason){
+        console.log('User 1 disconnected because '+reason);
+     });
+     
 
     socket.on("end_interview", endInterviewMessage => {
         socket.leave(endInterviewMessage.interviewId);
