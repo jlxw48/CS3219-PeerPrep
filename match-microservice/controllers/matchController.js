@@ -191,6 +191,7 @@ const findMatch = async (req, res) => {
     });
         
     var count = 0;
+    const ONE_HOUR = 3600;
     const intervalId = setInterval(async () => {
         count = count + 1;
         // 30s time limit reached
@@ -227,7 +228,19 @@ const findMatch = async (req, res) => {
                     data: {
                         partnerEmail: partnerEmail,
                         interviewId: interviewExists.interviewId,
-                        question: interviewExists.question
+                        question: interviewExists.question,
+                        durationLeft: ONE_HOUR
+                    }
+                });
+                return;
+            }
+
+            const matchRecord = await Match.findOne({ email: email }).exec();
+            if (!matchRecord) {
+                res.status(404).json({
+                    status: responseStatus.FAILED,
+                    data: {
+                        message: clientErrMessages.CANCELLED_FIND_MATCH
                     }
                 });
                 return;
@@ -255,7 +268,7 @@ const findMatch = async (req, res) => {
             await Match.findOneAndDelete({ email: partnerResult.email }).exec();
                     
             // Fetch a random question from question-microservice for the interview
-            const questionResult = await axios.get(`http://localhost:3000/api/questions/get_random_question?difficulty=${difficulty}`);
+            const questionResult = await axios.get(`http://questions:3000/api/questions/get_random_question?difficulty=${difficulty}`);
             const response = questionResult.data;
             
             // failed to retrieve question for interview
@@ -285,7 +298,8 @@ const findMatch = async (req, res) => {
                 data: {
                     partnerEmail: partnerResult.email,
                     interviewId: interview.interviewId,
-                    question: question
+                    question: question,
+                    durationLeft: ONE_HOUR
                 }
             });
         } catch (err) {
@@ -297,6 +311,28 @@ const findMatch = async (req, res) => {
             return;
         }
     }, 5000);  // Try to find a match every 5s, until 30s is up
+}
+
+const cancelFindMatch = async (req, res) => {
+    if (requestHelpers.hasMissingFieldsForCancelFindMatch(req)) {
+        res.status(400).json({
+            status: responseStatus.FAILED,
+            data: {
+                message: clientErrMessages.MISSING_REQUEST_BODY
+            }
+        });
+        return;
+    }
+    
+    const email = req.body.email;
+    Match.findOneAndDelete({ email: email }).exec();
+
+    res.status(204).json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: clientMessages.CANCELLED_FIND_MATCH
+        }
+    });
 }
 
 // Get number of current ongoing interviews
@@ -322,5 +358,6 @@ module.exports = {
     getInterview,
     endInterview,
     findMatch,
-    interviewsCount
+    interviewsCount,
+    cancelFindMatch
 };
