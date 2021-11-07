@@ -16,7 +16,6 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/redis-adapter");
-const { createClient } = require("redis");
 
 const io = new Server(server, {
      path: "/editor/create",
@@ -26,11 +25,16 @@ const io = new Server(server, {
      }
  });
 
-var redis = require("redis");
+var redis_endpoint = process.env.REDIS_ENDPOINT;
+var redis_pw = process.env.REDIS_PASSWORD;
 
- const REDIS_HOST = process.env.REDIS_HOST || "redis";
- const REDIS_PORT = process.env.REDIS_PORT || 6379;
- const pubClient = createClient(REDIS_PORT, REDIS_HOST);
+var redis = require("redis"),
+
+  pubClient = redis.createClient({
+    host: redis_endpoint,
+    port:6379,
+    auth_pass: redis_pw
+  });
 
 pubClient.on("connect", () => console.log("pubClient connected to Redis"));
 
@@ -122,7 +126,11 @@ const saveText = (newText) => {
 io.sockets.on("connection", socket => {
   var sessionId = '';
   console.log("Server connected");
-  const subClient = createClient(REDIS_PORT, REDIS_HOST);
+  subClient = redis.createClient({
+    host: redis_endpoint,
+    port:6379,
+    auth_pass: redis_pw
+  });
 
   subClient.on("connect", () => console.log("subClient connected to Redis"));
 
