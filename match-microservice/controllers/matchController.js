@@ -186,9 +186,9 @@ const findMatch = async (req, res) => {
         return;
     }
 
-    req.on("close", async () => {
-        await Match.findOneAndDelete({ email: email }).exec();
-    });
+    // req.on("close", async () => {
+    //     await Match.findOneAndDelete({ email: email }).exec();
+    // });
         
     var count = 0;
     const ONE_HOUR = 3600;
