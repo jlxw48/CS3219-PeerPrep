@@ -88,18 +88,6 @@ function App() {
       checkIfUserInMatch().then(isInMatch => {
         setIsLoading(false);
       });
-
-      // Remind user that he is in match if he leave website while in a match.
-      return () => {
-        window.addEventListener("beforeunload", function (e) {
-          console.log('hi');
-          e.preventDefault();
-          let confirmationMessage = "You are current in a match, leave PeerPrep?";
-          (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-          return confirmationMessage; //Webkit, Safari, Chrome
-        });
-      }
-
     }).catch(err => { });
   }, []);
 
