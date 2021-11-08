@@ -185,10 +185,6 @@ const findMatch = async (req, res) => {
         });
         return;
     }
-
-    req.on("close", async () => {
-        await Match.findOneAndDelete({ email: email }).exec();
-    });
         
     var count = 0;
     const ONE_HOUR = 3600;
@@ -237,6 +233,7 @@ const findMatch = async (req, res) => {
 
             const matchRecord = await Match.findOne({ email: email }).exec();
             if (!matchRecord) {
+                clearInterval(intervalId);
                 res.status(404).json({
                     status: responseStatus.FAILED,
                     data: {
@@ -326,13 +323,8 @@ const cancelFindMatch = async (req, res) => {
     
     const email = req.body.email;
     Match.findOneAndDelete({ email: email }).exec();
-
-    res.status(204).json({
-        status: responseStatus.SUCCESS,
-        data: {
-            message: clientMessages.CANCELLED_FIND_MATCH
-        }
-    });
+    
+    res.status(204).send();
 }
 
 // Get number of current ongoing interviews

@@ -9,7 +9,7 @@ const hasMissingFieldsForCancelFindMatch = req => {
 }
 
 const isValidDifficulty = difficulty => {
-    return difficulties.includes(difficulty)
+    return difficulties.includes(difficulty);
 }
 
 module.exports = {

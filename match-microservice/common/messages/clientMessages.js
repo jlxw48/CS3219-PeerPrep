@@ -1,6 +1,6 @@
-const STATUS_WORKING = "match component is working";
-const INTERVIEW_ENDED = "interview ended for user";
-const CANCELLED_FIND_MATCH = "cancelled find match successfully";
+const STATUS_WORKING = "Match component is working";
+const INTERVIEW_ENDED = "Interview ended for user";
+const CANCELLED_FIND_MATCH = "Cancelled find match successfully";
 
 module.exports = {
     STATUS_WORKING,
