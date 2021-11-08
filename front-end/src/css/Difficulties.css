@@ -1,0 +1,30 @@
+/* Important necessary to override Bootstrap's default style */
+.difficulty-card {
+    border-radius: 10px!important;
+    border-top-width: 10px !important;
+    cursor: pointer;
+    height: 100%;
+}
+
+@media screen and (max-width: 800px) {
+    .difficulty-card-container {
+        margin-bottom: 10px !important;
+    }
+}
+
+
+.difficulty-card .card-title {
+    text-transform: capitalize !important;
+}
+
+.difficulty-card.easy {
+    border-top-color: #28A745 !important;
+}
+
+.difficulty-card.medium {
+    border-top-color: #FFC107 !important;
+}
+
+.difficulty-card.hard {
+    border-top-color: #DC3545 !important;
+}

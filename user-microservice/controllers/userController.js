@@ -3,10 +3,11 @@ const responseStatus = require('../common/responseStatus');
 const clientErrorMessages = require('../common/clientErrors');
 const clientSuccessMessages = require('../common/clientSuccess');
 const dbErrorMessages = require('../common/dbErrors');
-const permissionLevels = require('../common/permiissionLevels');
+const permissionLevels = require('../common/permissionLevels');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const generalErrors = require('../common/generalErrors');
 
 const sendFailureRes = (res, httpStatus, message) => {
 	res.status(httpStatus).send({
@@ -18,7 +19,7 @@ const sendFailureRes = (res, httpStatus, message) => {
 }
 
 const sendSuccessRes = (res, httpStatus, data = undefined) => {
-	if (body) {
+	if (data) {
 		res.status(httpStatus).send({
 			status: responseStatus.SUCCESS,
 			data
@@ -46,11 +47,11 @@ const hasMissingAuthFields = (req) => {
 
 const checkMissingEmailAndPassword = (req, res) => {
 	if (hasMissingEmailField(req)) {
-		sendFailureRes(res, 400, clientErrorMessages.MISSING_NAME);
+		sendFailureRes(res, 400, clientErrorMessages.MISSING_EMAIL);
 		return;
 	}
 	if (hasMissingPasswordField(req)) {
-		sendFailureRes(res, 400, clientErrorMessages.MISSING_EMAIL);
+		sendFailureRes(res, 400, clientErrorMessages.MISSING_PASSWORD);
 		return;
 	}
 }
@@ -95,7 +96,7 @@ const isPasswordAndUserMatch = (req, res) => {
 						name: data.name,
 						permissionLevel: data.permissionLevel
 					},
-					'CS3219_SECRET_KEY',
+					process.env.SECRET_KEY,
 					{
 						expiresIn: "7d",
 					}
@@ -123,15 +124,14 @@ exports.create_account = (req, res) => {
 				let salt = crypto.randomBytes(16).toString('base64');
 				let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest("base64");
 				const password = salt + "$" + hash;
-				req.body.permissionLevel = permissionLevel.USER;
 				const name = req.body.name;
-				const permissionLevel = req.body.permissionLevel;
+				const permissionLevel = permissionLevels.USER;
 
 				const user = new User({
-					name: name,
-					email: email,
-					password: password,
-					permissionLevel: permissionLevel
+					name,
+					email,
+					password,
+					permissionLevel
 				});
 				user.save().then((result) => {
 					sendSuccessRes(res, 201);
@@ -144,7 +144,7 @@ exports.create_account = (req, res) => {
 		}).catch((err) => {
 			res.status(500).json({
 				status: responseStatus.ERROR,
-				error_message: dbErrorMessages.writeError(err)
+				error_message: dbErrorMessages.WRITE_ERROR(err)
 			});
 		});
 	return;
@@ -195,13 +195,12 @@ exports.validate_admin = (req, res) => {
 	try {
 		checkMissingToken(token, res);
 
-		jwt.verify(token, 'CS3219_SECRET_KEY', (err, user) => {
+		jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
 			if (err) {
 				console.log(err);
 				sendFailureRes(res, 401, clientErrorMessages.JWT_AUTH_FAILED);
 				return;
 			}
-			req.user = user;
 			const role = user.permissionLevel;
 			console.log(user.permissionLevel);
 			if (role === permissionLevels.ADMIN) {

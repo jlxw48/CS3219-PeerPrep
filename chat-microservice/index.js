@@ -1,33 +1,54 @@
 require("dotenv").config();
 
 const express = require('express');
-const cors = require("cors")
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-app.use(cors());
+var cors = require('cors');
 const mongoose = require('mongoose');
 const dbController = require('./controllers/dbController')
 const chatApiRoutes = require('./routes/chatApiRoutes');
+const responseStatus = require('./common/status/responseStatus');
+const clientErrors = require('./common/errors/clientErrors');
 
 const http = require('http');
-const server = http.createServer(app);
 const { Server } = require('socket.io');
 const { createAdapter } = require("@socket.io/redis-adapter");
 const { createClient } = require("redis");
+const { PARTNER_CONNECTED } = require("./common/messages/clientMessages");
+
+const app = express();
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
+const server = http.createServer(app);
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
 
 const io = new Server(server, {
-    path: "/chat/create",
+    path: "/api/chat/create",
     cors: {
-        origin: "*",
-        methods: ["GET", "POST", "DELETE"]
-    }
+        origin: "http://localhost",
+        methods: ["GET", "POST", "DELETE"],
+        credentials: true
+    },
+    pingInterval: 8000,
+    pingTimeout: 8000
 });
 
 const REDIS_HOST = process.env.REDIS_HOST || "redis";
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const pubClient = createClient(REDIS_PORT, REDIS_HOST);
-const subClient = createClient(REDIS_PORT, REDIS_HOST);
+const REDIS_PW = process.env.REDIS_PW;
+const pubClient = createClient({
+    port: REDIS_PORT,
+    host: REDIS_HOST,
+    auth_pass: REDIS_PW
+});
+
+const subClient = createClient({
+    port: REDIS_PORT,
+    host: REDIS_HOST,
+    auth_pass: REDIS_PW
+});
 io.adapter(createAdapter(pubClient, subClient));
 
 // Event 'connection': Fired upon a connection from client
@@ -36,6 +57,12 @@ io.on("connection", socket => {
 
     socket.on("joinRoom", interviewId => {
         socket.join(interviewId);
+        if (io.sockets.adapter.rooms.get(interviewId).size === 2) {
+            io.to(interviewId).emit("notification", {
+                senderEmail: "server",
+                message: PARTNER_CONNECTED
+            })
+        }
     });
 
     socket.on("message", newMessage => {
@@ -44,10 +71,14 @@ io.on("connection", socket => {
         io.to(newMessage.interviewId).emit("message", newMessage.contents);
     });
 
+    socket.on("notification", newMessage => {
+        io.to(newMessage.interviewId).emit("notification", newMessage.contents);
+    })
+
     socket.on("end_interview", endInterviewMessage => {
         socket.leave(endInterviewMessage.interviewId);
         // If partner has ended interview, send a message to inform the other buddy
-        io.to(endInterviewMessage.interviewId).emit("end_interview", endInterviewMessage.contents);
+        io.to(endInterviewMessage.interviewId).emit("notification", endInterviewMessage.contents);
     });
 });
 
@@ -69,7 +100,16 @@ server.listen(port, async () => {
 });
 
 // Use the chat API routes
-app.use('/chat', chatApiRoutes);
+app.use('/api/chat', chatApiRoutes);
+
+app.use((req, res) => {
+    res.status(404).json({
+        status: responseStatus.FAILED,
+        data: {
+            message: clientErrors.INVALID_API_ENDPOINT
+        }
+    });
+});
 
 // Export app for testing purposes
 module.exports = app;

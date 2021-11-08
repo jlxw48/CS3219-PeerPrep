@@ -2,28 +2,47 @@ const responseStatus = require('./common/responseStatus');
 const clientSuccessMessages = require('./common/clientSuccess');
 const clientErrorMessages = require('./common/clientErrors');
 const dbErrorMessages = require('./common/dbErrors');
+const auth = require('./auth');
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const bodyParser = require('body-parser');
 require("dotenv").config();
 
-app.use(cors());
+app.use(express.urlencoded({extended: true}));
+var corsOptions = {
+    origin: ['https://peerprep.ml', "http://localhost:3000"],
+    credentials: true 
+};
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
 
-const http = require('http');
-const server = http.createServer(app);
+const port = process.env.PORT || 3005;
+var server = app.listen(port, () => {
+  console.log(`Text microservice is listening on port ${port} `);
+});
+
 const { Server } = require("socket.io");
 const { createAdapter } = require("@socket.io/redis-adapter");
 
 const io = new Server(server, {
-     path: "/editor/create",
-     cors: {
-         origin: "*",
-         methods: ["GET", "POST", "DELETE"]
-     }
- });
+  path: "/api/editor/create",
+  cors: {
+    origin: ["https://peerprep.ml", "http://localhost:3000"],
+    methods: ["GET", "POST", "DELETE"],
+    credentials: true
+  }
+});
+
+app.all("/api/editor/status", (req, res) => {
+  res.status(200).json({
+    status: responseStatus.SUCCESS,
+    data: {
+      message: clientSuccessMessages.STATUS_HEALTHY
+    }
+  });
+});
+
 
 var redis_endpoint = process.env.REDIS_ENDPOINT;
 var redis_pw = process.env.REDIS_PASSWORD;
@@ -32,7 +51,7 @@ var redis = require("redis"),
 
   pubClient = redis.createClient({
     host: redis_endpoint,
-    port:6379,
+    port: 6379,
     auth_pass: redis_pw
   });
 
@@ -42,58 +61,60 @@ pubClient.on("error", function (error) {
   console.error(error);
 });
 
-app.get("/editor/get_text", (req, res) => {
-	const sessionId = req.query.interviewId;
+app.use(auth.jwt_validate);
+
+app.get("/api/editor/get_text", (req, res) => {
+  const sessionId = req.query.interviewId;
 
   pubClient.get(sessionId, (err, response) => {
 
     if (response === null) {
-     pubClient.set(sessionId, '');
-     res.status(404).json({
-      	status: responseStatus.FAILURE,
-      	data: {
-      		message: clientErrorMessages.TEXT_NOT_FOUND
-      	}
+      pubClient.set(sessionId, '');
+      res.status(404).json({
+        status: responseStatus.FAILURE,
+        data: {
+          message: clientErrorMessages.TEXT_NOT_FOUND
+        }
       });
     } else {
       console.log(response);
-    	res.status(200).json({
-    		status: responseStatus.SUCCESS,
-    		data: {
-    			message: response
-    		}
-    	});
+      res.status(200).json({
+        status: responseStatus.SUCCESS,
+        data: {
+          message: response
+        }
+      });
     }
   });
 });
 
-app.delete("/editor/end-session", (req, res) => {
+app.delete("/api/editor/end-session", (req, res) => {
   const sessionId = req.query.interviewId;
   pubClient.get(sessionId, (err, response) => {
     if (response === null) {
       res.status(404).json({
-      	status: responseStatus.FAILURE,
-      	data: {
-      		message: clientErrorMessages.SESSION_NOT_FOUND
-      	}
+        status: responseStatus.FAILURE,
+        data: {
+          message: clientErrorMessages.SESSION_NOT_FOUND
+        }
 
       });
     } else {
-    	pubClient.del(sessionId, (err, response) => {
-		    console.log("Deleted ", sessionId);
-		    res.status(200).json({
-		    	status: responseStatus.SUCCESS,
-		    	data: {
-		    		message: clientSuccessMessages.DELETE_SESSION + sessionId
-				  }
-		    });
-		});
+      pubClient.del(sessionId, (err, response) => {
+        console.log("Deleted ", sessionId);
+        res.status(200).json({
+          status: responseStatus.SUCCESS,
+          data: {
+            message: clientSuccessMessages.DELETE_SESSION + sessionId
+          }
+        });
+      });
     }
-  });  
+  });
 });
 
 //This function is for testing to populate dummy data
-app.post("/editor/save-text", (req, res) => {
+app.post("/api/editor/save-text", (req, res) => {
   const sessionId = req.body.interviewId;
   const text = req.body.text;
   pubClient.set(sessionId, text, redis.print);
@@ -114,13 +135,14 @@ app.post("/editor/save-text", (req, res) => {
         }
       });
     }
-  });  
+  });
 });
 
 const saveText = (newText) => {
   const sessionId = newText.interviewId;
   const text = newText.text;
-  pubClient.set(sessionId, text, redis.print);
+  console.log(JSON.stringify(newText))
+  pubClient.set(sessionId, JSON.stringify(newText), redis.print);
 };
 
 io.sockets.on("connection", socket => {
@@ -128,7 +150,7 @@ io.sockets.on("connection", socket => {
   console.log("Server connected");
   subClient = redis.createClient({
     host: redis_endpoint,
-    port:6379,
+    port: 6379,
     auth_pass: redis_pw
   });
 
@@ -138,18 +160,18 @@ io.sockets.on("connection", socket => {
     console.error(error);
   });
 
-  subClient.on('message', function(channel, message){
+  subClient.on('message', function (channel, message) {
     socket.send(message);
   });
 
-	socket.on("newMessage", message => {
-
+  socket.on("newMessage", message => {
     console.log(message);
     saveText(message);
 
     const interviewId = message.interviewId;
-    pubClient.publish(message.interviewId, message.text, redis.print);
-	});
+    console.log(JSON.stringify(message));
+    pubClient.publish(interviewId, JSON.stringify(message), redis.print);
+  });
 
   socket.on('unsubscribe', packet => {
     var interviewId = packet.interviewId;
@@ -169,11 +191,6 @@ io.sockets.on("connection", socket => {
   });
 });
 
-const port = process.env.PORT || 3005;
-server.listen(port, () => {
-	console.log(`Text microservice is listening on port ${port} `);
-});
-
 app.use((req, res) => {
   res.status(404).json({
     status: responseStatus.FAILURE,
@@ -183,5 +200,5 @@ app.use((req, res) => {
   });
 });
 
- // Export app for testing purposes
+// Export app for testing purposes
 module.exports = app;

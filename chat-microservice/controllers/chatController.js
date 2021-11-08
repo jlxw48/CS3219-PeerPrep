@@ -48,7 +48,7 @@ const new_message = (req, res) => {
                 });
             })
             .catch((err) => {
-                res.status(400).json({
+                res.status(500).json({
                     status: responseStatus.ERROR,
                     error_message: dbErrMessages.writeError(err)
                 });
@@ -87,6 +87,7 @@ const new_message = (req, res) => {
 
 // Gets all messages of an interview
 const get_messages = (req, res) => {
+    console.log("Received get_messages request");
     if (requestHelpers.hasMissingFieldsForGetMessages(req)) {
             res.status(400).json({
                 status: responseStatus.FAILED,
