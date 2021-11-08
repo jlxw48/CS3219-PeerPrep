@@ -47,11 +47,11 @@ const hasMissingAuthFields = (req) => {
 
 const checkMissingEmailAndPassword = (req, res) => {
 	if (hasMissingEmailField(req)) {
-		sendFailureRes(res, 400, clientErrorMessages.MISSING_NAME);
+		sendFailureRes(res, 400, clientErrorMessages.MISSING_EMAIL);
 		return;
 	}
 	if (hasMissingPasswordField(req)) {
-		sendFailureRes(res, 400, clientErrorMessages.MISSING_EMAIL);
+		sendFailureRes(res, 400, clientErrorMessages.MISSING_PASSWORD);
 		return;
 	}
 }

@@ -72,7 +72,6 @@ function App() {
 
   // Upon page load, check if user is logged in then check if user is already in a match.
   useEffect(() => {
-    // The existing token in storage, if any.
     let token = localStorage.getItem(JWT_TOKEN_NAME);
     axios.defaults.headers.common['Authorization'] = token;
 
@@ -82,26 +81,25 @@ function App() {
         setIsLoading(false);
         return
       }
+      console.log("wot");
 
       checkIsAdmin();
 
       checkIfUserInMatch().then(isInMatch => {
         setIsLoading(false);
       });
-
-      // Remind user that he is in match if he leave website while in a match.
-      return () => {
-        window.addEventListener("beforeunload", function (e) {
-          console.log('hi');
-          e.preventDefault();
-          let confirmationMessage = "You are current in a match, leave PeerPrep?";
-          (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-          return confirmationMessage; //Webkit, Safari, Chrome
-        });
-      }
-
     }).catch(err => { });
   }, []);
+
+  useEffect(() => {
+    console.log("yea");
+    console.log(user);
+    // Apply authorization header when user becomes logged in
+    if (user) {
+      console.log("header set");
+      axios.defaults.headers.common['Authorization'] = user.token;
+    }
+  }, [user]);
 
   return (
     <>

@@ -50,35 +50,53 @@ const pubClient = createClient({
     auth_pass: REDIS_PW
 });
 
-const subClient = createClient({
-    port: REDIS_PORT,
-    host: REDIS_HOST,
-    auth_pass: REDIS_PW
-});
-io.adapter(createAdapter(pubClient, subClient));
-
 // Event 'connection': Fired upon a connection from client
 io.on("connection", socket => {
     console.log("a user connected");
 
+    const subClient = createClient({
+        port: REDIS_PORT,
+        host: REDIS_HOST,
+        auth_pass: REDIS_PW
+    });
+
+    subClient.on("message", (channel, data) => {
+        const publishMessageData = JSON.parse(data);
+        const eventName = publishMessageData.event;
+        const messageContent = publishMessageData.contents;
+        socket.emit(eventName, messageContent);
+    })
+
     socket.on("joinRoom", interviewId => {
-        socket.join(interviewId);
-        if (io.sockets.adapter.rooms.get(interviewId).size === 2) {
-            io.to(interviewId).emit("notification", {
+        subClient.subscribe(interviewId);
+        const publishMessage = {
+            event: "message",
+            contents: {
                 senderEmail: "server",
                 message: clientMessages.PARTNER_CONNECTED
-            })
+            }
         }
+        pubClient.publish(interviewId, JSON.stringify(publishMessage))
     });
 
     socket.on("message", newMessage => {
         // Saves the chat message to chat history
         dbController.saveNewMessage(newMessage);
-        io.to(newMessage.interviewId).emit("message", newMessage.contents);
+        const interviewId = newMessage.interviewId;
+        const publishMessage = {
+            event: "message",
+            contents: newMessage.contents
+        }
+        pubClient.publish(interviewId, JSON.stringify(publishMessage))
     });
 
     socket.on("notification", newMessage => {
-        io.to(newMessage.interviewId).emit("notification", newMessage.contents);
+        const interviewId = newMessage.interviewId;
+        const publishMessage = {
+            event: "notification",
+            contents: newMessage.contents
+        }
+        pubClient.publish(interviewId, JSON.stringify(publishMessage))
     })
 
     socket.on('disconnect', function(reason){
@@ -87,10 +105,18 @@ io.on("connection", socket => {
      
 
     socket.on("end_interview", endInterviewMessage => {
-        socket.leave(endInterviewMessage.interviewId);
         // If partner has ended interview, send a message to inform the other buddy
-        io.to(endInterviewMessage.interviewId).emit("notification", endInterviewMessage.contents);
+        const interviewId = newMessage.interviewId;
+        const publishMessage = {
+            event: "notification",
+            contents: newMessage.contents
+        }
+        pubClient.publish(interviewId, JSON.stringify(publishMessage))
     });
+
+    socket.on("disconnect", () => {
+        delete subClient;
+    })
 });
 
 // Connect to mongodb

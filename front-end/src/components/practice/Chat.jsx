@@ -34,6 +34,8 @@ function Chat() {
             history.push({ pathname: '/' });
         }
 
+        console.log("ho")
+
         // Clears messages from a previous session, if any
         dropMessages();
 
@@ -57,6 +59,7 @@ function Chat() {
         chatSocket.current = io.connect(CHAT_BACKEND_DOMAIN, {
             transports: ["websocket"],
             path: CHAT_SOCKET_PATH,
+            upgrade: false,
             withCredentials: true,
             reconnection: true,
             reconnectionDelay: 500
@@ -82,7 +85,6 @@ function Chat() {
                     renderCustomComponent(ChatWidgetNotificationMessage, { message: endInterviewMessage.message });
                 }
             })
-
         });
 
         // Upon timeout, close socket to conserve resources
