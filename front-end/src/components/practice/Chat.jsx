@@ -65,11 +65,11 @@ function Chat() {
             reconnectionDelay: 500
         });
 
-        chatSocket.current.emit("joinRoom", interviewId);
-
         chatSocket.current.on("connect", () => {
             console.log("Successfully connected to chat socket.");
-
+            chatSocket.current.off("message");
+            chatSocket.current.off("notification");
+            chatSocket.current.emit("joinRoom", interviewId);
             // Set event upon receiving new message to add to chats variable and to chat widget.
             chatSocket.current.on("message", newMessage => {
                 console.log("Received msg from chat socket", newMessage);

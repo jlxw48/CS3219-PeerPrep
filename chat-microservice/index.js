@@ -69,14 +69,14 @@ io.on("connection", socket => {
 
     socket.on("joinRoom", interviewId => {
         subClient.subscribe(interviewId);
-        const publishMessage = {
-            event: "notification",
-            contents: {
-                senderEmail: "server",
-                message: clientMessages.PARTNER_CONNECTED
-            }
-        }
-        pubClient.publish(interviewId, JSON.stringify(publishMessage))
+        // const publishMessage = {
+        //     event: "notification",
+        //     contents: {
+        //         senderEmail: "server",
+        //         message: clientMessages.PARTNER_CONNECTED
+        //     }
+        // }
+        // pubClient.publish(interviewId, JSON.stringify(publishMessage))
     });
 
     socket.on("message", newMessage => {
@@ -106,7 +106,7 @@ io.on("connection", socket => {
 
     socket.on("end_interview", endInterviewMessage => {
         // If partner has ended interview, send a message to inform the other buddy
-        const interviewId = newMessage.interviewId;
+        const interviewId = endInterviewMessage.interviewId;
         const publishMessage = {
             event: "notification",
             contents: newMessage.contents
