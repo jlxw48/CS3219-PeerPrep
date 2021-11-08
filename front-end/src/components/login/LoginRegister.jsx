@@ -72,6 +72,7 @@ function LoginRegister(props) {
             console.log(data.token);
             toast.success("Login successful");
             checkIsAdmin(data.token);
+            axios.defaults.headers.common['Authorization'] = data.token;
             // Checks Match microservice to see if user is in match, if so, redirect to practice page, else redirect to home.
             checkIfUserInMatch().then(hasMatch => {
                 if (!hasMatch) {
@@ -119,7 +120,7 @@ function LoginRegister(props) {
                                             }
                                             <Form.Group className="mb-3" controlId="formBasicEmail">
                                                 <Form.Label>Email address</Form.Label>
-                                                <Form.Control type="email" name="email" placeholder="Enter email" />
+                                                <Form.Control type="text" name="email" placeholder="Enter email" />
                                             </Form.Group>
                                         </Col>
                                     </Row>
