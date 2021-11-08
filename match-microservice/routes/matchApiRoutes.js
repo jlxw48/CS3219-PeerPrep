@@ -5,7 +5,7 @@ const auth = require('../auth');
 const router = express.Router();
 
 router.get('/status', matchController.statusCheck);
-router.use(auth.jwt_validate);
+// router.use(auth.jwt_validate);
 router.get('/interviews', matchController.interviewsCount);
 router.get('/get_interview', matchController.getInterview);
 router.post('/start_find', matchController.findMatch);

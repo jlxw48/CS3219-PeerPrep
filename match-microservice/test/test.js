@@ -14,7 +14,7 @@ describe("GET /match/status", () => {
     describe("API status", () => {
         it("should get working status of Match microservice API", (done) => {
             chai.request(app)
-                .get('/match/status')
+                .get('/api/match/status')
                 .end((err, res) => {
                     if (err) {
                         return done(err);
@@ -39,7 +39,7 @@ describe("GET /match/get_interview", () => {
 
         it("should get interview of user", (done) => {
             chai.request(app)
-                .get(`/match/get_interview?email=${testData.firstInterviewDetails.firstUserEmail}`)
+                .get(`/api/match/get_interview?email=${testData.firstInterviewDetails.firstUserEmail}`)
                 .end((err, res) => {
                     if (err) {
                         return done(err);
@@ -77,7 +77,7 @@ describe("POST /match/start_find", () => {
         it("should not find match for 2 users queueing with different difficulties", (done) => {
             const thirdUserFindDetails = testData.thirdUserFindDetails;  // medium difficulty
             chai.request(app)
-                .post('/match/start_find')
+                .post('/api/match/start_find')
                 .send(thirdUserFindDetails)
                 .end((err, res) => {
                     if (err) {
@@ -86,7 +86,41 @@ describe("POST /match/start_find", () => {
                     res.should.have.status(404);
                     res.body.should.be.a('object');
                     res.body.status.should.be.eql('failed');
-                    res.body.data.message.should.be.eql("failed to find a match after 30s");
+                    res.body.data.message.should.be.eql("Failed to find a match after 30s, please try again later.");
+                    done();
+                });
+        });
+
+        after(done => {
+            Match.deleteMany({})
+            .then(result => {
+                done();
+            })
+            .catch(err => {
+                done(err);
+            });
+        });
+    });
+});
+
+describe("DELETE /api/match/stop_find", () => {
+    describe("Stop finding match for a user who is currently finding a match", () => {
+        // insert user to mimic queueing
+        before(async () => {
+            const firstUserFindDetails = new Match(testData.firstUserFindDetails);
+            await firstUserFindDetails.save();
+        });
+
+        it("Stop finding match for user", (done) => {
+            const firstUserStopFindDetails = testData.firstUserStopFindDetails;
+            chai.request(app)
+                .delete('/api/match/stop_find')
+                .send(firstUserStopFindDetails)
+                .end((err, res) => {
+                    if (err) {
+                        return done(err);
+                    }
+                    res.should.have.status(204);
                     done();
                 });
         });
@@ -114,7 +148,7 @@ describe("DELETE /match/end_interview", () => {
 
             it("should delete interview details for user", (done) => {
                 chai.request(app)
-                    .delete(`/match/end_interview?email=${testData.firstInterviewDetails.firstUserEmail}`)
+                    .delete(`/api/match/end_interview?email=${testData.firstInterviewDetails.firstUserEmail}`)
                     .end((err, res) => {
                         if (err) {
                             return done(err);
@@ -141,7 +175,7 @@ describe("DELETE /match/end_interview", () => {
         describe("Unable to delete interview details due to user not having any interviews at the moment", () => {
             it("should not delete any interview details", (done) => {
                 chai.request(app)
-                    .delete(`/match/end_interview?email=${testData.firstUserFindDetails.email}`)
+                    .delete(`/api/match/end_interview?email=${testData.firstUserFindDetails.email}`)
                     .end((err, res) => {
                         if (err) {
                             return done(err);
@@ -168,7 +202,7 @@ describe("GET /match/interviews", () => {
 
             it("should get total number of interviews equals to 1", (done) => {
                 chai.request(app)
-                    .get('/match/interviews')
+                    .get('/api/match/interviews')
                     .end((err, res) => {
                         if (err) {
                             return done(err);
@@ -205,12 +239,11 @@ describe("GET /match/interviews", () => {
 
             it("should get total number of interviews equals to 3", (done) => {
                 chai.request(app)
-                    .get('/match/interviews')
+                    .get('/api/match/interviews')
                     .end((err, res) => {
                         if (err) {
                             return done(err);
                         }
-                        console.log(res.body)
                         res.should.have.status(200);
                         res.body.should.be.a('object');
                         res.body.status.should.be.eql('success');
