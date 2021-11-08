@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
 import { Row } from "react-bootstrap";
 import { Widget, addResponseMessage, addUserMessage, renderCustomComponent, dropMessages } from 'react-chat-widget';
@@ -10,12 +10,13 @@ import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../consta
 import "../../css/Chat.css"
 import { useHistory } from "react-router-dom";
 import useState from 'react-usestateref';
+const io = window.io;
 
 function Chat() {
     let { user, matchRef } = useContext(AppContext);
     const history = useHistory();
     console.log("Rendered chat");
-    
+
     var chatSocket = useRef();
     const [chats, setChats, chatsRef] = useState([]);
     const PARTNER_DISCONNECT_NOTIFICATION = "Your partner has disconnected from the interview."
@@ -68,10 +69,13 @@ function Chat() {
             reconnectionDelay: 500
         });
 
-        chatSocket.current.emit("joinRoom", interviewId);
-
         chatSocket.current.on("connect", () => {
+            chatSocket.current.emit("joinRoom", interviewId);
             console.log("Successfully connected to chat socket.");
+
+            // In case multiple connection turn off existing events.
+            chatSocket.current.off("message");
+            chatSocket.current.off("notification");
 
             // Set event upon receiving new message to add to chats variable and to chat widget.
             chatSocket.current.on("message", newMessage => {
@@ -88,7 +92,10 @@ function Chat() {
                     renderCustomComponent(ChatWidgetNotificationMessage, { message: endInterviewMessage.message });
                 }
             })
+
         });
+
+
 
         // Upon timeout, close socket to conserve resources
         const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;
