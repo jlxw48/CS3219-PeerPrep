@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
 import { Row } from "react-bootstrap";
 import { Widget, addResponseMessage, addUserMessage, renderCustomComponent, dropMessages } from 'react-chat-widget';
@@ -10,6 +10,7 @@ import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../consta
 import "../../css/Chat.css"
 import { useHistory } from "react-router-dom";
 import useState from 'react-usestateref';
+const io = window.io;
 
 function Chat() {
     let { user, matchRef } = useContext(AppContext);
