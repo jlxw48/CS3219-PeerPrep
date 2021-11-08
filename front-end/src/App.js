@@ -72,7 +72,6 @@ function App() {
 
   // Upon page load, check if user is logged in then check if user is already in a match.
   useEffect(() => {
-    // The existing token in storage, if any.
     let token = localStorage.getItem(JWT_TOKEN_NAME);
     axios.defaults.headers.common['Authorization'] = token;
 
@@ -82,6 +81,7 @@ function App() {
         setIsLoading(false);
         return
       }
+      console.log("wot");
 
       checkIsAdmin();
 
@@ -90,6 +90,16 @@ function App() {
       });
     }).catch(err => { });
   }, []);
+
+  useEffect(() => {
+    console.log("yea");
+    console.log(user);
+    // Apply authorization header when user becomes logged in
+    if (user) {
+      console.log("header set");
+      axios.defaults.headers.common['Authorization'] = user.token;
+    }
+  }, [user]);
 
   return (
     <>

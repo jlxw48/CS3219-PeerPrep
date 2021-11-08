@@ -144,7 +144,7 @@ function Editor() {
     <select className="form-select editor-lang-selector" onChange={e => changeLang(e.target.value)}>
             {
                 langChoices.map(choice => {
-                    return <option value={choice}>{choice === "c_cpp" ? "C++" : capitalizeFirstChar(choice)}</option>
+                    return <option key={choice} value={choice}>{choice === "c_cpp" ? "C++" : capitalizeFirstChar(choice)}</option>
                 })
             }
         </select>
