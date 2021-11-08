@@ -85,7 +85,6 @@ const checkMissingToken = (token, res) => {
 
 const isPasswordAndUserMatch = (req, res) => {
 	const email = req.body.email;
-	console.log("hi" + email)
 	User.find({ email: email })
 		.then((result) => {
 			console.log(result);

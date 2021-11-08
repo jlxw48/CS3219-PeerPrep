@@ -69,7 +69,16 @@ io.on("connection", socket => {
 
     socket.on("joinRoom", interviewId => {
         subClient.subscribe(interviewId);
+        const publishMessage = {
+            event: "notification",
+            contents: {
+                senderEmail: "server",
+                message: PARTNER_CONNECTED
+            }
+        }
+        pubClient.publish(interviewId, JSON.stringify(publishMessage))
     });
+
 
     socket.on("message", newMessage => {
         // Saves the chat message to chat history
