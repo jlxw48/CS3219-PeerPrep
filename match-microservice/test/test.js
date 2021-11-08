@@ -137,6 +137,43 @@ describe("DELETE /api/match/stop_find", () => {
     });
 });
 
+describe("POST /match/stop_find", () => {
+    describe("Stop finding match for a user who is currently finding a match", () => {
+        // insert user to mimic queueing
+        before(async () => {
+            const firstUserFindDetails = new Match(testData.firstUserFindDetails);
+            await firstUserFindDetails.save();
+        });
+
+        it("Stop finding match for user", (done) => {
+            const firstUserStopFindDetails = testData.firstUserStopFindDetails;
+            chai.request(app)
+                .delete('/match/stop_find')
+                .send(firstUserStopFindDetails)
+                .end((err, res) => {
+                    if (err) {
+                        return done(err);
+                    }
+                    res.should.have.status(204);
+                    res.body.should.be.a('object');
+                    res.body.status.should.be.eql('success');
+                    res.body.data.message.should.be.eql("cancelled find match successfully");
+                    done();
+                });
+        });
+
+        after(done => {
+            Match.deleteMany({})
+            .then(result => {
+                done();
+            })
+            .catch(err => {
+                done(err);
+            });
+        });
+    });
+});
+
 describe("DELETE /match/end_interview", () => {
     describe("End interview", () => {
         describe("Successfully delete interview details", () => {

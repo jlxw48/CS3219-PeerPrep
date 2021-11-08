@@ -21,14 +21,15 @@ const firstUserMatchDetails = {
 
 const firstUserStopFindDetails = {
     email: "user1@gmail.com"
-}
+};
 
 const firstInterviewDetails = {
     interviewId: "615d93afdb4e069cbdfe114a",
     difficulty: "easy",
     question: {
         title: "easy question",
-        description: "easy question description"
+        description: "easy question description",
+        difficulty: "easy"
     },
     firstUserEmail: "user1@gmail.com",
     secondUserEmail: "user2@gmail.com",
@@ -39,7 +40,8 @@ const secondInterviewDetails = {
     difficulty: "medium",
     question: {
         title: "medium question",
-        description: "medium question description"
+        description: "medium question description",
+        difficulty: "medium"
     },
     firstUserEmail: "user3@gmail.com",
     secondUserEmail: "user4@gmail.com",
@@ -50,7 +52,8 @@ const thirdInterviewDetails = {
     difficulty: "hard",
     question: {
         title: "hard question",
-        description: "hard question description"
+        description: "hard question description",
+        difficulty: "hard"
     },
     firstUserEmail: "user5@gmail.com",
     secondUserEmail: "user6@gmail.com",

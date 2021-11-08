@@ -49,7 +49,7 @@ The code editor allows you and your interview partner to collaborate on the ques
 #### The chat
 The chat window can be expanded and collapsed with a click of a button. It allows you to conveniently communicate your ideas with your partner.
 
-![image](https://user-images.githubusercontent.com/52824657/140269900-2906e76d-96cc-4f6f-9c26-fc6f65a0619d.png)
+![image](https://user-images.githubusercontent.com/52824657/140642970-9140ed94-80ed-465e-bdf8-31c859fdf85d.png)
 
 <div className="alert alert-info">
     <b>Note</b>: Due to our limited compute resources as a start up, we have a concurrent interview limit of 5 (10 users can interview at any time).
