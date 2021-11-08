@@ -192,6 +192,7 @@ const findMatch = async (req, res) => {
         count = count + 1;
         // 30s time limit reached
         if (count >= 6) {
+            console.log("Boom");
             clearInterval(intervalId);
             await Match.findOneAndDelete({ email: email }).exec();
             res.status(404).json({
@@ -308,6 +309,8 @@ const findMatch = async (req, res) => {
             return;
         }
     }, 5000);  // Try to find a match every 5s, until 30s is up
+
+    console.log("Reached");
 }
 
 const cancelFindMatch = async (req, res) => {

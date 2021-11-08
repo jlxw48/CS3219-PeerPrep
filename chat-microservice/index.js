@@ -64,7 +64,7 @@ io.on("connection", socket => {
     socket.on("joinRoom", interviewId => {
         subClient.subscribe(interviewId);
         const publishMessage = {
-            event: "message",
+            event: "notification",
             contents: {
                 senderEmail: "server",
                 message: PARTNER_CONNECTED
