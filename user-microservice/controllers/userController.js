@@ -109,7 +109,7 @@ const isPasswordAndUserMatch = (req, res) => {
 					}
 				);
 				sendSuccessRes(res, 200, {
-					email: email,
+					email,
 					message: clientSuccessMessages.VALID_LOGIN,
 					token
 				});
