@@ -9,11 +9,11 @@ const testData = require('./testData');
 chai.use(chaiHttp);
 chai.should();
 
-describe("GET /chat/status", () => {
+describe("GET /api/chat/status", () => {
     describe("API status", () => {
         it("should get working status of Chat microservice API", (done) => {
             chai.request(app)
-                .get('/chat/status')
+                .get('/api/chat/status')
                 .end((err, res) => {
                     if (err) {
                         return done(err);
@@ -21,7 +21,7 @@ describe("GET /chat/status", () => {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     res.body.status.should.be.eql('success');
-                    res.body.data.message.should.be.eql('chat component is working');
+                    res.body.data.message.should.be.eql('Chat component is working');
                     done();
                 });
         });
@@ -39,7 +39,7 @@ describe("GET /chat/get_messages/:interviewId", () => {
         it("should return chat history", (done) => {
             const firstInterviewId = testData.firstInterviewId;
             chai.request(app)
-                .get(`/chat/get_messages/${firstInterviewId}`)
+                .get(`/api/chat/get_messages/${firstInterviewId}`)
                 .end((err, res) => {
                     if (err) {
                         return done(err);
@@ -68,7 +68,7 @@ describe("GET /chat/get_messages/:interviewId", () => {
         it("should not get chat history for invalid interview id", (done) => {
             const secondInterviewId = testData.secondInterviewId;
             chai.request(app)
-                .get(`/chat/get_messages/${secondInterviewId}`)
+                .get(`/api/chat/get_messages/${secondInterviewId}`)
                 .end((err, res) => {
                     if (err) {
                         return done(err);
@@ -76,7 +76,7 @@ describe("GET /chat/get_messages/:interviewId", () => {
                     res.should.have.status(404);
                     res.body.should.be.a('object');
                     res.body.status.should.be.eql('failed');
-                    res.body.data.message.should.be.eql("chat history of interview id not found");
+                    res.body.data.message.should.be.eql("Chat history of interview id not found");
                     done();
                 });
         });
