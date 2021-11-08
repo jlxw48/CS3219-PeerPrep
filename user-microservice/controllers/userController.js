@@ -192,7 +192,6 @@ exports.jwt_validate = (req, res) => {
 			return;
 		});
 	} catch (error) {
-		console.log("3");
 		res.status(500).send({
 			status: responseStatus.ERROR,
 			data: {
