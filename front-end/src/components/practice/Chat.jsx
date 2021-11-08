@@ -66,26 +66,25 @@ function Chat() {
         });
 
         chatSocket.current.on("connect", () => {
-            console.log("Successfully connected to chat socket.");
-            chatSocket.current.off("message");
-            chatSocket.current.off("notification");
+            console.log("Successfully connected to chat socket!!!!!!!!!!!!!!!!!!!!!!!!!!");
             chatSocket.current.emit("joinRoom", interviewId);
-            // Set event upon receiving new message to add to chats variable and to chat widget.
-            chatSocket.current.on("message", newMessage => {
-                console.log("Received msg from chat socket", newMessage);
-                setChats(oldMessages => [...oldMessages, newMessage]);
-                if (newMessage.senderEmail !== user.email) {
-                    addResponseMessage(newMessage.message);
-                }
-            });
-
-            // Display notification in chat widget
-            chatSocket.current.on("notification", endInterviewMessage => {
-                if (endInterviewMessage.senderEmail !== user.email) {
-                    renderCustomComponent(ChatWidgetNotificationMessage, { message: endInterviewMessage.message });
-                }
-            })
         });
+
+        // Set event upon receiving new message to add to chats variable and to chat widget.
+        chatSocket.current.on("message", newMessage => {
+            console.log("Received msg from chat socket", newMessage);
+            setChats(oldMessages => [...oldMessages, newMessage]);
+            if (newMessage.senderEmail !== user.email) {
+                addResponseMessage(newMessage.message);
+            }
+        });
+
+        // Display notification in chat widget
+        chatSocket.current.on("notification", endInterviewMessage => {
+            if (endInterviewMessage.senderEmail !== user.email) {
+                renderCustomComponent(ChatWidgetNotificationMessage, { message: endInterviewMessage.message });
+            }
+        })
 
         // Upon timeout, close socket to conserve resources
         const SECONDS_TO_MICROSECONDS_MULTIPLIER = 1000;

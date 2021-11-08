@@ -92,7 +92,7 @@ function Editor() {
             });
         });
 
-        // // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
+        // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
         editorSocket.current.on('message', data => {
             data = JSON.parse(data);
             if (data.senderEmail !== userRef.current.email) {
