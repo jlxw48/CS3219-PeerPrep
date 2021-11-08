@@ -17,13 +17,18 @@ function ManageQuestions() {
     const [questions, setQuestions] = useState([]);
     // Question that is currently being edited;
     const [editedQn, setEditedQn] = useState(null);
-    const emptyQn = { "_id": "", description: "", title: "", difficulty: ""};
+    const emptyQn = { "_id": "", description: "", title: "", difficulty: "easy"};
     const fetchQuestions = () => {
         axios.get(QUESTION_URL)
         .then(res => {
             setQuestions(res.data.data.questions);
         })
-        .catch(err => console.log("Error fetching questions", err));
+        .catch(err => {
+            if (err.response) {
+                toast.error(err.response.data.messsage);
+            }
+            console.log("Error fetching questions", err)
+        });
     }
     
     // Check if user is admin then fetch questions

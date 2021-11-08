@@ -13,14 +13,11 @@
     text-decoration: none;
 }
 
-.questions-table-row {
-    max-height: 50%;
-}
-
 .manage-questions-table {
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow-y:auto;
 }
 
 .manage-questions-table tbody tr {
@@ -37,8 +34,9 @@
     border-radius: 10px !important;
     overflow: hidden;
     padding: 0 !important;
-    max-height: 100%;
+    max-height: 500px;
     overflow-y: auto;
+    overflow-x: auto;
 }
 
 .desc-preview-container {

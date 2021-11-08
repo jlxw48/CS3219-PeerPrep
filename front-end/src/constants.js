@@ -8,8 +8,8 @@ const BACKEND_DOMAIN = "https://peerprep-g5.tk/";
 // const QUESTION_URL = REACT_APP_BACKEND_URL + "questions/";
 const QUESTION_URL = "https://peerprep-g5.tk/api/questions";
 
-// const USERS_URL = "https://peerprep.ml/api/user/"
-const USERS_URL = REACT_APP_BACKEND_URL + "user/"
+const USERS_URL = "https://peerprep.ml/api/user/"
+// const USERS_URL = REACT_APP_BACKEND_URL + "user/"
 const LOGIN_URL = USERS_URL + "user_login";
 const REGISTER_URL = USERS_URL + "create_account";
 const LOGOUT_URL = USERS_URL + "user_logout"

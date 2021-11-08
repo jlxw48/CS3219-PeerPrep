@@ -26,15 +26,6 @@ function QuestionEditor(props) {
     
     // This block of code is used to autoscroll preview as the description grows longer
     const descEndRef = useRef(null);
-    const scrollToBottom = () => {
-        if (descEndRef.current === null) {
-            return;
-        }
-        descEndRef.current.scrollIntoView({
-            behavior: "smooth",
-        });
-    }
-    // useEffect(() => scrollToBottom, [desc]);
 
     // When form is submitted.
     const handleSubmit = (event) => {
@@ -60,7 +51,13 @@ function QuestionEditor(props) {
             } else {
                 toast.success("Successfully updated question");
             }
-        }).catch(err => console.log("Failed to submit question details"));
+        }).catch(err => {
+            console.log(err.response);
+            if (err.response) {
+                toast.error(err.response.data.data.error_message);
+            }
+            console.error("Failed to submit question details", err);
+        });
     }
 
 
