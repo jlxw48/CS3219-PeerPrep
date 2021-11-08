@@ -30,7 +30,9 @@ const io = new Server(server, {
         origin: "http://localhost",
         methods: ["GET", "POST", "DELETE"],
         credentials: true
-    }
+    },
+    pingInterval: 8000,
+    pingTimeout: 8000
 });
 
 const REDIS_HOST = process.env.REDIS_HOST || "redis";
