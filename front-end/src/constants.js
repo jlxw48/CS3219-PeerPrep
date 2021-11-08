@@ -2,7 +2,8 @@
 // const BACKEND_DOMAIN = "http://localhost:8010"
 
 const REACT_APP_BACKEND_URL = 'http://localhost/api/';
-const BACKEND_DOMAIN = "http://localhost"
+// const BACKEND_DOMAIN = "http://localhost"
+const BACKEND_DOMAIN = "https://peerprep-g5.tk/";
 
 const QUESTION_URL = "https://peerprep-g5.tk/api/questions/";
 

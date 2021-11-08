@@ -119,7 +119,7 @@ const endInterview = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: responseStatus.ERROR,
-            error_message: dbErrMessages.readError(err)
+            error_message: dbErrMessages.deleteError(err)
         });
     }
 }

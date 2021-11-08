@@ -75,11 +75,12 @@ const hasMissingFieldsForAccountCreation = (req, res) => {
 	return hasMissingEmailOrPassword(req, res);
 };
 
-const checkMissingToken = (token, res) => {
+const hasMissingToken = (token, res) => {
 	if (!token) {
 		sendFailureRes(res, 401, clientErrorMessages.JWT_AUTH_FAILED);
-		return;
+		return true;
 	}
+	return false;
 };
 
 
@@ -143,7 +144,9 @@ exports.create_account = (req, res) => {
 					permissionLevel
 				});
 				user.save().then((result) => {
-					sendSuccessRes(res, 201);
+					sendSuccessRes(res, 201, {
+						status: responseStatus.SUCCESS
+					});
 					return;
 				});
 			} else {
@@ -176,7 +179,9 @@ exports.user_login = (req, res) => {
 exports.jwt_validate = (req, res) => {
 	const token = req.header('authorization');
 	try {
-		checkMissingToken(token, res);
+		if (hasMissingToken(token, res)) {
+			return;
+		};
 
 		jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
 			if (err) {
@@ -204,7 +209,9 @@ exports.jwt_validate = (req, res) => {
 exports.validate_admin = (req, res) => {
 	const token = req.header('authorization');
 	try {
-		checkMissingToken(token, res);
+		if (hasMissingToken(token, res)) {
+			return;
+		};
 
 		jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
 			if (err) {
@@ -215,7 +222,10 @@ exports.validate_admin = (req, res) => {
 			const role = user.permissionLevel;
 			console.log(user.permissionLevel);
 			if (role === permissionLevels.ADMIN) {
-				sendSuccessRes(res, 200);
+				sendSuccessRes(res, 200, {
+					status: responseStatus.SUCCESS, 
+				});
+				console.log("hey", res);
 				return;
 			} else {
 				sendFailureRes(res, 403, clientErrorMessages.INVALID_ADMIN);

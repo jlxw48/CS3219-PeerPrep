@@ -1,12 +1,10 @@
 import AceEditor from "react-ace";
 import "ace-builds/src-min-noconflict/theme-github";
 import "ace-builds/src-min-noconflict/mode-python";
-// import "ace-builds/src-min-noconflict/mode-javascript";
 import "ace-builds/src-min-noconflict/mode-java";
 import "ace-builds/src-min-noconflict/mode-c_cpp";
 import "ace-builds/src-min-noconflict/ext-language_tools"
-import io from 'socket.io-client';
-import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH, EDITOR_BACKEND_DOMAIN } from "../../constants";
+import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH, EDITOR_BACKEND_DOMAIN } from "../../constants.js";
 import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { AppContext } from "../../App.js";
@@ -15,6 +13,7 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import useState from "react-usestateref";
 import { Col } from "react-bootstrap";
+const io = window.io;
 
 function Editor() {
     let { matchRef, userRef } = useContext(AppContext);
