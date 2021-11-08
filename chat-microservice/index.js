@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 var corsOptions = {
-    origin: 'https://peerprep.ml',
+    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
     credentials: true 
 };
 app.use(cors(corsOptions));
@@ -28,7 +28,7 @@ const io = new Server(server, {
     path: "/api/chat/create",
     cors: {
         origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
-        methods: ["GET", "POST"],
+        methods: ["GET", "POST", "DELETE"],
         credentials: true
     },
     pingInterval: 3000,
@@ -70,7 +70,7 @@ io.on("connection", socket => {
     socket.on("joinRoom", interviewId => {
         subClient.subscribe(interviewId);
         const publishMessage = {
-            event: "message",
+            event: "notification",
             contents: {
                 senderEmail: "server",
                 message: clientMessages.PARTNER_CONNECTED

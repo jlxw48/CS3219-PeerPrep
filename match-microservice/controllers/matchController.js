@@ -192,6 +192,7 @@ const findMatch = async (req, res) => {
         count = count + 1;
         // 30s time limit reached
         if (count >= 6) {
+            console.log("exceeded limit!!!!!!!!");
             clearInterval(intervalId);
             await Match.findOneAndDelete({ email: email }).exec();
             res.status(404).json({
