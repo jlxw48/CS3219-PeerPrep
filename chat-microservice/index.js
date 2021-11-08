@@ -44,9 +44,6 @@ const pubClient = createClient({
     auth_pass: REDIS_PW
 });
 
-
-// io.adapter(createAdapter(pubClient, subClient));
-
 // Event 'connection': Fired upon a connection from client
 io.on("connection", socket => {
     console.log("a user connected");
