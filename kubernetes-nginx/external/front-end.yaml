@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: asia-southeast1-docker.pkg.dev/cs3219-g5/g5-repo/front-end:v1
+        image: asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/front-end:v1
         imagePullPolicy: IfNotPresent # setting local image
         resources:
           limits:
