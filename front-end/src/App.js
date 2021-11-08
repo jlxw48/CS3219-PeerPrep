@@ -92,12 +92,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("yea");
-    console.log(user);
-    // Apply authorization header when user becomes logged in
     if (user) {
-      console.log("header set");
-      axios.defaults.headers.common['Authorization'] = user.token;
+      let token = localStorage.getItem(JWT_TOKEN_NAME);
+      axios.defaults.headers.common['Authorization'] = token;
     }
   }, [user]);
 

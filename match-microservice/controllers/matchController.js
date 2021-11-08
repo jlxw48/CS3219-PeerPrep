@@ -309,6 +309,8 @@ const findMatch = async (req, res) => {
             return;
         }
     }, 5000);  // Try to find a match every 5s, until 30s is up
+
+    console.log("Reached");
 }
 
 const cancelFindMatch = async (req, res) => {

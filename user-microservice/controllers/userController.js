@@ -8,25 +8,29 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const generalErrors = require('../common/generalErrors');
+const { nextTick } = require('process');
+const { truncate } = require('fs');
 
 const sendFailureRes = (res, httpStatus, message) => {
-	res.status(httpStatus).send({
+	res.status(httpStatus).json({
 		status: responseStatus.FAILURE,
 		data: {
 			message: message
 		}
 	});
+	return;
 }
 
 const sendSuccessRes = (res, httpStatus, data = undefined) => {
 	if (data) {
-		res.status(httpStatus).send({
+		res.status(httpStatus).json({
 			status: responseStatus.SUCCESS,
 			data
 		});
 		return;
 	}
-	res.status(httpStatus).send();
+	
+	res.status(httpStatus);
 }
 
 const hasMissingNameField = (req) => {
@@ -34,6 +38,7 @@ const hasMissingNameField = (req) => {
 }
 
 const hasMissingEmailField = (req) => {
+	console.log(req.body.email)
 	return req.body.email == undefined || req.body.email.length == 0;
 };
 
@@ -45,27 +50,29 @@ const hasMissingAuthFields = (req) => {
 	return Object.keys(req.body).length == 0;
 };
 
-const checkMissingEmailAndPassword = (req, res) => {
+const hasMissingEmailOrPassword = (req, res) => {
 	if (hasMissingEmailField(req)) {
 		sendFailureRes(res, 400, clientErrorMessages.MISSING_EMAIL);
-		return;
+		return true;
 	}
 	if (hasMissingPasswordField(req)) {
 		sendFailureRes(res, 400, clientErrorMessages.MISSING_PASSWORD);
-		return;
+		return true;
 	}
+	return false;
 }
 
-const checkMissingFieldsForAccountCreation = (req, res) => {
+const hasMissingFieldsForAccountCreation = (req, res) => {
 	if (hasMissingAuthFields(req)) {
 		sendFailureRes(res, 400, clientErrorMessages.MISSING_NAME_EMAIL_PASSWORD);
-		return;
+		return true;
 	}
 
 	if (hasMissingNameField(req)) {
 		sendFailureRes(res, 400, clientErrorMessages.MISSING_NAME);
+		return true;
 	}
-	return checkMissingEmailAndPassword(req, res);
+	return hasMissingEmailOrPassword(req, res);
 };
 
 const checkMissingToken = (token, res) => {
@@ -78,13 +85,13 @@ const checkMissingToken = (token, res) => {
 
 const isPasswordAndUserMatch = (req, res) => {
 	const email = req.body.email;
-	User.find({ email })
+	console.log("hi" + email)
+	User.find({ email: email })
 		.then((result) => {
+			console.log(result);
 			if (Object.keys(result).length === 0) {
-				sendFailureRes(res, 400, clientErrorMessages.INVALID_EMAIL);
-				return;
+				return sendFailureRes(res, 400, clientErrorMessages.INVALID_EMAIL);
 			}
-
 			data = result[0];
 			let passwordFields = data.password.split('$');
 			let salt = passwordFields[0];
@@ -102,7 +109,7 @@ const isPasswordAndUserMatch = (req, res) => {
 					}
 				);
 				sendSuccessRes(res, 200, {
-					email: email,
+					email,
 					message: clientSuccessMessages.VALID_LOGIN,
 					token
 				});
@@ -112,10 +119,13 @@ const isPasswordAndUserMatch = (req, res) => {
 				return;
 			}
 		});
+	return;
 };
 
 exports.create_account = (req, res) => {
-	checkMissingFieldsForAccountCreation(req, res);
+	if (hasMissingFieldsForAccountCreation(req, res)) {
+		return;
+	};
 
 	const email = req.body.email;
 	User.find({ email })
@@ -152,11 +162,14 @@ exports.create_account = (req, res) => {
 
 exports.user_login = (req, res) => {
 	if (hasMissingAuthFields(req)) {
+		console.log(req);
 		sendFailureRes(res, 400, clientErrorMessages.MISSING_EMAIL_AND_PASSWORD);
 		return;
 	}
 
-	checkMissingEmailAndPassword(req, res);
+	if (hasMissingEmailOrPassword(req, res)) {
+		return;
+	};
 
 	return isPasswordAndUserMatch(req, res);
 };
