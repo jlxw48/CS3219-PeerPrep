@@ -38,6 +38,7 @@ const hasMissingNameField = (req) => {
 }
 
 const hasMissingEmailField = (req) => {
+	console.log(req.body.email)
 	return req.body.email == undefined || req.body.email.length == 0;
 };
 
@@ -84,12 +85,13 @@ const checkMissingToken = (token, res) => {
 
 const isPasswordAndUserMatch = (req, res) => {
 	const email = req.body.email;
-	User.find({ email })
+	console.log("hi" + email)
+	User.find({ email: email })
 		.then((result) => {
+			console.log(result);
 			if (Object.keys(result).length === 0) {
 				return sendFailureRes(res, 400, clientErrorMessages.INVALID_EMAIL);
 			}
-
 			data = result[0];
 			let passwordFields = data.password.split('$');
 			let salt = passwordFields[0];
@@ -160,6 +162,7 @@ exports.create_account = (req, res) => {
 
 exports.user_login = (req, res) => {
 	if (hasMissingAuthFields(req)) {
+		console.log(req);
 		sendFailureRes(res, 400, clientErrorMessages.MISSING_EMAIL_AND_PASSWORD);
 		return;
 	}
