@@ -10,6 +10,8 @@ const jwt = require('jsonwebtoken');
 const generalErrors = require('../common/generalErrors');
 const { nextTick } = require('process');
 const { truncate } = require('fs');
+ 
+var validator = require("email-validator");
 
 const sendFailureRes = (res, httpStatus, message) => {
 	res.status(httpStatus).json({
@@ -41,6 +43,14 @@ const hasMissingEmailField = (req) => {
 	console.log(req.body.email)
 	return req.body.email == undefined || req.body.email.length == 0;
 };
+
+const isValidEmail = (req, res) => {
+	if (!validator.validate(req.body.email)) {
+		sendFailureRes(res, 400, clientErrorMessages.INVALID_EMAIL);
+		return false;
+	}
+	return true;
+}
 
 const hasMissingPasswordField = (req) => {
 	return req.body.password == undefined || req.body.password.length == 0;
@@ -125,6 +135,9 @@ exports.create_account = (req, res) => {
 	if (hasMissingFieldsForAccountCreation(req, res)) {
 		return;
 	};
+	if (!isValidEmail(req, res)) {
+		return;
+	}
 
 	const email = req.body.email;
 	User.find({ email })
