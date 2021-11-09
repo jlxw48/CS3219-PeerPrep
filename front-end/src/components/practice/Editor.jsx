@@ -31,7 +31,6 @@ function Editor() {
         const currCode = codeRef.current;
         setLang(newLang);
         setCode(currCode);
-        console.log("Curr code", codeRef.current);
     }
 
     var inactivityTimer = useRef(null);
