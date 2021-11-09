@@ -12,6 +12,9 @@ function QuestionCard(props) {
         <Card className="home-question-card" onClick={props.onClickFunct}>
             <Card.Body>
                 <Card.Title>{question.title + " "}<DifficultyBadge difficulty={question.difficulty}/></Card.Title><br/>
+                <div className="markdown-body">
+                    <ReactMarkdown linkTarget="_blank" rehypePlugins={[rehypeRaw]}>{trimmedQuestionBody}</ReactMarkdown>
+                </div>
             </Card.Body>
         </Card>
     )
