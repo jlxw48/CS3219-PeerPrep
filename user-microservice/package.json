@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "axios": "^0.24.0",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "cookie-parser": "^1.4.5",

@@ -1,0 +1,1 @@
+exports.STATUS_HEALTHY = "questions API is healthy";
