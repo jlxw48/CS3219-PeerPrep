@@ -6,7 +6,7 @@ const REACT_APP_BACKEND_URL = 'http://localhost/api/';
 const BACKEND_DOMAIN = "https://peerprep-g5.tk/";
 
 // const QUESTION_URL = REACT_APP_BACKEND_URL + "questions/";
-const QUESTION_URL = "https://peerprep-g5.tk/api/questions";
+const QUESTION_URL = "https://peerprep-g5.tk/api/questions/";
 
 const USERS_URL = "https://peerprep.ml/api/user/"
 // const USERS_URL = REACT_APP_BACKEND_URL + "user/"

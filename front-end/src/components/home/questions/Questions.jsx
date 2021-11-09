@@ -1,18 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Row from 'react-bootstrap/Row'
 import QuestionCard from "./QuestionCard";
 import '../../../css/Questions.css'
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
+import axios from "axios";
+import { QUESTION_URL } from '../../../constants';
 
 function Questions(props) {
+    const [easy, setEasy] = useState([]);
+    const [medium, setMedium] = useState([]);
+    const [hard, setHard] = useState([]);
+    const validDifficulties = ["easy", "medium", "hard"];
+    
+    function getSetQuestions(difficulty) {
+        if (!validDifficulties.includes(difficulty)) {
+            return;
+        }
+
+        axios.get(QUESTION_URL, {
+            params: {
+                difficulty
+            }
+        }).then(res => res.data.data)
+        .then(data => {
+            switch (difficulty) {
+                case "easy":
+                    setEasy(data.questions);
+                    break;
+                case "medium":
+                    setMedium(data.questions);
+                    break;
+                case "hard":
+                    setHard(data.questions);
+                default:
+                    return;
+            }
+        }).catch(err => {
+            console.error("Error fetching questions for home page.", err);
+        });
+    }
+
+    useEffect( async () => {
+        for (let difficulty of validDifficulties) {
+            await getSetQuestions(difficulty);
+        }
+    }, [])
+
+
     return (
         <>
             <h3>Questions</h3><br/>
             <Tabs defaultActiveKey="easy" className="mb-3 questions-difficulty-tabs">
                 <Tab eventKey="easy" title="Easy" tabClassName="text-success">
                     <div className="home-questions-wrapper">
-                        {props.questions.filter(question => question.difficulty === "easy").map(question => {
+                        {easy.map(question => {
                             return (
                                 <Row key={question._id}>
                                     <QuestionCard question={question} onClickFunct={() => {
@@ -25,7 +67,7 @@ function Questions(props) {
                 </Tab>
                 <Tab eventKey="medium" title="Medium" tabClassName="text-warning">
                     <div className="home-questions-wrapper">
-                        {props.questions.filter(question => question.difficulty === "medium").map(question => {
+                        {medium.map(question => {
                             return (
                                 <Row key={question._id}>
                                     <QuestionCard question={question} onClickFunct={() => {
@@ -38,7 +80,7 @@ function Questions(props) {
                 </Tab>
                 <Tab eventKey="hard" title="Hard" tabClassName="text-danger">
                     <div className="home-questions-wrapper">
-                        {props.questions.filter(question => question.difficulty === "hard").map(question => {
+                        {hard.map(question => {
                             return (
                                 <Row key={question._id}>
                                     <QuestionCard question={question} onClickFunct={() => {
