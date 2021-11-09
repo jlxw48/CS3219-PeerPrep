@@ -43,12 +43,8 @@ function Questions(props) {
 
     useEffect( async () => {
         for (let difficulty of validDifficulties) {
-            console.log(difficulty);
             await getSetQuestions(difficulty);
         }
-        console.log(easy);
-        console.log(medium);
-        console.log(hard);
     }, [])
 
 

@@ -51,7 +51,6 @@ function QuestionEditor(props) {
                 toast.success("Successfully updated question");
             }
         }).catch(err => {
-            console.log(err.response);
             if (err.response) {
                 toast.error(err.response.data.data.error_message);
             }
