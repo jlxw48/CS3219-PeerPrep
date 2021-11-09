@@ -1,0 +1,25 @@
+{
+  "name": "questions-microservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "local": "set NODE_ENV=local&& nodemon index.js",
+    "test": "mocha --timeout 5000 --exit"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.9",
+    "nodemon": "^2.0.13"
+  },
+  "devDependencies": {
+    "mocha": "^9.1.2"
+  }
+}

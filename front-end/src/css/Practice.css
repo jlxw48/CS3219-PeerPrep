@@ -1,0 +1,64 @@
+.practice-container-row {
+    padding-top: 2%;
+    /* height: 700px; */
+}
+
+@media screen and (max-width: 800px) {
+    .practice-container-row {
+        padding-top: 30px;
+    }
+    
+    .practice-question-body {
+        max-height: 400px !important;
+    }
+}
+
+.practice-question-body {
+    background: #fafafa;
+    max-height: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e6e6e6;
+    padding-bottom: 10px;
+    overflow-y: auto;
+}
+
+.practice-question-body h2 {
+    display: inline-block;
+}
+
+.practice-question-body .badge {
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+.editor-section-container {
+    height: 500px;
+    padding-top: 20px;
+}
+
+@media screen and (max-width: 800px) {
+    .editor-section-container {
+        height: 400px;
+    }
+}
+
+.lang-selector {
+    height: 10%;
+}
+
+.ace_editor {
+    width: 100% !important;
+    overflow-y: auto;
+    border-radius: 5px;
+    border: 2px solid grey;
+    resize: none;
+}
+
+.editor-lang-selector {
+    margin-bottom: 5px;
+}
+
+.container-fluid.practice-container {
+    padding-left: 0;
+}
