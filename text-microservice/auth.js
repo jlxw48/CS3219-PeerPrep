@@ -10,7 +10,6 @@ const JWT_STUB_HEADER = "stub_header";
 
 exports.jwt_validate = (req, res, next) => {
     const jwt = req.header("Authorization") || JWT_STUB_HEADER;
-    //console.log("text jwt", jwt);
 
     if (jwt === undefined || jwt === null) {
         res
