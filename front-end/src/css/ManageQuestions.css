@@ -20,7 +20,15 @@
     overflow-y:auto;
 }
 
-.manage-questions-table tbody tr {
+.non-action-cell {
+    cursor: pointer;
+}
+
+.action-icon-container {
+    text-align: center;
+}
+
+.action-icon {
     cursor: pointer;
 }
 
