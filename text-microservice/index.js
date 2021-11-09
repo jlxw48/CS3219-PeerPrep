@@ -11,7 +11,7 @@ require("dotenv").config();
 
 app.use(express.urlencoded({extended: true}));
 var corsOptions = {
-    origin: ['https://peerprep.ml', "http://localhost:3000"],
+    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
     credentials: true 
 };
 app.use(cors(corsOptions));
@@ -77,7 +77,6 @@ app.get("/api/editor/get_text", (req, res) => {
         }
       });
     } else {
-      console.log(response);
       res.status(200).json({
         status: responseStatus.SUCCESS,
         data: {
@@ -141,7 +140,6 @@ app.post("/api/editor/save-text", (req, res) => {
 const saveText = (newText) => {
   const sessionId = newText.interviewId;
   const text = newText.text;
-  console.log(JSON.stringify(newText))
   pubClient.set(sessionId, JSON.stringify(newText), redis.print);
 };
 
@@ -165,7 +163,6 @@ io.sockets.on("connection", socket => {
   });
 
   socket.on("newMessage", message => {
-    console.log(message);
     saveText(message);
 
     const interviewId = message.interviewId;
