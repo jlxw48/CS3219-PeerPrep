@@ -15,22 +15,25 @@ function descToTrimmedMd(desc) {
     return <ReactMarkdown linkTarget="_blank" rehypePlugins={[rehypeRaw]}>{trimmedQuestionBody}</ReactMarkdown>
 }
 
-async function handleDeleteQn(qn) {
-    const isConfirmDelete = await confirm("Are you sure?", { title: `Delete ${qn.title}`, okText: 'Confirm', okButtonStyle: 'danger', cancelButtonStyle: 'dark' });
-    if (!isConfirmDelete) {
-        return;
-    }
-    axios.delete(QUESTION_URL + qn._id)
-    .then(res => toast.success(`Successfully deleted ${qn.title}.`))
-    .catch(err => {
-        if (err.response) {
-            console.error(err.response);
-        }
-        toast.error(`Error deleting ${qn.title}, try again later.`);
-    })
-}
-
 function QuestionsTable(props) {
+    async function handleDeleteQn(qn) {
+        const isConfirmDelete = await confirm("Are you sure?", { title: `Delete: ${qn.title}`, okText: 'Confirm', okButtonStyle: 'danger', cancelButtonStyle: 'dark' });
+        if (!isConfirmDelete) {
+            return;
+        }
+        axios.delete(QUESTION_URL + qn._id)
+        .then(res => {
+            toast.success(`Successfully deleted ${qn.title}.`);
+            props.fetchQuestions();
+        })
+        .catch(err => {
+            if (err.response) {
+                console.error(err.response);
+            }
+            toast.error(`Error deleting ${qn.title}, try again later.`);
+        })
+    }
+    
     return <>
         <div className="manage-questions-table-container">
             <Table bordered hover className="manage-questions-table">
@@ -47,7 +50,7 @@ function QuestionsTable(props) {
                     {
                         props.data.map(qn => {
                             return <tr key={qn._id}>
-                                <td onClick={() => {props.setEditedQn(qn)}} className="non-action-cell">{qn._id}</td>
+                                <td onClick={() => {props.setEditedQn(qn)}} className="non-action-cell id-cell">{qn._id}</td>
                                 <td onClick={() => {props.setEditedQn(qn)}} className="non-action-cell">{qn.difficulty.charAt(0).toUpperCase() + qn.difficulty.substring(1)}</td>
                                 <td onClick={() => {props.setEditedQn(qn)}} className="non-action-cell">{qn.title}</td>
                                 <td onClick={() => {props.setEditedQn(qn)}} className="non-action-cell">{descToTrimmedMd(qn.description)}</td>

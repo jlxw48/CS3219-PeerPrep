@@ -18,10 +18,15 @@ function ManageQuestions() {
     // Question that is currently being edited;
     const [editedQn, setEditedQn] = useState(null);
     const emptyQn = { "_id": "", description: "", title: "", difficulty: "easy"};
+    const difficultySortVal = { "easy": 0, "medium": 1, "hard" : 2 };
     const fetchQuestions = () => {
         axios.get(QUESTION_URL)
         .then(res => {
-            setQuestions(res.data.data.questions);
+            let questions = res.data.data.questions;
+            setEditedQn(null);
+            // Sort by difficulty
+            questions.sort((a, b) => difficultySortVal[a.difficulty] > difficultySortVal[b.difficulty] && 1 || -1);
+            setQuestions(questions);
         })
         .catch(err => {
             if (err.response) {
@@ -33,7 +38,6 @@ function ManageQuestions() {
     
     // Check if user is admin then fetch questions
     useEffect(() => {
-        console.log("hi");
         if (!isAdminRef.current) {
             history.push({ pathname: "/" });
             toast.error("You have entered an invalid route.");
@@ -49,7 +53,7 @@ function ManageQuestions() {
             <Button variant="info" className="add-question-button" onClick={() => setEditedQn(emptyQn)}>Add question</Button>
             <Row className="questions-table-row">
                 <Col md={12}>
-                    { questions.length !== 0 ? <QuestionsTable data={questions} setEditedQn={setEditedQn}/> : <></> } 
+                    { questions.length !== 0 ? <QuestionsTable data={questions} setEditedQn={setEditedQn} fetchQuestions={fetchQuestions} /> : <></> } 
                     <div style={{"textAlign": "center"}} className="text-muted"><i>Click a row to edit a question.</i></div>
                 </Col>
             </Row>

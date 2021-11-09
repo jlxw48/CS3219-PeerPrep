@@ -3,6 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 import rehypeRaw from "rehype-raw";
 import 'github-markdown-css/github-markdown-light.css'
 import "../../../css/QuestionModal.css"
+import DifficultyBadge from "../../DifficultyBadge";
 
 function QuestionModal(props) {
     const question = props.question;
@@ -17,7 +18,7 @@ function QuestionModal(props) {
         >
             <Modal.Header closeButton>
                 <Modal.Title>
-                    {question.title}
+                    {question.title + " "}<DifficultyBadge difficulty={question.difficulty}/>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>

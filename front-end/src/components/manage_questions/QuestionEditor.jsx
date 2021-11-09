@@ -44,7 +44,6 @@ function QuestionEditor(props) {
                 difficulty
             }
         }).then(res => {
-            props.setEditedQn(null);
             props.fetchQuestions();
             if (isNewNotUpdate) {
                 toast.success("Successfully created new question.");
