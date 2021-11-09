@@ -10,8 +10,3 @@ server.get('/validate_admin', (req, res) => {
 server.listen(3001, () => {
   console.log('JSON Server is running');
 });
-process.on('SIGINT', function() {
-    console.log( "\nGracefully shutting down from SIGINT (Ctrl-C)" );
-    // some other closing procedures go here
-    process.exit(0);
-});

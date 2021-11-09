@@ -11,6 +11,8 @@ const expect = chai.expect;
 const should = chai.should();
 chai.use( chaiHttp );
 
+const stubServer = require("./stub/index");
+
 describe( "add 2 questions", () => {
     before( ( done ) => {
         Question.deleteMany( {}, ( err ) => {
