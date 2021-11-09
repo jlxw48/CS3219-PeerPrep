@@ -86,10 +86,8 @@ const hasMissingToken = (token, res) => {
 
 const isPasswordAndUserMatch = (req, res) => {
 	const email = req.body.email;
-	console.log("hi" + email)
 	User.find({ email: email })
 		.then((result) => {
-			console.log(result);
 			if (Object.keys(result).length === 0) {
 				return sendFailureRes(res, 400, clientErrorMessages.INVALID_EMAIL);
 			}
@@ -165,7 +163,6 @@ exports.create_account = (req, res) => {
 
 exports.user_login = (req, res) => {
 	if (hasMissingAuthFields(req)) {
-		console.log(req);
 		sendFailureRes(res, 400, clientErrorMessages.MISSING_EMAIL_AND_PASSWORD);
 		return;
 	}
@@ -198,7 +195,6 @@ exports.jwt_validate = (req, res) => {
 			return;
 		});
 	} catch (error) {
-		console.log("3");
 		res.status(500).send({
 			status: responseStatus.ERROR,
 			data: {
@@ -222,12 +218,11 @@ exports.validate_admin = (req, res) => {
 				return;
 			}
 			const role = user.permissionLevel;
-			console.log(user.permissionLevel);
+
 			if (role === permissionLevels.ADMIN) {
 				sendSuccessRes(res, 200, {
 					status: responseStatus.SUCCESS, 
 				});
-				console.log("hey", res);
 				return;
 			} else {
 				sendFailureRes(res, 403, clientErrorMessages.INVALID_ADMIN);

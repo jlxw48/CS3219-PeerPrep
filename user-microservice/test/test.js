@@ -34,7 +34,6 @@ describe( "add 2 users", () => {
                     res.should.have.status( 201 );
                     res.body.should.be.a('object');
                     expect( res.body.status ).to.equal( "success" );
-                    res.body.data.message.should.be.eql("Account created");
                     done();
                 } );
         } );
@@ -54,7 +53,6 @@ describe( "add 2 users", () => {
                     res.should.have.status( 201 );
                     res.body.should.be.a('object');
                     expect( res.body.status ).to.equal( "success" );
-                    res.body.data.message.should.be.eql("Account created");
                     done();
                 } );
         } );
@@ -99,38 +97,3 @@ describe( "login 2 users", () => {
     } );
 } );
 
-describe( "logout 2 users", () => {
-    describe( "POST /user/user_logout/", () => {
-        it( "should logout 1 user", ( done ) => {
-            chai.request( app )
-                .post( '/api/user/user_logout')
-                .send({
-                    email: testData.validUser1.email,
-                })
-                .end( ( err, res ) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    res.should.have.status( 200 );
-                    expect( res.body.status ).to.equal( "success" );
-                    done();
-                } );
-        } );
-
-        it( "should login another user", ( done ) => {
-            chai.request( app )
-                .post( '/api/user/user_logout')
-                .send({
-                    email: testData.validUser2.email,
-                })
-                .end( ( err, res ) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    res.should.have.status( 200 );
-                    expect( res.body.status ).to.equal( "success" );
-                    done();
-                } );
-        } );
-    } );
-} );
