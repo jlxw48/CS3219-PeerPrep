@@ -3,9 +3,11 @@ const axios = require('axios');
 const responseStatus = require( "./common/status/responseStatus" );
 const clientErr = require( "./common/errors/clientErrors" );
 
+const JWT_VALIDATE_URL = process.env.NODE_ENV !== "test" ? process.env.LIVE_JWT_VALIDATE : process.env.TEST_JWT_VALIDATE;
+const JWT_STUB_HEADER = "stub_header";
+
 exports.jwt_validate = (req, res, next) => {
-    const jwt = req.header("Authorization");
-    console.log("match jwt", jwt);
+    const jwt = req.header("Authorization") || JWT_STUB_HEADER;
 
     if (jwt === undefined || jwt === null) {
         res
@@ -27,7 +29,7 @@ exports.jwt_validate = (req, res, next) => {
         }
     };
 
-    axios.get(`http://user:3000/api/user/jwt_validate`, headers)
+    axios.get(JWT_VALIDATE_URL, headers)
         .then(response => {
             next();
         })
