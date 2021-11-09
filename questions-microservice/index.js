@@ -8,8 +8,8 @@ const clientErr = require( "./common/error_msgs/client_errors" );
 const dbErr = require( "./common/error_msgs/db_errors" );
 const msg = require( "./common/msgs" );
 const responseStatus = require( "./common/status" );
-const authentication = require( "./authentication" );
-const authorization = require( "./authorization" );
+const authentication = require( "./common/authentication" );
+const authorization = require( "./common/authorization" );
 
 const app = express();
 app.use( express.json() );

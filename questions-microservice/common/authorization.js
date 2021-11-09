@@ -1,10 +1,13 @@
 const axios = require('axios');
 
-const responseStatus = require( "./common/status" );
-const clientErr = require( "./common/error_msgs/client_errors" );
+const responseStatus = require( "./status" );
+const clientErr = require( "./error_msgs/client_errors" );
+
+const VALIDATE_ADMIN_URL = process.env.NODE_ENV !== "test" ? process.env.LIVE_VALIDATE_ADMIN : process.env.TEST_VALIDATE_ADMIN;
+const JWT_STUB_HEADER = "stub_header";
 
 exports.validate_admin = (req, res, next) => {
-    const jwt = req.header("Authorization");
+    const jwt = req.header("Authorization") || JWT_STUB_HEADER;
 
     if (jwt === undefined || jwt === null) {
         res
@@ -25,7 +28,8 @@ exports.validate_admin = (req, res, next) => {
             'Cache-Control': 'no-cache'
         }
     };
-    axios.get(`https://peerprep.ml/api/user/validate_admin`, headers)
+    console.log(VALIDATE_ADMIN_URL);
+    axios.get(VALIDATE_ADMIN_URL, headers)
         .then(response => {
             next();
         })

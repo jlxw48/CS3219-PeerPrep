@@ -1,11 +1,13 @@
 const axios = require('axios');
 
-const responseStatus = require( "./common/status" );
-const clientErr = require( "./common/error_msgs/client_errors" );
+const responseStatus = require( "./status" );
+const clientErr = require( "./error_msgs/client_errors" );
+
+const JWT_VALIDATE_URL = process.env.NODE_ENV !== "test" ? process.env.LIVE_JWT_VALIDATE : process.env.TEST_JWT_VALIDATE;
+const JWT_STUB_HEADER = "stub_header";
 
 exports.jwt_validate = (req, res, next) => {
-    const jwt = req.header("Authorization");
-    console.log("questions jwt", jwt);
+    const jwt = req.header("Authorization") || JWT_STUB_HEADER;
 
     if (jwt === undefined || jwt === null) {
         res
@@ -26,7 +28,7 @@ exports.jwt_validate = (req, res, next) => {
             'Cache-Control': 'no-cache'
         }
     };
-    axios.get(`http://user:3000/api/user/jwt_validate`, headers)
+    axios.get(JWT_VALIDATE_URL, headers)
         .then(response => {
             next();
         })

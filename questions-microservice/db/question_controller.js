@@ -13,14 +13,23 @@ exports.getAllQuestions = ( req, res ) => {
     }
 
     var offset = helpers.parsePositiveInt( req.query.offset );
-    var limit = helpers.parsePositiveInt( req.query.limit, 10 );
+    var limit = helpers.parsePositiveInt( req.query.limit );
     var difficulty = req.query.difficulty;
 
-    const query = difficulty ? Question.where( { difficulty: difficulty } ) : Question;
+    var query;
+
+    if ( difficulty ) {
+        query = Question.where( { difficulty: difficulty } );
+    } else {
+        query = Question;
+    }
+
+    query = query.find().skip( offset );
+    if ( limit !== 0 ) {
+        query = query.limit( limit );
+    }
+
     query
-        .find()
-        .skip( offset )
-        .limit( limit )
         .exec( ( err, questions ) => {
             if ( err ) {
                 res.statusCode = 500;
@@ -78,7 +87,7 @@ exports.getRandomQuestion = ( req, res ) => {
                     res.json( {
                         status: responseStatus.SUCCESS,
                         data: {
-                            questions: [questions]
+                            questions: [ questions ]
                         }
                     } );
                 } );
@@ -128,6 +137,7 @@ exports.createQuestion = ( req, res ) => {
     question.title = req.body.title;
     question.description = req.body.description;
     question.difficulty = req.body.difficulty;
+    console.log( question );
 
     Question.count( ( err, count ) => {
         if ( err ) {

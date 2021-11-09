@@ -48,9 +48,9 @@ exports.isValidDeleteReq = ( req ) => {
     return !isInvalidId( req );
 }
 
-exports.parsePositiveInt = ( input, defaultInt ) => {
+exports.parsePositiveInt = ( input ) => {
     if ( !input || isNaN( parseInt( input ) ) ) {
-        return defaultInt || 0;
+        return 0;
     }
 
     return parseInt( input );
