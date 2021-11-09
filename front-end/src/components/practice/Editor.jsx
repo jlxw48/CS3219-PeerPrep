@@ -1,11 +1,9 @@
 import AceEditor from "react-ace";
-import "ace-builds/src-min-noconflict/theme-github";
+import "ace-builds/src-min-noconflict/theme-textmate";
 import "ace-builds/src-min-noconflict/mode-python";
-// import "ace-builds/src-min-noconflict/mode-javascript";
 import "ace-builds/src-min-noconflict/mode-java";
 import "ace-builds/src-min-noconflict/mode-c_cpp";
 import "ace-builds/src-min-noconflict/ext-language_tools"
-// import io from 'socket.io-client';
 import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH } from "../../constants.js";
 import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
@@ -27,13 +25,13 @@ function Editor() {
     const [code, setCode, codeRef] = useState("");
     // Selected programming language of code editor
     const [lang, setLang] = useState("python");
-    const langChoices =  ["python", "java", "c_cpp"];
+    const langChoices = ["python", "java", "c_cpp"];
     // Need to cache current code as Ace Editor re-renders when lang is changed.
     const changeLang = (newLang) => {
         const currCode = codeRef.current;
         setLang(newLang);
         setCode(currCode);
-        console.log("Curr code",codeRef.current);
+        console.log("Curr code", codeRef.current);
     }
 
     var inactivityTimer = useRef(null);
@@ -56,27 +54,27 @@ function Editor() {
     const fetchTextHistory = () => axios.get(EDITOR_HISTORY_URL, {
         params: { interviewId: matchRef.current.interviewId }
     })
-    .then(res => res.data.data)
-    .then(data => {
-        const message =  JSON.parse(data.message);
-        const textHistory = message.text;
-        setCode(textHistory);
-    })
-    .catch(err => setCode(""));
+        .then(res => res.data.data)
+        .then(data => {
+            const message = JSON.parse(data.message);
+            const textHistory = message.text;
+            setCode(textHistory);
+        })
+        .catch(err => setCode(""));
 
     useEffect(() => {
         if (matchRef.current === null) {
             history.push({ pathname: '/' });
             return;
         }
-    
+
         var interviewId = matchRef.current.interviewId;
 
         /**
          * Connect socket and add socket events.
          */
         editorSocket.current = io(BACKEND_DOMAIN, {
-            transports: [ "websocket" ],
+            transports: ["websocket"],
             path: EDITOR_SOCKET_PATH,
             withCredentials: true,
             reconnection: true,
@@ -115,7 +113,6 @@ function Editor() {
          */
         resetInactivityTimer();
 
-
         /**
          * Close socket when tearing down Editor component
          */
@@ -141,20 +138,19 @@ function Editor() {
     }
 
     return (<>
-    <Col md={2}>
-    <select className="form-select editor-lang-selector" onChange={e => changeLang(e.target.value)}>
-            {
-                langChoices.map(choice => {
-                    return <option key={choice} value={choice}>{choice === "c_cpp" ? "C++" : capitalizeFirstChar(choice)}</option>
-                })
-            }
-        </select>
-    </Col>
-
+        <Col md={2}>
+            <select className="form-select editor-lang-selector" onChange={e => changeLang(e.target.value)}>
+                {
+                    langChoices.map(choice => {
+                        return <option key={choice} value={choice}>{choice === "c_cpp" ? "C++" : capitalizeFirstChar(choice)}</option>
+                    })
+                }
+            </select>
+        </Col>
         <AceEditor
             placeholder=""
             mode={lang}
-            theme="github"
+            theme="textmate"
             name="editor"
             fontSize={14}
             showPrintMargin={false}
@@ -171,6 +167,8 @@ function Editor() {
             }}
             onChange={(e) => handleCodeChange(e)} />
     </>)
+
+
 }
 
 export default Editor;
