@@ -1,4 +1,4 @@
-Access PeerPrep at <a href="http://peerprep.ml/" target="_blank"></a>
+Access PeerPrep at <a href="http://peerprep.ml/" target="_blank">https://peerprep.ml</a>
 
 # How to use PeerPrep 😀
 
