@@ -1,3 +1,9 @@
+# Access PeerPrep [Here](https://peerprep.ml/)!
+
+PeerPrep is a web application that empowers students to better take on coding assessments during interviews. With many <b>algorithmic questions</b> in our database, you can put your coding skills to the test by solving these questions with another student! We have a <b>collaborative text editor</b> and <b>real-time chat</b> that allows you to discuss with your peers on how to write the best code for your interviews.
+
+Visit the link in the header to find out more! Or you can read the tutorial below on how to use our application.
+
 # How to use PeerPrep 😀
 
 <br/>
