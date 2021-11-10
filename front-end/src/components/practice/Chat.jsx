@@ -1,8 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
-// import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
-import { Row } from "react-bootstrap";
 import { Widget, addResponseMessage, addUserMessage, renderCustomComponent, dropMessages } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"
@@ -18,7 +16,7 @@ function Chat() {
     console.log("Rendered chat");
 
     var chatSocket = useRef();
-    const [chats, setChats, chatsRef] = useState([]);
+    const [setChats, chatsRef] = useState([]);
     const PARTNER_DISCONNECT_NOTIFICATION = "Your partner has disconnected from the interview."
 
     const ChatWidgetNotificationMessage = (props) => (

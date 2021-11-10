@@ -33,15 +33,16 @@ function Questions(props) {
                     break;
                 case "hard":
                     setHard(data.questions);
+                    break;
                 default:
                     return;
             }
         }).catch(err => {});
     }
 
-    useEffect( async () => {
+    useEffect(() => {
         for (let difficulty of validDifficulties) {
-            await getSetQuestions(difficulty);
+            getSetQuestions(difficulty);
         }
     }, [])
 
