@@ -68,7 +68,6 @@ function QuestionEditor(props) {
     }
 
     const handleCancel = () => {
-        console.log("scroll up");
         props.setEditedQn(null);
         props.tableRef.current.scrollIntoView({
             behavior: "smooth"
