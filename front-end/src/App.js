@@ -81,7 +81,6 @@ function App() {
         setIsLoading(false);
         return
       }
-      console.log("wot");
 
       checkIsAdmin();
 

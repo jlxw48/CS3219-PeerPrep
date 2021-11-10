@@ -5,7 +5,7 @@ import "../../css/ManageQuestions.css";
 import axios from "axios";
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { QUESTION_URL, VALIDATE_ADMIN_URL } from "../../constants.js";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import LoadingScreen from "../LoadingScreen";
 import { toast } from "react-toastify";
 import { AppContext } from "../../App.js"
@@ -18,6 +18,8 @@ function ManageQuestions() {
     // Question that is currently being edited;
     const [editedQn, setEditedQn] = useState(null);
     const emptyQn = { "_id": "", description: "", title: "", difficulty: "easy"};
+    const tableRef = useRef(null);
+    
     const difficultySortVal = { "easy": 0, "medium": 1, "hard" : 2 };
     const fetchQuestions = () => {
         axios.get(QUESTION_URL)
@@ -32,7 +34,6 @@ function ManageQuestions() {
             if (err.response) {
                 toast.error(err.response.data.messsage);
             }
-            console.log("Error fetching questions", err)
         });
     }
     
@@ -52,7 +53,7 @@ function ManageQuestions() {
             <h1 style={{"display": "inline-block"}}>Questions</h1>{' '}
             <Button variant="info" className="add-question-button" onClick={() => setEditedQn(emptyQn)}>Add question</Button>
             <Row className="questions-table-row">
-                <Col md={12}>
+                <Col md={12} ref={tableRef}>
                     { questions.length !== 0 ? <QuestionsTable data={questions} setEditedQn={setEditedQn} fetchQuestions={fetchQuestions} /> : <></> } 
                     <div style={{"textAlign": "center"}} className="text-muted"><i>Click a row to edit a question.</i></div>
                 </Col>
@@ -60,7 +61,13 @@ function ManageQuestions() {
             <br/>
             <Row>
                 <Col md={12}>
-                    { editedQn !== null ? <QuestionEditor question={editedQn} setEditedQn={setEditedQn} fetchQuestions={fetchQuestions}/> : <></> }
+                    { editedQn !== null ? 
+                    <QuestionEditor 
+                        question={editedQn} 
+                        setEditedQn={setEditedQn} 
+                        fetchQuestions={fetchQuestions} 
+                        tableRef={tableRef}
+                    /> : <></> }
                 </Col>
             </Row>
         </Container>

@@ -11,6 +11,8 @@ import LoadingScreen from "../LoadingScreen";
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from "rehype-raw";
 import 'github-markdown-css/github-markdown-light.css'
+import axios from "axios";
+import { MATCH_GET_INTERVIEW_URL } from "../../constants.js";
 
 
 import "../../css/Practice.css"
@@ -21,7 +23,7 @@ function Practice() {
     const [practiceQuestion, setQuestion] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    let { userRef, matchRef } = useContext(AppContext);
+    let { userRef, matchRef, setMatch } = useContext(AppContext);
 
     // If user go to /practice, check if he's logged in and has an existing match.
     useEffect(() => {
@@ -36,9 +38,14 @@ function Practice() {
             toast.error("Please use the main menu to find a practice partner.");
             return;
         } else {
-            setQuestion(matchRef.current.question);
-            const minutesLeft = Math.floor(matchRef.current.durationLeft / 60);
-            toast.info(`You have ${minutesLeft} minutes remaining for your interview session.`);
+            // Even though we know we are in a match, we want to refresh the match timer.
+            axios.get(MATCH_GET_INTERVIEW_URL + `?email=${userRef.current.email}`).then(res => {
+                const match = res.data.data;
+                setMatch(match);
+                setQuestion(match.question);
+                const minutesLeft = Math.floor(match.durationLeft / 60);
+                toast.info(`You have ${minutesLeft} minutes remaining for your interview session.`);
+            });   
         }
 
         setIsLoading(false);
@@ -50,7 +57,6 @@ function Practice() {
             <Row className="practice-container-row">
                 <Col md={12} className="question-editor-col">
                     <div className="practice-question-container">
-
                         <div className="practice-question-body">
                             {
                                 practiceQuestion 

@@ -13,7 +13,6 @@ import { Button } from 'react-bootstrap'
 import { confirm } from 'react-bootstrap-confirmation';
 
 
-
 function PeerPrepNav() {
     const history = useHistory();
     let { user, setUser, matchRef, setMatch, isAdminRef, setIsAdmin } = useContext(AppContext);
