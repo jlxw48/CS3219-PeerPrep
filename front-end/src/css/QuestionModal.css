@@ -1,6 +1,6 @@
 .question-modal .modal-content {
     border-radius: 10px !important;
     border: 1px solid black;
-    max-height: 500px;
+    max-height: 60vh;
     overflow-y: auto;
 }

@@ -1,5 +1,5 @@
 .login-container .card-row {
-    height: 700px;
+    height: 70vh;
 }
 
 .login-container .card-header {
@@ -11,4 +11,10 @@
 .login-container .form-label {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
+}
+
+.spinner-border {
+    left: 50%;
+    position: relative;
+    margin-left: -1em;
 }

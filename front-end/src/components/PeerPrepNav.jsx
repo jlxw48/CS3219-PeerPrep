@@ -57,7 +57,7 @@ function PeerPrepNav() {
     const currRoute = useLocation().pathname;
 
     return (
-        <Navbar collapseOnSelect expanded={expanded} expand="sm" bg="dark" variant="dark">
+        <Navbar collapseOnSelect expanded={expanded} expand="md" bg="dark" variant="dark">
             <Container fluid>
                 <NavLink to="/" exact className="navbar-brand NavbarBrand" onClick={closeNavbarOnClick}>PeerPrep</NavLink>
                 <Navbar.Toggle onClick={() => setExpanded(expanded ? false : "expanded")} />

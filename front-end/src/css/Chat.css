@@ -23,11 +23,6 @@
     width: auto !important;
 }
 
-.rcw-widget-container.conversation-container {
-    width: 370px !important;
-    margin-bottom: 10px !important;
-}
-
 .rcw-widget-container .launcher {
     margin-top: 5px !important;
 }

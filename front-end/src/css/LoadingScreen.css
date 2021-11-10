@@ -1,5 +1,4 @@
 .loading-screen-container {
-    justify-content: center;
     align-items: center;
-    height: 800px;
+    height: 100vh;
 }
