@@ -4,7 +4,7 @@ import QuestionEditor from "./QuestionEditor";
 import "../../css/ManageQuestions.css";
 import axios from "axios";
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { QUESTION_URL, VALIDATE_ADMIN_URL } from "../../constants.js";
+import { QUESTION_URL } from "../../constants.js";
 import { useContext, useEffect, useState, useRef } from "react";
 import LoadingScreen from "../LoadingScreen";
 import { toast } from "react-toastify";

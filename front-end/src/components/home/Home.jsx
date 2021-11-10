@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useState, useContext } from 'react';
 import Difficulties from './difficulties/Difficulties';
 import Container from 'react-bootstrap/Container'
