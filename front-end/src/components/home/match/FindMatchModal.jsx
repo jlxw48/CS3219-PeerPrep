@@ -75,8 +75,11 @@ function FindMatchModal(props) {
                 </Row><br />
                 <Row className="justify-content-center">
                     {finding || <FontAwesomeIcon icon={faUserFriends} size="4x" className="match-icon" />}
-                    {finding && <Spinner animation="border"/>}
-                </Row><br />
+                </Row>
+                {finding && <Spinner animation="border"/>}
+                
+                <br/><br/>
+
                 <div className="text-center">
                     {!inMatch && props.enableFindMatch && (finding || <Button variant="dark" onClick={() => handleFindMatch()}>Find Match</Button>)}
                     {!inMatch && props.enableFindMatch && (finding && <Button variant="danger" onClick={() => handleCancel()}>Cancel</Button>)}
