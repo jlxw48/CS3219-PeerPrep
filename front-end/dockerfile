@@ -12,10 +12,20 @@ COPY package.json ./
 
 COPY yarn.lock ./
 
+# Install all packages
 RUN yarn
 
 # add app
 COPY . ./
 
-# start app
-CMD ["yarn", "start"]
+# Install serve which is used to host the prodcution build
+RUN npm i serve -g
+
+# Build in production mode
+RUN npm run build
+
+# # start app
+# CMD ["yarn", "start"]
+
+# # Serve the production build
+CMD serve -s build

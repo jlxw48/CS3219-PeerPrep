@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import '../../css/Tutorial.css'
 import ReactMarkdown from "react-markdown";

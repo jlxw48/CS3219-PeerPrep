@@ -1,8 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
-// import { io } from "socket.io-client";
 import Col from 'react-bootstrap/Col'
-import { Row } from "react-bootstrap";
 import { Widget, addResponseMessage, addUserMessage, renderCustomComponent, dropMessages } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"

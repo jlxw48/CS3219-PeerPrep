@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useState, useContext } from 'react';
 import Difficulties from './difficulties/Difficulties';
 import Container from 'react-bootstrap/Container'
@@ -21,7 +20,7 @@ function Home() {
                 <Questions setQuestionToShow={setQuestionToShow}/>
             </Container>
             <FindMatchModal show={showMatchModal} difficulty={matchDifficulty} setShowMatchModal={setShowMatchModal} enableFindMatch={user !== null}/>
-            { questionToShow ? <QuestionModal question={questionToShow} setQuestionToShow={setQuestionToShow} /> : <></>};
+            { questionToShow ? <QuestionModal question={questionToShow} setQuestionToShow={setQuestionToShow} /> : <></>}
         </>
     )
 }

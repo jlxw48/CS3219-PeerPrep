@@ -8,7 +8,7 @@ import { AppContext } from '../App.js';
 import { toast } from 'react-toastify'
 import { useHistory, useLocation } from "react-router-dom";
 import axios from 'axios'
-import { LOGOUT_URL, END_MATCH_URL, JWT_TOKEN_NAME } from "../constants.js";
+import { END_MATCH_URL, JWT_TOKEN_NAME } from "../constants.js";
 import { Button } from 'react-bootstrap'
 import { confirm } from 'react-bootstrap-confirmation';
 
@@ -57,7 +57,7 @@ function PeerPrepNav() {
     const currRoute = useLocation().pathname;
 
     return (
-        <Navbar collapseOnSelect expanded={expanded} expand="sm" bg="dark" variant="dark">
+        <Navbar collapseOnSelect expanded={expanded} expand="md" bg="dark" variant="dark">
             <Container fluid>
                 <NavLink to="/" exact className="navbar-brand NavbarBrand" onClick={closeNavbarOnClick}>PeerPrep</NavLink>
                 <Navbar.Toggle onClick={() => setExpanded(expanded ? false : "expanded")} />

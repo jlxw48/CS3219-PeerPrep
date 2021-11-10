@@ -132,7 +132,7 @@ function LoginRegister(props) {
                                     </Row>
                                     {
                                         isLoading
-                                            ? <Row className="justify-content-md-center"><Spinner animation="border" /></Row>
+                                            ? <Spinner animation="border" />
                                             : <Row>
                                                 <Col md="10">
                                                     <Button variant="dark" type="submit" className="float-end">
