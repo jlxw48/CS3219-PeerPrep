@@ -16,7 +16,7 @@ function Chat() {
     console.log("Rendered chat");
 
     var chatSocket = useRef();
-    const [setChats, chatsRef] = useState([]);
+    const [chats, setChats, chatsRef] = useState([]);
     const PARTNER_DISCONNECT_NOTIFICATION = "Your partner has disconnected from the interview."
 
     const ChatWidgetNotificationMessage = (props) => (
