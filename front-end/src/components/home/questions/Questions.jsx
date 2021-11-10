@@ -36,9 +36,7 @@ function Questions(props) {
                 default:
                     return;
             }
-        }).catch(err => {
-            console.error("Error fetching questions for home page.", err);
-        });
+        }).catch(err => {});
     }
 
     useEffect( async () => {

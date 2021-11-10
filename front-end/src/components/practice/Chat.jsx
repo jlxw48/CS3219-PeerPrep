@@ -35,8 +35,6 @@ function Chat() {
             history.push({ pathname: '/' });
         }
 
-        console.log("ho")
-
         // Clears messages from a previous session, if any
         dropMessages();
 
@@ -55,7 +53,7 @@ function Chat() {
                     addResponseMessage(chat.message);
                 }
             }
-        }).catch(err => console.log("Error fetching chat history", err));
+        }).catch(err => {});
 
         chatSocket.current = io.connect(CHAT_BACKEND_DOMAIN, {
             transports: ["websocket"],
@@ -68,7 +66,6 @@ function Chat() {
 
         chatSocket.current.on("connect", () => {
             chatSocket.current.emit("joinRoom", interviewId);
-            console.log("Successfully connected to chat socket.");
 
             // In case multiple connection turn off existing events.
             chatSocket.current.off("message");
@@ -76,7 +73,6 @@ function Chat() {
 
             // Set event upon receiving new message to add to chats variable and to chat widget.
             chatSocket.current.on("message", newMessage => {
-                console.log("Received msg from chat socket", newMessage);
                 setChats(oldMessages => [...oldMessages, newMessage]);
                 if (newMessage.senderEmail !== user.email) {
                     addResponseMessage(newMessage.message);
@@ -103,7 +99,6 @@ function Chat() {
 
         // Clean up
         return () => {
-            console.log("Closing chat socket");
             // Broadcast to interview partner that the user is disconnecting.
             chatSocket.current.emit("end_interview", {
                 interviewId,
@@ -126,8 +121,6 @@ function Chat() {
      * Upon user entering new message into chat widget, send to socket.
      */
     const handleNewUserMessage = (msgString) => {
-        console.log(`New message incoming! ${msgString}`);
-
         const newChat = { senderEmail: user.email, message: msgString }
         chatSocket.current.emit("message", {
             interviewId: matchRef.current.interviewId,

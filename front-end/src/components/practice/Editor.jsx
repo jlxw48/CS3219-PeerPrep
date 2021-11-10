@@ -83,8 +83,6 @@ function Editor() {
         fetchTextHistory();
 
         editorSocket.current.on("connect", () => {
-            console.log("Successfully connected to editor socket");
-
             editorSocket.current.emit('subscribe', {
                 interviewId
             });

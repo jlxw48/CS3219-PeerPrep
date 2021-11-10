@@ -15,13 +15,21 @@ function QuestionEditor(props) {
     const [desc, setDesc] = useState(question.desc);
     const [title, setTitle] = useState(question.title);
     const [difficulty, setDifficulty] = useState(question.difficulty);
+    const formRef = useRef(null);
 
     useEffect(() => {
+        // Set state variables for form fields
         const newQuestion = props.question
         setDesc(newQuestion.description);
         setId(newQuestion["_id"]);
         setTitle(newQuestion.title);
         setDifficulty(newQuestion.difficulty);
+
+        //Focus onto form
+        formRef.current.scrollIntoView({
+            behavior: "smooth"
+        });
+
     }, [props])
     
     // This block of code is used to autoscroll preview as the description grows longer
@@ -53,15 +61,23 @@ function QuestionEditor(props) {
         }).catch(err => {
             if (err.response) {
                 toast.error(err.response.data.data.error_message);
+            } else {
+                toast.error("Failed to submit the question, please try again later.");
             }
-            console.error("Failed to submit question details", err);
+        });
+    }
+
+    const handleCancel = () => {
+        props.setEditedQn(null);
+        props.tableRef.current.scrollIntoView({
+            behavior: "smooth"
         });
     }
 
 
     return (
     <>
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} ref={formRef}>
         <input type="hidden" name="_id" value={id}/>
         <Row>
             <Col md={6}>
@@ -118,7 +134,7 @@ function QuestionEditor(props) {
         <Button variant="dark" type="submit" className="submit-btn">
             Submit
         </Button>
-        <Button variant="light" onClick={() => props.setEditedQn(null)}>Cancel</Button>
+        <Button variant="light" onClick={() => handleCancel()}>Cancel</Button>
     </Form>
     </>);
 }

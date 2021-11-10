@@ -27,9 +27,6 @@ function QuestionsTable(props) {
             props.fetchQuestions();
         })
         .catch(err => {
-            if (err.response) {
-                console.error(err.response);
-            }
             toast.error(`Error deleting ${qn.title}, try again later.`);
         })
     }

@@ -69,7 +69,6 @@ function LoginRegister(props) {
         }).then(res => res.data.data).then(data => {
             setUser(data);
             localStorage.setItem(JWT_TOKEN_NAME, data.token);
-            console.log(data.token);
             toast.success("Login successful");
             checkIsAdmin(data.token);
             axios.defaults.headers.common['Authorization'] = data.token;
@@ -83,8 +82,7 @@ function LoginRegister(props) {
             if (error.response && resHasMessage(error.response)) {
                 toast.error(`${getResMessage(error.response)}`);
             } else {
-                console.error(error);
-                toast.error("Error logging in, try again later");
+                toast.error("Error logging in, please try again later");
             }
             setIsLoading(false);
         });
@@ -97,7 +95,7 @@ function LoginRegister(props) {
     useEffect(() => {
         if (userRef.current !== null) {
             history.push({ pathname: '/' });
-            toast.success("You are already logged in.");
+            toast.success("You are already logged in, redirecting you to the homepage.");
         }
     }, [history, userRef]);
 
