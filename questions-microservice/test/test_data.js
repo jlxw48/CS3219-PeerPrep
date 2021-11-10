@@ -1,15 +1,4 @@
 module.exports = {
-    // JWT_stub: {
-    //     details : {
-    //         email: "stub@stub.com",
-    //         name: "stub",
-    //         permissionLevel: 2
-    //     }, 
-    //     key : process.env.SECRET_KEY,
-    //     options: {
-    //         expiresIn: "7d",
-    //     }
-    // },
     post: {
         validQuestion1: {
             title: "4Sum",

@@ -90,12 +90,7 @@ io.on("connection", socket => {
             contents: newMessage.contents
         }
         pubClient.publish(interviewId, JSON.stringify(publishMessage))
-    })
-
-    socket.on('disconnect', function(reason){
-        console.log('User 1 disconnected because '+reason);
-     });
-     
+    })     
 
     socket.on("end_interview", endInterviewMessage => {
         // If partner has ended interview, send a message to inform the other buddy
