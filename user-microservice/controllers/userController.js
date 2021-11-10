@@ -211,7 +211,7 @@ exports.jwt_validate = (req, res) => {
 		res.status(500).send({
 			status: responseStatus.ERROR,
 			data: {
-				message: JWT_ERROR(error)
+				message: generalErrors.JWT_ERROR(error)
 			}
 		});
 	}
@@ -251,3 +251,34 @@ exports.validate_admin = (req, res) => {
 		});
 	}
 }
+
+exports.user_logout = (req, res) => { // todo delete
+	res.status(200).clearCookie("cs3219_jwt")
+	.json({
+		status: responseStatus.SUCCESS, 
+    	data: {
+        	message: clientSuccessMessages.USER_LOGOUT
+    	}
+    });
+};
+
+exports.statusCheck = (req, res) => {
+    res.json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: clientSuccessMessages.STATUS_WORKING + "!!!"
+        }
+    });
+};
+
+exports.load = (req, res) => {
+	for (var i = 0; i < 1000000000; i++)  {
+		Math.sqrt(i);
+	}
+    res.json({
+        status: responseStatus.SUCCESS,
+        data: {
+            message: clientSuccessMessages.STATUS_WORKING
+        }
+    });
+};

@@ -37,7 +37,7 @@ exports.isValidPostReq = ( req ) => {
 }
 
 exports.isValidPutReq = ( req ) => {
-    if ( isInvalidDescription( req ) && isInvalidDescription( req ) && isInvalidTitle( req ) && isInvalidId( req ) ) {
+    if ( ( isInvalidDescription( req ) && isInvalidTitle( req ) && isInvalidDifficulty(req)) ) {
         return false;
     }
 
@@ -48,14 +48,14 @@ exports.isValidDeleteReq = ( req ) => {
     return !isInvalidId( req );
 }
 
-exports.parsePositiveInt = ( input, defaultInt ) => {
+exports.parsePositiveInt = ( input ) => {
     if ( !input || isNaN( parseInt( input ) ) ) {
-        return defaultInt || 0;
+        return 0;
     }
 
     return parseInt( input );
 }
 
-exports.checkEnumDifficulty = (difficulty) => {
+exports.isValidEnumDifficulty = ( difficulty ) => {
     return difficulty === "easy" || difficulty === "medium" || difficulty === "hard";
 }

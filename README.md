@@ -1,4 +1,8 @@
-Access PeerPrep at <a href="http://peerprep.ml/" target="_blank">https://peerprep.ml</a>
+# Access PeerPrep [Here](https://peerprep.ml/)!
+
+PeerPrep is a web application that empowers students to better take on coding assessments during interviews. With many <b>algorithmic questions</b> in our database, you can put your coding skills to the test by solving these questions with another student! We have a <b>collaborative text editor</b> and <b>real-time chat</b> that allows you to discuss with your peers on how to write the best code for your interviews.
+
+Visit the link in the header to find out more! Or you can read the tutorial below on how to use our application.
 
 # How to use PeerPrep 😀
 
@@ -8,9 +12,9 @@ Access PeerPrep at <a href="http://peerprep.ml/" target="_blank">https://peerpre
 
 <br/>
 
-Signing up is easy, simple visit the <a href="http://peerprep.ml/register" target="_blank">register</a> page.
+Signing up is easy, simple visit the <a href="https://peerprep.ml/register" target="_blank">register</a> page.
 
-Enter your information and click `Register`. You will be redirected to the home page. You can now login by visiting the <a href="http://peerprep.ml/login" target="_blank">login</a> page.
+Enter your information and click `Register`. You will be redirected to the home page. You can now login by visiting the <a href="https://peerprep.ml/login" target="_blank">login</a> page.
 
 
 ![image](https://user-images.githubusercontent.com/52824657/140275247-bbe10f69-35c5-4346-bb54-461096dd3667.png)

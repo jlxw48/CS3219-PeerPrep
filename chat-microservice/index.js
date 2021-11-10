@@ -1,39 +1,45 @@
 require("dotenv").config();
 
 const express = require('express');
-var cors = require('cors');
 const mongoose = require('mongoose');
+const { Server } = require('socket.io');
+const cors = require('cors');
+const http = require('http');
+const { createAdapter } = require("@socket.io/redis-adapter");
+const { createClient } = require("redis");
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+var corsOptions = {
+    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
+    credentials: true 
+};
+app.use(cors(corsOptions));
+const server = http.createServer(app);
+
 const dbController = require('./controllers/dbController')
 const chatApiRoutes = require('./routes/chatApiRoutes');
 const responseStatus = require('./common/status/responseStatus');
 const clientErrors = require('./common/errors/clientErrors');
-
-const http = require('http');
-const { Server } = require('socket.io');
-const { createAdapter } = require("@socket.io/redis-adapter");
-const { createClient } = require("redis");
-const { PARTNER_CONNECTED } = require("./common/messages/clientMessages");
-
-const app = express();
-app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true
-}));
-const server = http.createServer(app);
-app.use(express.json());
-
-app.use(express.urlencoded({ extended: true }));
+const clientMessages = require('./common/messages/clientMessages');
 
 const io = new Server(server, {
     path: "/api/chat/create",
     cors: {
-        origin: "http://localhost",
+        origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
         methods: ["GET", "POST", "DELETE"],
         credentials: true
     },
-    pingInterval: 8000,
+    pingInterval: 3000,
     pingTimeout: 8000
 });
+
+// Connect to mongodb
+var dbURI = process.env.MONGODB_URI;
+if (process.env.NODE_ENV === "test") {
+    dbURI = process.env.TEST_MONGODB_URI;
+}
 
 const REDIS_HOST = process.env.REDIS_HOST || "redis";
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
@@ -63,15 +69,8 @@ io.on("connection", socket => {
 
     socket.on("joinRoom", interviewId => {
         subClient.subscribe(interviewId);
-        const publishMessage = {
-            event: "notification",
-            contents: {
-                senderEmail: "server",
-                message: PARTNER_CONNECTED
-            }
-        }
-        pubClient.publish(interviewId, JSON.stringify(publishMessage))
     });
+
 
     socket.on("message", newMessage => {
         // Saves the chat message to chat history
@@ -91,14 +90,14 @@ io.on("connection", socket => {
             contents: newMessage.contents
         }
         pubClient.publish(interviewId, JSON.stringify(publishMessage))
-    })
+    })     
 
     socket.on("end_interview", endInterviewMessage => {
         // If partner has ended interview, send a message to inform the other buddy
-        const interviewId = newMessage.interviewId;
+        const interviewId = endInterviewMessage.interviewId;
         const publishMessage = {
             event: "notification",
-            contents: newMessage.contents
+            contents: endInterviewMessage.contents
         }
         pubClient.publish(interviewId, JSON.stringify(publishMessage))
     });

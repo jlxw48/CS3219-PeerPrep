@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: external-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: external-ip
+    networking.gke.io/managed-certificates: managed-cert
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: front-end
+            port: 
+              number: 3000
+      - path: /api/user
+        pathType: Prefix
+        backend:
+          service:
+            name: user
+            port: 
+              number: 3000

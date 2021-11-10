@@ -8,12 +8,13 @@ const clientErr = require( "./common/error_msgs/client_errors" );
 const dbErr = require( "./common/error_msgs/db_errors" );
 const msg = require( "./common/msgs" );
 const responseStatus = require( "./common/status" );
-const auth = require( "./auth" );
+const authentication = require( "./common/authentication" );
+const authorization = require( "./common/authorization" );
 
 const app = express();
 app.use( express.json() );
 var corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
     credentials: true
 };
 app.use( cors( corsOptions ) );
@@ -40,7 +41,6 @@ const statusCheck = ( req, res ) => {
     } );
 };
 
-// for matching
 app.route( "/api/questions/get_random_question" )
     .get( qnController.getRandomQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
@@ -50,14 +50,16 @@ app.route( "/api/questions/status" )
     .all( setErrorMessage( clientErr.INVALID_API_ENDPOINT, 404 ) );
 
 app.route( "/api/questions/:id" )
-    .all( auth.jwt_validate )
+    .all( authentication.jwt_validate )
+    .all( authorization.validate_admin )
     .put( qnController.updateQuestion )
     .delete( qnController.deleteQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 
-app.route( "/api/questions/" ) // TODO fix routing prefix issue 
+app.route( "/api/questions/" ) 
     .get( qnController.getAllQuestions )
-    .post( auth.jwt_validate )
+    .post( authentication.jwt_validate )
+    .post( authorization.validate_admin )
     .post( qnController.createQuestion )
     .all( setErrorMessage( clientErr.INVALID_HTTP_METHOD, 405 ) );
 

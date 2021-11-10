@@ -1,26 +1,26 @@
 const axios = require('axios');
 
-const responseStatus = require( "./common/status/responseStatus" );
-const clientErr = require( "./common/errors/clientErrors" );
+const responseStatus = require( "./status" );
+const clientErr = require( "./error_msgs/client_errors" );
 
-const JWT_VALIDATE_URL = process.env.NODE_ENV !== "test" ? process.env.LIVE_JWT_VALIDATE : process.env.TEST_JWT_VALIDATE;
+const VALIDATE_ADMIN_URL = process.env.NODE_ENV !== "test" ? process.env.LIVE_VALIDATE_ADMIN : process.env.TEST_VALIDATE_ADMIN;
 const JWT_STUB_HEADER = "stub_header";
 
-exports.jwt_validate = (req, res, next) => {
+exports.validate_admin = (req, res, next) => {
     const jwt = req.header("Authorization") || JWT_STUB_HEADER;
 
     if (jwt === undefined || jwt === null) {
         res
-            .status(401)
+            .status(403)
             .json({
                 status: responseStatus.FAILED,
                 data: {
-                    message: clientErr.JWT_AUTH_FAILED
+                    message: clientErr.AUTHORIZATION_FAILED
                 }
             });
         return;
     }
-    
+
     const headers = {
         headers: {
             Authorization: jwt,
@@ -28,19 +28,19 @@ exports.jwt_validate = (req, res, next) => {
             'Cache-Control': 'no-cache'
         }
     };
-
-    axios.get(JWT_VALIDATE_URL, headers)
+    console.log(VALIDATE_ADMIN_URL);
+    axios.get(VALIDATE_ADMIN_URL, headers)
         .then(response => {
             next();
         })
         .catch(err => {
             console.log("err", err);
             res
-                .status(401)
+                .status(403)
                 .json({
                     status: responseStatus.FAILED,
                     data: {
-                        message: clientErr.JWT_AUTH_FAILED
+                        message: clientErr.AUTHORIZATION_FAILED
                     }
                 });
         });

@@ -4,7 +4,7 @@ import "ace-builds/src-min-noconflict/mode-python";
 import "ace-builds/src-min-noconflict/mode-java";
 import "ace-builds/src-min-noconflict/mode-c_cpp";
 import "ace-builds/src-min-noconflict/ext-language_tools"
-import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH } from "../../constants.js";
+import { BACKEND_DOMAIN, EDITOR_HISTORY_URL, EDITOR_SOCKET_PATH, EDITOR_BACKEND_DOMAIN } from "../../constants.js";
 import { useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { AppContext } from "../../App.js";
@@ -72,7 +72,7 @@ function Editor() {
         /**
          * Connect socket and add socket events.
          */
-        editorSocket.current = io(BACKEND_DOMAIN, {
+        editorSocket.current = io(EDITOR_BACKEND_DOMAIN, {
             transports: ["websocket"],
             path: EDITOR_SOCKET_PATH,
             withCredentials: true,
@@ -88,7 +88,7 @@ function Editor() {
             });
         });
 
-        // // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
+        // Upon receiving message from editorSocket.current, replace the "code" state variable with the incoming message.
         editorSocket.current.on('message', data => {
             data = JSON.parse(data);
             if (data.senderEmail !== userRef.current.email) {

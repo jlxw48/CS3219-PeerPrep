@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: text
+  labels:
+    app: text
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: text
+  template:
+    metadata:
+      labels:
+        app: text
+    spec:
+      containers:
+      - name: text
+        image: cs3219-g5/text
+        imagePullPolicy: IfNotPresent # setting local image
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3005

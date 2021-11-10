@@ -1,21 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
+var cookieParser = require('cookie-parser')
 const userApiRoutes = require('./routes/userApiRoutes');
-var cors = require('cors');
 require("dotenv").config();
-const cookieParser = require("cookie-parser");
 
 const app = express();
-app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true
-}));
-app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 var corsOptions = {
-    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', "http://localhost:3000"],
+    origin: ['https://peerprep.ml', 'https://peerprep-g5.tk', 'http://localhost:3000'],
     credentials: true 
 };
 app.use(cors(corsOptions));

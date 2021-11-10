@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col'
 import { Widget, addResponseMessage, addUserMessage, renderCustomComponent, dropMessages } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import { AppContext } from "../../App.js"
-import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH } from "../../constants.js";
+import { CHAT_HISTORY_URL, BACKEND_DOMAIN, CHAT_SOCKET_PATH, CHAT_BACKEND_DOMAIN } from "../../constants";
 import "../../css/Chat.css"
 import { useHistory } from "react-router-dom";
 import useState from 'react-usestateref';
@@ -53,10 +53,7 @@ function Chat() {
             }
         }).catch(err => {});
 
-        /**
-         * Setup chat socket
-         */
-        chatSocket.current = io.connect(BACKEND_DOMAIN, {
+        chatSocket.current = io.connect(CHAT_BACKEND_DOMAIN, {
             transports: ["websocket"],
             path: CHAT_SOCKET_PATH,
             upgrade: false,

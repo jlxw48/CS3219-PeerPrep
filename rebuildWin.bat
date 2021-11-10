@@ -1,17 +1,20 @@
 Pushd "%~dp0"
 cd user-microservice
-docker build -t cs3219-g5/user .
+docker build -t asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/user:v1 .
+docker push asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/user:v1
 cd ../match-microservice
-docker build -t cs3219-g5/match .
+docker build -t asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/match:v1 .
+docker push asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/match:v1
 cd ../questions-microservice
-docker build -t cs3219-g5/questions .
+docker build -t asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/questions:v1 .
+docker push asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/questions:v1
 cd ../front-end
-docker build -t cs3219-g5/front-end .
+docker build -t asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/front-end:v1 .
+docker push asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/front-end:v1
 cd ../chat-microservice
-docker build -t cs3219-g5/chat .
+docker build -t asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/chat:v1 .
+docker push asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/chat:v1
 cd ../text-microservice
-docker build -t cs3219-g5/text .
-cd ../kubernetes
-kubectl delete -f .
-kubectl apply -f .
+docker build -t asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/text:v1 .
+docker push asia-southeast1-docker.pkg.dev/cs3219-g5/cs3219-g5-repo/text:v1
 cd ..
