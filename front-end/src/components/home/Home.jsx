@@ -21,7 +21,7 @@ function Home() {
                 <Questions setQuestionToShow={setQuestionToShow}/>
             </Container>
             <FindMatchModal show={showMatchModal} difficulty={matchDifficulty} setShowMatchModal={setShowMatchModal} enableFindMatch={user !== null}/>
-            { questionToShow ? <QuestionModal question={questionToShow} setQuestionToShow={setQuestionToShow} /> : <></>};
+            { questionToShow ? <QuestionModal question={questionToShow} setQuestionToShow={setQuestionToShow} /> : <></>}
         </>
     )
 }

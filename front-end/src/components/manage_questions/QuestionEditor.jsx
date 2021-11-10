@@ -110,7 +110,7 @@ function QuestionEditor(props) {
                         as="textarea"
                         placeholder="Enter a description for the question"
                         name="description"
-                        style={{ height: '300px' }}
+                        id="desc"
                         value={desc}
                         onChange={(e) => setDesc(e.target.value)}
                     />
@@ -131,10 +131,10 @@ function QuestionEditor(props) {
         </Row>
         </ScrollSync>
         <br/>
-        <Button variant="dark" type="submit" className="submit-btn">
+        <Button variant="dark" type="submit" className="submit-btn bottom-btn">
             Submit
         </Button>
-        <Button variant="light" onClick={() => handleCancel()}>Cancel</Button>
+        <Button variant="light" className="bottom-btn" onClick={() => handleCancel()}>Cancel</Button>
     </Form>
     </>);
 }

@@ -5,17 +5,17 @@
 
 @media screen and (max-width: 800px) {
     .practice-container-row {
-        padding-top: 30px;
+        padding-top: 1vh;
     }
     
     .practice-question-body {
-        max-height: 400px !important;
+        max-height: 40vh !important;
     }
 }
 
 .practice-question-body {
     background: #fafafa;
-    max-height: 500px;
+    max-height: 40vh;
     padding: 20px;
     border-radius: 10px;
     border: 1px solid #e6e6e6;
@@ -33,13 +33,13 @@
 }
 
 .editor-section-container {
-    height: 500px;
+    height: 45vh;
     padding-top: 20px;
 }
 
 @media screen and (max-width: 800px) {
     .editor-section-container {
-        height: 400px;
+        height: 45vh;
     }
 }
 
