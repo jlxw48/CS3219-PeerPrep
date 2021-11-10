@@ -10,6 +10,8 @@ const testData = require('./testData');
 chai.use(chaiHttp);
 chai.should();
 
+const stubServer = require("./stub/index");
+
 describe("GET /match/status", () => {
     describe("API status", () => {
         it("should get working status of Match microservice API", (done) => {

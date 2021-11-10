@@ -86,7 +86,7 @@ function PeerPrepNav() {
                         {/* Manage questions button */}
                         {
                             isAdminRef.current &&
-                            <NavLink to="/manage_questions" className="nav-link">Manage Questions</NavLink>
+                            <NavLink to="/manage_questions" className="nav-link" onClick={closeNavbarOnClick}>Manage Questions</NavLink>
                         }
                         {/* Todo: Hide tutorial button for admin user */}
                         {

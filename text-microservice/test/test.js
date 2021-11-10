@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 
+const stubServer = require("./stub/index");
 const chai = require( "chai" );
 const chaiHttp = require( "chai-http" );
 
@@ -12,10 +13,10 @@ chai.use( chaiHttp );
 
 describe( "add 2 interviews", () => {
 
-    describe( "POST /editor/save-text/", () => {
+    describe( "POST /api/editor/save-text/", () => {
         it( "should save text once", ( done ) => {
             chai.request( app )
-                .post( '/editor/save-text')
+                .post('/api/editor/save-text')
                 .send({
                     interviewId: testData.validSession1.interviewId,
                     text: testData.validSession1.text
@@ -33,7 +34,7 @@ describe( "add 2 interviews", () => {
 
         it( "should save text again", ( done ) => {
             chai.request( app )
-                .post( '/editor/save-text')
+                .post( '/api/editor/save-text')
                 .send({
                     interviewId: testData.validSession2.interviewId,
                     text: testData.validSession2.text
@@ -52,10 +53,10 @@ describe( "add 2 interviews", () => {
 } );
 
 describe( "get text from interviewId", () => {
-    describe( "GET /editor/get_text/", () => {
+    describe( "GET /api/editor/get_text/", () => {
         it( "should get session 1 text", ( done ) => {
             chai.request( app )
-                .get( '/editor/get_text')
+                .get( '/api/editor/get_text')
                 .query({
                     interviewId: testData.validSession1.interviewId
                 })
@@ -72,7 +73,7 @@ describe( "get text from interviewId", () => {
 
         it( "should get session 2 text", ( done ) => {
             chai.request( app )
-                .get( '/editor/get_text')
+                .get( '/api/editor/get_text')
                 .query({
                     interviewId: testData.validSession2.interviewId,
                 })
@@ -90,10 +91,10 @@ describe( "get text from interviewId", () => {
 } );
 
 describe( "delete text stored with interviewId", () => {
-    describe( "DELETE /editor/end-session/", () => {
+    describe( "DELETE /api/editor/end-session/", () => {
         it( "should delete session 1 stored text", ( done ) => {
             chai.request( app )
-                .delete( '/editor/end-session')
+                .delete( '/api/editor/end-session')
                 .query({
                     interviewId: testData.validSession1.interviewId
                 })
@@ -110,7 +111,7 @@ describe( "delete text stored with interviewId", () => {
 
         it( "should delete session 2 stored text", ( done ) => {
             chai.request( app )
-                .delete( '/editor/end-session')
+                .delete( '/api/editor/end-session')
                 .query({
                     interviewId: testData.validSession2.interviewId,
                 })
