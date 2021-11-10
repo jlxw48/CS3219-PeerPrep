@@ -6,9 +6,9 @@
 
 <br/>
 
-Signing up is easy, simple visit the <a href="http://peerprep.ml/register" target="_blank">register</a> page.
+Signing up is easy, simple visit the <a href="https://peerprep.ml/register" target="_blank">register</a> page.
 
-Enter your information and click `Register`. You will be redirected to the home page. You can now login by visiting the <a href="http://peerprep.ml/login" target="_blank">login</a> page.
+Enter your information and click `Register`. You will be redirected to the home page. You can now login by visiting the <a href="https://peerprep.ml/login" target="_blank">login</a> page.
 
 
 ![image](https://user-images.githubusercontent.com/52824657/140275247-bbe10f69-35c5-4346-bb54-461096dd3667.png)
