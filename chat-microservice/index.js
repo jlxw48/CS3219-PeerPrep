@@ -102,7 +102,7 @@ io.on("connection", socket => {
         const interviewId = endInterviewMessage.interviewId;
         const publishMessage = {
             event: "notification",
-            contents: newMessage.contents
+            contents: endInterviewMessage.contents
         }
         pubClient.publish(interviewId, JSON.stringify(publishMessage))
     });
