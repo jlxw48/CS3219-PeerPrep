@@ -6,8 +6,6 @@ Note: This web application has been taken down and is no longer maintained. Atta
 
 # How to use PeerPrep 😀
 
-<br/>
-
 ## Signing up 🙋🙋‍♀️
 
 <br/>
@@ -50,7 +48,7 @@ There are three main components of the interview page.
 The question that you see will be the same as the one that your partner sees.
 
 #### The code editor
-The code editor allows you and your interview partner to collaborate on the question. You will be able to see what your partner types in real time! We currently only support **Python**, but we plan to add support for other programming languages in the future 😄. 
+The code editor allows you and your interview partner to collaborate on the question. You will be able to see what your partner types **in real time**! We currently only support **Python**, **Java** and **CPP**, but we plan to add support for other programming languages in the future 😄. 
 
 #### The chat
 The chat window can be expanded and collapsed with a click of a button. It allows you to conveniently communicate your ideas with your partner.
